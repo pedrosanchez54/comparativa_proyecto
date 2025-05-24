@@ -1,0 +1,348 @@
+/* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Vehicles/VehicleCard.css */
+
+.vehicle-card {
+<<<<<<< HEAD
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.vehicle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+=======
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Evita que el contenido/sombra se salga */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative; /* Para posicionar acciones si es necesario */
+  height: 100%; /* Asegura que todas las tarjetas tengan la misma altura en un grid */
+}
+
+.vehicle-card:hover {
+  transform: translateY(-5px); /* Efecto sutil de elevación */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada al pasar */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Enlace principal que cubre imagen y contenido */
+.vehicle-card-link {
+  text-decoration: none;
+  color: inherit; /* Hereda color de texto */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Ocupa el espacio disponible antes de las acciones */
+}
+
+/* Contenedor de la imagen */
+.vehicle-card-image-container {
+<<<<<<< HEAD
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #edf2f7;
+=======
+    width: 100%;
+    height: 180px; /* Altura fija consistente para la imagen */
+    overflow: hidden; /* Recorta imagen si no cabe exactamente */
+    background-color: #f0f0f0; /* Color de fondo mientras carga */
+    display: flex; /* Centrar imagen si es más pequeña */
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #eee; /* Separador sutil */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Estilo de la imagen */
+.vehicle-card-image {
+  display: block; /* Evita espacio extra debajo */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Escala la imagen para cubrir el contenedor, puede recortar */
+  /* object-fit: contain; */ /* Alternativa: Muestra toda la imagen, puede dejar espacios */
+  transition: transform 0.3s ease; /* Transición suave para el zoom */
+}
+
+/* Efecto zoom en la imagen al pasar sobre la tarjeta */
+.vehicle-card:hover .vehicle-card-image {
+  transform: scale(1.05);
+}
+
+/* Contenedor del texto debajo de la imagen */
+.vehicle-card-content {
+<<<<<<< HEAD
+  padding: 16px;
+=======
+  padding: 15px;
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+  flex-grow: 1; /* Asegura que este área crezca, empujando acciones abajo */
+  display: flex;
+  flex-direction: column; /* Organiza título y especificaciones verticalmente */
+}
+
+/* Título (Marca y Modelo) */
+.vehicle-card-title {
+<<<<<<< HEAD
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+=======
+  font-size: 1.25rem; /* Tamaño adecuado */
+  font-weight: 600; /* Semi-negrita */
+  margin-bottom: 5px;
+  color: #222; /* Color oscuro */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+  line-height: 1.3;
+  /* Limitar a 2 líneas con puntos suspensivos */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.6em; /* Altura aprox para 2 líneas, ajustar según fuente */
+}
+
+/* Versión del vehículo (opcional) */
+.vehicle-card-version {
+<<<<<<< HEAD
+  color: #4a5568;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  /* Limitar a 1 línea */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+=======
+    font-size: 0.9rem;
+    color: #555; /* Gris oscuro */
+    margin-bottom: 12px;
+    /* Limitar a 1 línea */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Contenedor de las especificaciones clave */
+.vehicle-card-specs {
+<<<<<<< HEAD
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+=======
+  margin-top: auto; /* Empuja las especificaciones hacia abajo */
+  padding-top: 12px; /* Espacio sobre las especificaciones */
+  border-top: 1px solid #eee; /* Línea separadora */
+  font-size: 0.875rem; /* Tamaño de texto para especificaciones */
+  color: #444; /* Color de texto */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas iguales */
+  gap: 8px 10px; /* Espacio vertical y horizontal */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Estilo para cada línea de especificación (icono + texto) */
+.vehicle-card-specs span {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Espacio entre icono y texto */
+<<<<<<< HEAD
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+/* Estilo para los iconos dentro de las especificaciones */
+.vehicle-card-specs svg {
+  color: #4299e1;
+  font-size: 1rem;
+}
+
+/* Estilo específico para precio */
+.vehicle-card-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.vehicle-card-price .currency {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #718096;
+}
+
+/* Estilo opcional para precio estimado */
+.vehicle-card-price.estimated {
+  color: #555;
+  font-weight: normal;
+}
+
+/* Contenedor para los botones de acción (Favorito, Lista) */
+.vehicle-card-actions {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #edf2f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+=======
+   white-space: nowrap; /* Evita saltos de línea */
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+/* Estilo para los iconos dentro de las especificaciones */
+ .vehicle-card-specs svg {
+    flex-shrink: 0; /* Evita que el icono se encoja */
+    color: #888; /* Color gris para iconos */
+    width: 1em; /* Tamaño relativo al texto */
+    height: 1em;
+ }
+
+/* Estilo específico para el precio */
+.vehicle-card-price {
+    font-weight: bold;
+    color: #333; /* Precio en negro */
+    /* Ocupa las dos columnas si es el último elemento destacado */
+    /* grid-column: 1 / -1; */
+    font-size: 1rem; /* Ligeramente más grande */
+}
+.vehicle-card-price small {
+    font-weight: normal;
+    font-size: 0.75em;
+    color: #777;
+}
+/* Estilo opcional para precio estimado */
+.vehicle-card-price.estimated {
+    color: #555;
+    font-weight: normal;
+}
+
+
+/* Contenedor para los botones de acción (Favorito, Lista) */
+.vehicle-card-actions {
+    padding: 10px 15px;
+    border-top: 1px solid #eee; /* Separador */
+    display: flex;
+    justify-content: flex-end; /* Botones alineados a la derecha */
+    gap: 12px; /* Espacio entre botones */
+    background-color: #fdfdfd; /* Fondo ligeramente diferente */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Estilos base para los botones de acción (se aplicarán a AddToFavorites y AddToList) */
+.action-button {
+<<<<<<< HEAD
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #edf2f7;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.action-button.primary {
+  background: #4299e1;
+  color: white;
+}
+
+.action-button.primary:hover {
+  background: #3182ce;
+=======
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem; /* Tamaño del icono */
+    color: #adb5bd; /* Color gris claro por defecto */
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding: 5px; /* Aumenta área clickeable */
+    line-height: 1; /* Evita espacio extra */
+    display: flex; /* Centrar icono si es necesario */
+    align-items: center;
+    justify-content: center;
+}
+ .action-button svg {
+    display: block; /* Asegura que el icono se comporte como bloque */
+ }
+
+/* Hover para botones de acción */
+.action-button:hover {
+    color: #6c757d; /* Gris más oscuro al pasar */
+    transform: scale(1.15); /* Efecto de escala */
+}
+/* Estilo cuando el botón está activo (ej. es favorito) */
+.action-button.active {
+    color: #dc3545; /* Rojo para favorito activo */
+}
+.action-button.active:hover {
+    color: #c82333; /* Rojo más oscuro en hover activo */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Estilo opcional para botón de info si se añade */
+.action-button.info:hover {
+<<<<<<< HEAD
+  color: #007bff; /* Azul para info */
+}
+
+.vehicle-badges {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+.badge.dgt {
+  color: #2f855a;
+  background: rgba(198, 246, 213, 0.9);
+}
+
+.badge.fuel {
+  color: #2c5282;
+  background: rgba(190, 227, 248, 0.9);
+}
+
+@media (max-width: 576px) {
+  .vehicle-card-image-container {
+    height: 180px;
+  }
+  
+  .vehicle-card-content {
+    padding: 12px;
+  }
+  
+  .vehicle-card-title {
+    font-size: 1.1rem;
+  }
+  
+  .vehicle-card-price {
+    font-size: 1.3rem;
+  }
+=======
+    color: #007bff; /* Azul para info */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+} 

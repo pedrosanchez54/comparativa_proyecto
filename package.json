@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "chart.js": "^4.4.9",
+    "react-chartjs-2": "^5.3.0",
+<<<<<<< HEAD
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^6.30.0",
+    "react-toastify": "^11.0.5"
+=======
+    "react-router-dom": "^6.30.0"
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+  }
+}

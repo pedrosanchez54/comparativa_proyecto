@@ -1,0 +1,223 @@
+<<<<<<< HEAD
+/* Contenedor principal de la página */
+.vehicles-page {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 2rem 3rem;
+}
+
+.vehicles-page .page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #333;
+    position: relative;
+}
+
+.vehicles-page .page-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #007bff;
+    margin: 10px auto 0;
+    border-radius: 2px;
+=======
+.vehicles-page .page-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem; /* Título más grande */
+  color: #333;
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Contenedor principal que organiza sidebar y contenido */
+.vehicles-layout {
+<<<<<<< HEAD
+    display: flex;
+    gap: 40px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+=======
+  display: flex;
+  gap: 30px; /* Espacio entre sidebar y contenido principal */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Barra lateral de filtros */
+.vehicles-sidebar {
+<<<<<<< HEAD
+    flex: 0 0 350px;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    height: fit-content;
+=======
+  flex: 0 0 280px; /* Ancho fijo para la sidebar, no crece ni decrece */
+  /* Los estilos de la tarjeta (fondo, borde, sombra) vienen del componente FilterSidebar */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Contenido principal (grid de vehículos y paginación) */
+.vehicles-main-content {
+<<<<<<< HEAD
+    flex-grow: 1;
+    min-width: 0;
+    padding: 0 15px;
+=======
+  flex-grow: 1; /* Ocupa el espacio restante */
+  min-width: 0; /* Importante para evitar que el contenido desborde en flexbox */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Grid para mostrar las tarjetas de vehículos */
+.vehicles-grid {
+<<<<<<< HEAD
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+=======
+  display: grid;
+  /* Columnas automáticas: crea tantas columnas como quepan con un ancho mínimo de 280px */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px; /* Espacio entre tarjetas */
+  margin-bottom: 30px; /* Espacio antes de la paginación */
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Mensaje cuando no hay resultados */
+.no-results {
+    text-align: center;
+<<<<<<< HEAD
+    padding: 50px 20px;
+    color: #666;
+    font-size: 1.1rem;
+    border: 2px dashed #e0e0e0;
+    background-color: #fff;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+=======
+    padding: 50px 20px; /* Más padding */
+    color: #666;
+    font-size: 1.1rem;
+    border: 1px dashed #ddd; /* Borde discontinuo */
+    background-color: #f9f9f9;
+}
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+.no-results p {
+    margin-bottom: 15px;
+}
+
+<<<<<<< HEAD
+/* --- Responsive Design --- */
+
+/* Pantallas medianas (tablets) */
+@media (max-width: 1200px) {
+    .vehicles-page {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .vehicles-layout {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .vehicles-sidebar {
+        flex: 0 0 auto;
+        width: 100%;
+        position: static;
+    }
+    
+    .vehicles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+=======
+
+/* --- Responsive Design --- */
+
+/* Pantallas medianas (tablets) */
+@media (max-width: 992px) {
+   .vehicles-layout {
+        flex-direction: column; /* Apilar sidebar y contenido */
+        gap: 25px;
+   }
+   .vehicles-sidebar {
+       flex: 0 0 auto; /* Permitir que la sidebar tome su ancho natural */
+       width: 100%; /* Ocupa todo el ancho disponible */
+   }
+   .vehicles-grid {
+       /* Ajustar ancho mínimo si es necesario */
+       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+   }
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+}
+
+/* Pantallas pequeñas (móviles grandes) */
+@media (max-width: 768px) {
+<<<<<<< HEAD
+    .vehicles-page {
+        padding: 1rem;
+    }
+    
+    .vehicles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+    }
+    
+    .vehicles-page .page-title {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    
+    .vehicles-layout {
+        padding: 15px;
+    }
+}
+
+/* Pantallas muy pequeñas (móviles) */
+@media (max-width: 576px) {
+    .vehicles-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .vehicles-layout {
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .vehicles-page {
+        padding: 0.5rem;
+    }
+} 
+=======
+    .vehicles-grid {
+         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+         gap: 20px;
+    }
+     .vehicles-page .page-title {
+         font-size: 1.8rem;
+         margin-bottom: 20px;
+     }
+}
+
+/* Pantallas muy pequeñas (móviles) */
+ @media (max-width: 576px) {
+     .vehicles-grid {
+         /* Una sola columna */
+          grid-template-columns: 1fr;
+          gap: 15px;
+     }
+     .vehicles-layout {
+         gap: 15px;
+     }
+ } 
+>>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445

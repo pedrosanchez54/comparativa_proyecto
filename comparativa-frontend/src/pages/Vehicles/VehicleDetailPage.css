@@ -1,0 +1,242 @@
+/* Enlace para volver atrás */
+.vehicle-detail-page .back-link {
+  display: inline-flex; /* Para alinear icono y texto */
+  align-items: center;
+  gap: 8px; /* Espacio entre icono y texto */
+  margin-bottom: 25px; /* Espacio debajo */
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.vehicle-detail-page .back-link:hover {
+  color: #007bff; /* Azul al pasar */
+}
+
+/* Cabecera de la página de detalle */
+.detail-header {
+  display: flex;
+  justify-content: space-between; /* Título a la izquierda, acciones a la derecha */
+  align-items: flex-start; /* Alinear arriba si hay salto de línea */
+  margin-bottom: 30px;
+  flex-wrap: wrap; /* Permitir que las acciones bajen en pantallas pequeñas */
+  gap: 15px; /* Espacio si hay salto de línea */
+  border-bottom: 1px solid #eee; /* Línea separadora */
+  padding-bottom: 20px;
+}
+
+detail-header h1 {
+  margin: 0;
+  font-size: 2.2rem; /* Título grande */
+  color: #333;
+  line-height: 1.3;
+  flex-grow: 1; /* Ocupa espacio disponible */
+}
+
+/* Contenedor para los botones de acción (favorito, lista) */
+.detail-actions {
+  display: flex;
+  gap: 15px; /* Espacio entre botones */
+  flex-shrink: 0; /* Evita que se encojan */
+  padding-top: 5px; /* Alinear un poco mejor con el título */
+}
+/* Ajustar tamaño de botones de acción aquí si es necesario */
+.detail-actions .action-button {
+    font-size: 1.8rem; /* Iconos más grandes */
+    color: #bbb; /* Más sutiles por defecto */
+}
+.detail-actions .action-button:hover {
+    color: #777;
+}
+.detail-actions .action-button.active {
+    color: #e60023; /* Rojo más vivo */
+}
+
+
+/* Contenedor de las pestañas */
+.detail-tabs {
+  margin-bottom: 25px;
+  border-bottom: 2px solid #dee2e6; /* Borde inferior para la barra de pestañas */
+  display: flex;
+  flex-wrap: wrap; /* Permitir que bajen en pantallas pequeñas */
+}
+
+/* Estilo de cada botón de pestaña */
+.tab-button {
+  padding: 12px 25px; /* Padding generoso */
+  border: none;
+  border-bottom: 3px solid transparent; /* Espacio para el indicador activo */
+  background: none;
+  cursor: pointer;
+  font-size: 1.05rem; /* Tamaño de letra */
+  font-weight: 500; /* Semi-negrita */
+  color: #6c757d; /* Color gris por defecto */
+  margin-bottom: -2px; /* Solapar con el borde inferior del contenedor */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espacio icono-texto */
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tab-button:hover {
+  color: #343a40; /* Más oscuro al pasar */
+}
+/* Estilo de la pestaña activa */
+.tab-button.active {
+  color: #007bff; /* Azul */
+  border-bottom-color: #007bff; /* Indicador azul */
+  font-weight: 600; /* Más negrita */
+}
+
+/* Contenedor del contenido de la pestaña activa */
+.tab-content {
+  padding: 30px; /* Padding interno generoso */
+  background-color: #fff; /* Fondo blanco */
+  border: 1px solid #dee2e6; /* Borde sutil */
+  border-top: none; /* Quitar borde superior, ya lo pone .detail-tabs */
+  border-radius: 0 0 5px 5px; /* Redondear esquinas inferiores */
+  min-height: 350px; /* Altura mínima */
+}
+
+/* --- Estilos para la Pestaña de Especificaciones --- */
+.specs-section h2,
+.images-section h2,
+.times-section h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Grid para organizar las categorías de especificaciones */
+.specs-grid {
+    display: grid;
+    /* Columnas automáticas, mínimo 280px */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 35px 30px; /* Espacio vertical y horizontal */
+}
+
+/* Estilo para cada categoría (General, Rendimiento, etc.) */
+.spec-category h3 {
+    font-size: 1.15rem;
+    color: #0056b3; /* Azul oscuro */
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+/* Estilo para cada línea de especificación (Label: Value) */
+ .spec-category p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.6;
+    display: flex; /* Para alinear mejor */
+    flex-wrap: wrap; /* Permitir salto si el valor es largo */
+ }
+ /* Etiqueta (Label) */
+ .spec-category p strong {
+    display: inline-block;
+    min-width: 160px; /* Ancho mínimo para alinear valores */
+    color: #555; /* Color gris oscuro para la etiqueta */
+    margin-right: 8px; /* Espacio entre etiqueta y valor */
+    flex-shrink: 0; /* Evita que la etiqueta se encoja */
+ }
+ /* Valor */
+ .spec-category p span {
+     /* El valor ocupa el espacio restante */
+ }
+
+
+/* --- Estilos para la Pestaña de Imágenes --- */
+.image-gallery {
+  display: grid;
+  /* Columnas automáticas, mínimo 180px */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px; /* Espacio entre imágenes */
+}
+.gallery-item a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #ddd; /* Borde más visible */
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    background-color: #f8f9fa;
+}
+ .gallery-item a:hover {
+     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+     transform: scale(1.03); /* Ligero zoom */
+ }
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: 140px; /* Altura fija para imágenes de galería */
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+ .gallery-item p {
+     font-size: 0.85rem;
+     text-align: center;
+     padding: 8px 10px;
+     margin: 0;
+     background-color: #f8f9fa;
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     color: #444;
+     border-top: 1px solid #eee;
+ }
+
+
+/* --- Estilos para la Pestaña de Tiempos --- */
+.times-table-container {
+    overflow-x: auto; /* Scroll horizontal para la tabla */
+}
+.times-table-container table {
+    font-size: 0.9rem;
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    min-width: 700px; /* Ancho mínimo para que no se aplaste */
+}
+ .times-table-container th,
+ .times-table-container td {
+     padding: 10px 12px; /* Padding más generoso */
+     white-space: nowrap; /* Evitar saltos de línea */
+     text-align: center; /* Centrar datos */
+ }
+ .times-table-container th {
+     background-color: #e9ecef; /* Fondo gris claro para cabeceras */
+ }
+ /* Alinear texto a la izquierda para algunas columnas */
+ .times-table-container td:nth-child(1), /* Circuito */
+ .times-table-container td:nth-child(5), /* Piloto */
+ .times-table-container td:nth-child(6) { /* Neumáticos */
+    text-align: left;
+ }
+
+
+/* --- Responsive Detail Page --- */
+  @media (max-width: 768px) {
+     .detail-header h1 {
+         font-size: 1.8rem; /* Título más pequeño */
+     }
+     .tab-button {
+        padding: 10px 15px; /* Menos padding en pestañas */
+        font-size: 0.95rem;
+     }
+     .tab-content {
+         padding: 20px; /* Menos padding interno */
+     }
+      .specs-grid {
+         grid-template-columns: 1fr; /* Una columna para especificaciones */
+         gap: 25px;
+     }
+     .spec-category p strong {
+         min-width: 130px; /* Reducir ancho mínimo de etiquetas */
+     }
+      .image-gallery {
+         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Imágenes más pequeñas */
+         gap: 15px;
+     }
+      .gallery-item img {
+         height: 110px;
+     }
+  } 
