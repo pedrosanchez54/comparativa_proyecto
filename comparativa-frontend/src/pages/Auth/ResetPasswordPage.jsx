@@ -1,97 +1,144 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom'; // useParams para leer el token de la URL
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { FaKey, FaArrowLeft } from 'react-icons/fa';
 import apiClient from '../../services/api';
-import ErrorMessage from '../../components/Common/ErrorMessage';
 import { toast } from 'react-toastify';
-import { FaKey } from 'react-icons/fa';
-import './AuthForm.css'; // Estilos comunes
+import './AuthForm.css';
 
 const ResetPasswordPage = () => {
-    const [nuevaContraseña, setNuevaContraseña] = useState('');
-    const [confirmContraseña, setConfirmContraseña] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { token } = useParams(); // Obtiene el :token de la ruta definida en App.js
-    const navigate = useNavigate();
+  const { token } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [validToken, setValidToken] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+  useEffect(() => {
+    validateToken();
+  }, [token]);
 
-        // Validaciones básicas del frontend
-        if (!token) {
-            setError('Falta el token de restablecimiento. Asegúrate de usar el enlace del email.');
-            return;
-        }
-        if (nuevaContraseña.length < 8) {
-             setError('La nueva contraseña debe tener al menos 8 caracteres.');
-             return;
-        }
-        if (nuevaContraseña !== confirmContraseña) {
-            setError('Las contraseñas no coinciden.');
-            return;
-        }
+  const validateToken = async () => {
+    try {
+      setLoading(true);
+      await apiClient.get(`/auth/validate-reset-token/${token}`);
+      setValidToken(true);
+    } catch (error) {
+      toast.error('El enlace de restablecimiento no es válido o ha expirado');
+      navigate('/request-password-reset');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setLoading(true);
-        try {
-            // Llama al endpoint del backend pasando el token en la URL y la nueva contraseña en el body
-            await apiClient.post(`/auth/reset-password/${token}`, { nuevaContraseña });
-            toast.success('¡Contraseña actualizada con éxito! Ya puedes iniciar sesión con tu nueva contraseña.');
-            navigate('/login'); // Redirigir a la página de login
-        } catch (err) {
-             // Capturar errores de la API (token inválido, expirado, etc.)
-             const errorMessage = err.response?.data?.message || 'Error al restablecer la contraseña. El token puede ser inválido o haber expirado.';
-             setError(errorMessage);
-             toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!password || !confirmPassword) {
+      toast.error('Por favor, completa todos los campos');
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error('Las contraseñas no coinciden');
+      return;
+    }
+    if (password.length < 6) {
+      toast.error('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
 
+    try {
+      setLoading(true);
+      await apiClient.post(`/auth/reset-password/${token}`, { password });
+      toast.success('Contraseña restablecida correctamente');
+      navigate('/login');
+    } catch (error) {
+      toast.error('Error al restablecer la contraseña');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
-         <div className="auth-container">
-          <div className="auth-form card">
-            <h2 className="auth-title"><FaKey /> Establecer Nueva Contraseña</h2>
-            <form onSubmit={handleSubmit}>
-               {error && <ErrorMessage message={error} />}
-              <div className="form-group">
-                <label htmlFor="nuevaContraseña">Nueva Contraseña (mín. 8 caracteres)</label>
-                <input
-                  type="password"
-                  id="nuevaContraseña"
-                  value={nuevaContraseña}
-                  onChange={(e) => setNuevaContraseña(e.target.value)}
-                  required
-                  minLength="8"
-                  autoComplete="new-password"
-                  disabled={loading}
-                  placeholder="Introduce tu nueva contraseña"
-                />
-              </div>
-               <div className="form-group">
-                <label htmlFor="confirmContraseña">Confirmar Nueva Contraseña</label>
-                <input
-                  type="password"
-                  id="confirmContraseña"
-                  value={confirmContraseña}
-                  onChange={(e) => setConfirmContraseña(e.target.value)}
-                  required
-                  minLength="8"
-                  autoComplete="new-password"
-                  disabled={loading}
-                  placeholder="Repite la nueva contraseña"
-                />
-              </div>
-              <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
-                {loading ? 'Actualizando...' : 'Actualizar Contraseña'}
-              </button>
-            </form>
-             <div className="auth-links">
-               <Link to="/login">Volver a Iniciar Sesión</Link>
-             </div>
+      <div className="auth-page">
+        <div className="auth-container">
+          <div className="loading-message">
+            <p>Verificando enlace...</p>
           </div>
         </div>
+      </div>
     );
+  }
+
+  if (!validToken) {
+    return (
+      <div className="auth-page">
+        <div className="auth-container">
+          <div className="error-message">
+            <h2>Enlace no válido</h2>
+            <p>El enlace de restablecimiento no es válido o ha expirado.</p>
+            <Link to="/request-password-reset" className="auth-link">
+              Solicitar un nuevo enlace
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="auth-page">
+      <div className="auth-container">
+        <Link to="/login" className="back-link">
+          <FaArrowLeft /> Volver al inicio de sesión
+        </Link>
+
+        <h1>Restablecer Contraseña</h1>
+        <p className="auth-description">
+          Ingresa tu nueva contraseña.
+        </p>
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="password">Nueva Contraseña</label>
+            <div className="input-group">
+              <FaKey className="input-icon" />
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Ingresa tu nueva contraseña"
+                disabled={loading}
+                required
+                minLength={6}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+            <div className="input-group">
+              <FaKey className="input-icon" />
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirma tu nueva contraseña"
+                disabled={loading}
+                required
+                minLength={6}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? 'Restableciendo...' : 'Restablecer Contraseña'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default ResetPasswordPage; 

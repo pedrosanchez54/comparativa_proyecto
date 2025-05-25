@@ -10,41 +10,6 @@
 function errorHandler(err, req, res, next) {
   // Loguear el error completo en la consola del servidor para depuración interna
   console.error(`[ERROR] ${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
-<<<<<<< HEAD
-  console.error('Error completo:', err);
-  console.error('Stack trace:', err.stack);
-
-  if (err.sql) {
-    console.error('SQL Query:', err.sql);
-    console.error('SQL Parameters:', err.parameters);
-    console.error('SQL State:', err.sqlState);
-    console.error('SQL Error Code:', err.code);
-  }
-
-  // Determinar el código de estado HTTP
-  const statusCode = err.statusCode || (res.statusCode >= 400 ? res.statusCode : 500);
-
-  // En desarrollo, enviar todos los detalles del error
-  if (process.env.NODE_ENV === 'development') {
-    res.status(statusCode).json({
-      message: err.message || 'Error interno del servidor',
-      error: {
-        code: err.code,
-        sqlState: err.sqlState,
-        sqlMessage: err.sqlMessage,
-        sql: err.sql,
-        stack: err.stack
-      }
-    });
-  } else {
-    // En producción, enviar mensaje genérico
-    res.status(statusCode).json({
-      message: statusCode === 500 
-        ? 'Ha ocurrido un error inesperado en el servidor.'
-        : err.message
-    });
-  }
-=======
   // Mostrar el stack trace ayuda a encontrar dónde ocurrió el error
   console.error(err.stack || err);
 
@@ -68,7 +33,6 @@ function errorHandler(err, req, res, next) {
     // NUNCA enviar el stack trace completo al cliente en producción por seguridad
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
->>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
 }
 
 /**

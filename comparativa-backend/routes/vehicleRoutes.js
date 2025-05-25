@@ -20,10 +20,6 @@ const router = express.Router();
 // Valida los parámetros de consulta (filtros, paginación, ordenación)
 router.get('/', getVehiclesQueryValidation, vehicleController.getVehicles);
 
-// GET /api/vehicles/compare - Obtener datos de vehículos específicos para comparar
-// La validación de IDs se hace dentro del controlador
-router.get('/compare', vehicleController.getVehiclesForComparison);
-
 // GET /api/vehicles/options - Obtener listas de opciones para los filtros (marcas, tipos, etc.)
 router.get('/options', vehicleController.getFilterOptions);
 

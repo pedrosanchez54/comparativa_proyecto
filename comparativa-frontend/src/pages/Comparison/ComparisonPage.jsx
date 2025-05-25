@@ -231,7 +231,7 @@ const ComparisonPage = () => {
 
   // --- Renderizado Principal ---
   return (
-    <div className="container comparison-page" style={{paddingTop: '20px'}}>
+    <div className="page-container comparison-page">
        {/* Botón para volver a la página anterior */}
        <button onClick={() => navigate(-1)} className="back-link">
            <FaArrowLeft /> Volver

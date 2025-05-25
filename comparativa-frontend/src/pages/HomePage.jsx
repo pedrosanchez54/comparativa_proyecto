@@ -1,68 +1,74 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Para mostrar contenido condicional
-// import './HomePage.css'; // Descomenta si creas estilos específicos
+import { FaCar, FaChartBar, FaUserPlus } from 'react-icons/fa';
+import './HomePage.css';
 
 const HomePage = () => {
-  const { isLoggedIn, user } = useAuth(); // Obtiene el estado de autenticación
-
   return (
-    // Usamos la clase 'container' global para centrar y limitar ancho
-    <div className="container home-page" style={{ textAlign: 'center', paddingTop: '40px' }}>
-
-      {/* Encabezado de bienvenida */}
-      <header className="home-header card" style={{ padding: '30px', marginBottom: '30px' }}>
-        <h1>Bienvenido a ComparativaApp</h1>
-        <p style={{ fontSize: '1.1rem', color: '#555' }}>
-          Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
-        </p>
-      </header>
-
-      {/* Contenido principal y llamadas a la acción */}
-      <section className="home-content">
-        <p style={{ marginBottom: '25px', fontSize: '1.05rem' }}>
-          Navega por nuestro extenso catálogo, descubre detalles técnicos, compara modelos lado a lado,
-          guarda tus coches favoritos y organiza tus propias listas de comparación.
-        </p>
-
-        {/* Botones principales */}
-        <div className="home-actions" style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px' }}>
-          <Link to="/vehicles" className="btn btn-primary" style={{ padding: '12px 25px', fontSize: '1.1rem' }}>
-            Explorar Catálogo
-          </Link>
-          <Link to="/compare" className="btn btn-warning" style={{ padding: '12px 25px', fontSize: '1.1rem' }}>
-            Ir a Comparativas
-          </Link>
-          {/* Mostrar botón de registro solo si el usuario no está logueado */}
-          {!isLoggedIn && (
-            <Link to="/register" className="btn btn-success" style={{ padding: '12px 25px', fontSize: '1.1rem' }}>
-              Regístrate Gratis o Inicia Sesión
+    <div className="home-page">
+      <section className="hero-section">
+        <div className="container">
+          <h1 className="hero-title">
+            Bienvenido a ComparativaApp
+          </h1>
+          <p className="hero-subtitle">
+            Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
+          </p>
+          <div className="hero-actions">
+            <Link to="/vehicles" className="btn btn-primary">
+              <FaCar /> Explorar Catálogo
             </Link>
-          )}
-        </div>
-
-        {/* Mensaje de bienvenida personalizado si el usuario está logueado */}
-        {isLoggedIn && (
-          <div className="user-welcome card" style={{ padding: '20px', backgroundColor: '#e9f7ef' }}>
-            <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '500' }}>
-              ¡Hola de nuevo, {user?.nombre}! ¿Listo para comparar?
-            </p>
-            {/* Podrías añadir enlaces rápidos aquí */}
-            <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                 <Link to="/favorites" className="btn btn-secondary btn-sm">Mis Favoritos</Link>
-                 <Link to="/my-lists" className="btn btn-secondary btn-sm">Mis Listas</Link>
-            </div>
+            <Link to="/compare" className="btn btn-secondary">
+              <FaChartBar /> Ir a Comparativas
+            </Link>
           </div>
-        )}
+        </div>
       </section>
 
-       {/* Sección opcional para destacar algo */}
-       {/*
-       <section className="featured-section card mt-3" style={{marginTop: '30px', padding: '20px'}}>
-            <h2>Vehículos Destacados</h2>
-            <p>Aquí podrías mostrar algunos coches populares o añadidos recientemente...</p>
-       </section>
-       */}
+      <section className="features-section">
+        <div className="container">
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">
+                <FaCar />
+              </div>
+              <h3>Explora el Catálogo</h3>
+              <p>Navega por nuestro extenso catálogo y descubre detalles técnicos de cada vehículo.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <FaChartBar />
+              </div>
+              <h3>Compara Modelos</h3>
+              <p>Compara diferentes modelos lado a lado para tomar la mejor decisión.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <FaUserPlus />
+              </div>
+              <h3>Crea tu Cuenta</h3>
+              <p>Guarda tus favoritos y crea listas personalizadas de comparación.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2>¿Listo para empezar?</h2>
+            <p>Únete a nuestra comunidad y descubre todas las funcionalidades.</p>
+            <div className="cta-buttons">
+              <Link to="/register" className="btn btn-primary">
+                Regístrate Gratis
+              </Link>
+              <Link to="/login" className="btn btn-secondary">
+                Inicia Sesión
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

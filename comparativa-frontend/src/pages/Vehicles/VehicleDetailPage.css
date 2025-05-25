@@ -1,3 +1,11 @@
+/* Contenedor principal de la página de detalle */
+.vehicle-detail-page {
+  width: 95%;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
 /* Enlace para volver atrás */
 .vehicle-detail-page .back-link {
   display: inline-flex; /* Para alinear icono y texto */
@@ -110,40 +118,55 @@ detail-header h1 {
 /* Grid para organizar las categorías de especificaciones */
 .specs-grid {
     display: grid;
-    /* Columnas automáticas, mínimo 280px */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* Columnas automáticas, mínimo 300px, máximo 1fr */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 35px 30px; /* Espacio vertical y horizontal */
+    margin: 0 auto; /* Centrar el grid */
+    max-width: 100%; /* Asegurar que no desborde */
 }
 
 /* Estilo para cada categoría (General, Rendimiento, etc.) */
+.spec-category {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
 .spec-category h3 {
     font-size: 1.15rem;
     color: #0056b3; /* Azul oscuro */
     margin-bottom: 18px;
     padding-bottom: 8px;
     border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
 /* Estilo para cada línea de especificación (Label: Value) */
- .spec-category p {
+.spec-category p {
     margin-bottom: 10px;
     font-size: 1rem;
     line-height: 1.6;
     display: flex; /* Para alinear mejor */
     flex-wrap: wrap; /* Permitir salto si el valor es largo */
- }
- /* Etiqueta (Label) */
- .spec-category p strong {
-    display: inline-block;
+}
+
+/* Etiqueta (Label) */
+.spec-category p strong {
     min-width: 160px; /* Ancho mínimo para alinear valores */
+    max-width: 200px; /* Ancho máximo para etiquetas */
     color: #555; /* Color gris oscuro para la etiqueta */
     margin-right: 8px; /* Espacio entre etiqueta y valor */
     flex-shrink: 0; /* Evita que la etiqueta se encoja */
- }
- /* Valor */
- .spec-category p span {
-     /* El valor ocupa el espacio restante */
- }
+}
 
+/* Valor */
+.spec-category p span {
+    flex: 1; /* El valor ocupa el espacio restante */
+    min-width: 120px; /* Ancho mínimo para valores */
+}
 
 /* --- Estilos para la Pestaña de Imágenes --- */
 .image-gallery {
@@ -215,6 +238,10 @@ detail-header h1 {
 
 /* --- Responsive Detail Page --- */
   @media (max-width: 768px) {
+     .vehicle-detail-page {
+         width: 98%; /* Más ancho en móviles */
+         padding: 15px 10px;
+     }
      .detail-header h1 {
          font-size: 1.8rem; /* Título más pequeño */
      }
@@ -240,3 +267,27 @@ detail-header h1 {
          height: 110px;
      }
   } 
+
+@media (max-width: 480px) {
+    .vehicle-detail-page {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .spec-category {
+        padding: 15px;
+    }
+
+    .spec-category p {
+        font-size: 0.95rem;
+    }
+
+    .spec-category p strong {
+        min-width: 100%; /* Etiquetas ocupan toda la línea */
+        margin-bottom: 4px;
+    }
+
+    .spec-category p span {
+        padding-left: 10px; /* Indentar valores */
+    }
+} 

@@ -88,7 +88,9 @@ const VehicleDetailPage = () => {
         }
 
         return (
-        <p><strong>{label}:</strong> <span>{displayValue}{unit ? ` ${unit}` : ''}</span></p>
+        <p key={`spec-${label.toLowerCase().replace(/\s+/g, '-')}`}>
+            <strong>{label}:</strong> <span>{displayValue}{unit ? ` ${unit}` : ''}</span>
+        </p>
         );
    };
 
@@ -96,7 +98,7 @@ const VehicleDetailPage = () => {
 
   if (loading) return <LoadingSpinner message="Cargando detalles del vehículo..." />;
   if (error) return (
-      <div className="container" style={{paddingTop: '20px'}}>
+      <div className="page-container">
           <ErrorMessage message={error} />
           <button onClick={() => navigate('/vehicles')} className="btn btn-secondary mt-2">
               <FaArrowLeft /> Volver al catálogo
@@ -105,7 +107,7 @@ const VehicleDetailPage = () => {
   );
   // Si no está cargando, no hay error, pero no hay datos de vehículo
   if (!vehicle) return (
-      <div className="container" style={{paddingTop: '20px'}}>
+      <div className="page-container">
           <p>No se encontraron datos para este vehículo.</p>
           <button onClick={() => navigate('/vehicles')} className="btn btn-secondary mt-2">
               <FaArrowLeft /> Volver al catálogo

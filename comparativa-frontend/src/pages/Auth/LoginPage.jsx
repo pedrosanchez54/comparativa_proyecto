@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ErrorMessage from '../../components/Common/ErrorMessage';
@@ -10,9 +10,16 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // Error específico del formulario
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth(); // Función login del contexto
+  const { login, isAuthenticated } = useAuth(); // Función login del contexto
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Determina a dónde redirigir después del login exitoso
   // Si el usuario fue redirigido aquí desde una ruta protegida, 'from' estará en el state.
@@ -23,15 +30,19 @@ const LoginPage = () => {
     setError(''); // Limpiar errores anteriores
     setLoading(true); // Indicar inicio de carga
 
-    const success = await login(email, password); // Llama a la función login del contexto
-
-    setLoading(false); // Indicar fin de carga
-    if (success) {
-      // Si el login fue exitoso (manejado en AuthContext), navegar a la página destino
-      navigate(from, { replace: true }); // 'replace: true' evita que esta página quede en el historial
-    } else {
-      // Si falló, AuthContext ya mostró un toast. Podemos añadir un error local si queremos.
-      setError('Email o contraseña incorrectos. Inténtalo de nuevo.');
+    try {
+      const success = await login(email, password);
+      if (success) {
+        // Si el login fue exitoso (manejado en AuthContext), navegar a la página destino
+        navigate(from, { replace: true }); // 'replace: true' evita que esta página quede en el historial
+      } else {
+        // Si falló, AuthContext ya mostró un toast. Podemos añadir un error local si queremos.
+        setError('Email o contraseña incorrectos. Inténtalo de nuevo.');
+      }
+    } catch (err) {
+      setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+    } finally {
+      setLoading(false); // Indicar fin de carga
     }
   };
 
@@ -53,6 +64,7 @@ const LoginPage = () => {
               autoComplete="email"
               disabled={loading} // Deshabilitar mientras carga
               placeholder="tu@email.com"
+              className="form-control"
             />
           </div>
           <div className="form-group">
@@ -66,16 +78,23 @@ const LoginPage = () => {
               autoComplete="current-password"
               disabled={loading}
               placeholder="Tu contraseña"
+              className="form-control"
             />
           </div>
-          <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
-            {loading ? 'Iniciando...' : 'Entrar'}
+          <button 
+            type="submit" 
+            className="btn btn-primary auth-button" 
+            disabled={loading || !email || !password}
+          >
+            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
         <div className="auth-links">
           {/* Enlace para recuperar contraseña */}
-          <Link to="/request-password-reset">¿Olvidaste tu contraseña?</Link>
-          <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
+          <Link to="/request-password-reset" className="forgot-password-link">
+            ¿Olvidaste tu contraseña?
+          </Link>
+          <p>¿No tienes cuenta? <Link to="/register" className="register-link">Regístrate aquí</Link></p>
         </div>
       </div>
     </div>

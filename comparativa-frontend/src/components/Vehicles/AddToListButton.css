@@ -1,0 +1,215 @@
+.list-button {
+  background: var(--racing-grey);
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--off-white);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.list-button:hover {
+  background-color: var(--cherry-red);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.list-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  backdrop-filter: blur(3px);
+}
+
+.list-modal {
+  background: var(--off-white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.list-modal h3 {
+  margin: 0 0 1.5rem;
+  color: var(--racing-grey);
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--cherry-red);
+  padding-bottom: 0.5rem;
+}
+
+/* Formulario nueva lista */
+.new-list-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--light-grey);
+}
+
+.new-list-form input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid var(--light-grey);
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all var(--transition-normal);
+}
+
+.new-list-form input:focus {
+  outline: none;
+  border-color: var(--cherry-red);
+}
+
+.new-list-form button {
+  padding: 0.75rem 1rem;
+  background-color: var(--racing-grey);
+  color: var(--off-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-normal);
+}
+
+.new-list-form button:hover:not(:disabled) {
+  background-color: var(--cherry-red);
+  transform: translateY(-2px);
+}
+
+.new-list-form button:disabled {
+  background-color: var(--light-grey);
+  cursor: not-allowed;
+}
+
+/* Lista de listas existentes */
+.lists-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.lists-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lists-container::-webkit-scrollbar-track {
+  background: var(--off-white);
+}
+
+.lists-container::-webkit-scrollbar-thumb {
+  background: var(--light-grey);
+  border-radius: 3px;
+}
+
+.lists-container::-webkit-scrollbar-thumb:hover {
+  background: var(--racing-grey);
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 2px solid var(--light-grey);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  color: var(--racing-grey);
+  text-align: left;
+  width: 100%;
+}
+
+.list-item:hover:not(:disabled) {
+  border-color: var(--cherry-red);
+  transform: translateX(5px);
+}
+
+.list-item.selected {
+  background-color: var(--racing-grey);
+  border-color: var(--racing-grey);
+  color: var(--off-white);
+}
+
+.check-icon {
+  color: var(--cherry-red);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+}
+
+/* Botón cerrar */
+.close-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--racing-grey);
+  color: var(--off-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-weight: 500;
+}
+
+.close-button:hover {
+  background-color: var(--cherry-red);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .list-modal {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .new-list-form {
+    flex-direction: column;
+  }
+
+  .new-list-form button {
+    width: 100%;
+    justify-content: center;
+  }
+} 

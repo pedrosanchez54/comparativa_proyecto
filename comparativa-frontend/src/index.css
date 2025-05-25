@@ -1,13 +1,171 @@
-body {
+:root {
+  /* Paleta de colores principal */
+  --cherry-red: #D90429;
+  --dark-cherry: #8D0801;
+  --racing-grey: #2B2D42;
+  --light-grey: #8D99AE;
+  --off-white: #EDF2F4;
+  
+  /* Variables funcionales */
+  --primary-color: var(--cherry-red);
+  --secondary-color: var(--racing-grey);
+  --accent-color: var(--dark-cherry);
+  --text-primary: var(--racing-grey);
+  --text-secondary: var(--light-grey);
+  --background-light: var(--off-white);
+  
+  /* Colores de acción */
+  --button-primary: #B80021; /* Rojo más oscuro para botones */
+  --button-hover: var(--dark-cherry);
+  --link-color: var(--racing-grey);
+  --link-hover: var(--cherry-red);
+  
+  /* Colores de fondo */
+  --background-dark: var(--racing-grey);
+  --background-gradient: linear-gradient(135deg, var(--racing-grey) 0%, #1D1F2F 100%);
+  
+  /* Efectos y decoraciones */
+  --checkerboard-light: rgba(255,255,255,0.15);
+  --checkerboard-dark: rgba(255,255,255,0);
+  --overlay-dark: rgba(0,0,0,0.7);
+  --shadow-soft: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-strong: 0 8px 16px rgba(0,0,0,0.2);
+  
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Espaciado */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Bordes */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Contenedor principal centrado */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Estilos de botones globales */
+.btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-weight: 500;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-primary {
+  background-color: var(--cherry-red);
+  color: var(--off-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--cherry-red);
+  color: var(--racing-grey);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-secondary {
+  background-color: var(--racing-grey);
+  color: var(--off-white);
+}
+
+.btn-secondary:hover {
+  background-color: var(--racing-grey);
+  color: var(--cherry-red);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Enlaces globales */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* Animaciones globales */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+/* Utilidades de texto */
+.text-center { text-align: center; }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-white { color: var(--off-white); }
+
+/* Utilidades de margen y padding */
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .btn {
+    width: 100%;
+  }
 }

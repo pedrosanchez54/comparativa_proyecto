@@ -1,89 +1,85 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import apiClient from '../../services/api'; // Usamos apiClient directamente
-import ErrorMessage from '../../components/Common/ErrorMessage';
-import { toast } from 'react-toastify'; // Para notificaciones
-import { FaEnvelope } from 'react-icons/fa';
-import './AuthForm.css'; // Estilos comunes
+import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
+import apiClient from '../../services/api';
+import { toast } from 'react-toastify';
+import './AuthForm.css';
 
 const RequestPasswordResetPage = () => {
-    const [email, setEmail] = useState('');
-    const [error, setError] = useState(''); // Errores específicos de esta acción
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState(''); // Mensaje informativo/éxito
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setMessage(''); // Limpiar mensajes previos
-        setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast.error('Por favor, ingresa tu email');
+      return;
+    }
 
-        try {
-            // Llama directamente al endpoint del backend
-            const response = await apiClient.post('/auth/request-password-reset', { email });
-            // Muestra el mensaje devuelto por el backend (sea éxito o indicación genérica)
-            setMessage(response.data.message);
-            toast.info(response.data.message); // Usar toast.info para este tipo de mensaje
-            setEmail(''); // Limpiar el campo de email tras el envío exitoso
-        } catch (err) {
-            // Captura errores de la llamada API
-            const errorMessage = err.response?.data?.message || 'Error al solicitar el restablecimiento de contraseña.';
-            setError(errorMessage);
-            toast.error(errorMessage); // Mostrar error con toast
-        } finally {
-            setLoading(false); // Finalizar estado de carga
-        }
-    };
+    try {
+      setLoading(true);
+      await apiClient.post('/auth/request-password-reset', { email });
+      setSuccess(true);
+      toast.success('Se ha enviado un enlace a tu email para restablecer tu contraseña');
+    } catch (error) {
+      toast.error('Error al solicitar el restablecimiento de contraseña');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-       <div className="auth-container">
-          <div className="auth-form card">
-            <h2 className="auth-title"><FaEnvelope /> Recuperar Contraseña</h2>
-             <p className='auth-instructions'>
-                Introduce tu dirección de correo electrónico. Si está registrada, te enviaremos
-                un enlace para que puedas restablecer tu contraseña.
-             </p>
-            <form onSubmit={handleSubmit}>
-              {/* Muestra error local si existe */}
-              {error && <ErrorMessage message={error} />}
-              {/* Muestra mensaje informativo si existe */}
-              {message && <div className="alert alert-info" role="status">{message}</div>}
-              <div className="form-group">
-                <label htmlFor="email">Correo Electrónico</label>
+  return (
+    <div className="auth-page">
+      <div className="auth-container">
+        <Link to="/login" className="back-link">
+          <FaArrowLeft /> Volver al inicio de sesión
+        </Link>
+
+        <h1>Restablecer Contraseña</h1>
+        <p className="auth-description">
+          Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+        </p>
+
+        {success ? (
+          <div className="success-message">
+            <h2>¡Revisa tu email!</h2>
+            <p>
+              Hemos enviado un enlace a <strong>{email}</strong> con las instrucciones para restablecer tu contraseña.
+            </p>
+            <p>
+              Si no lo encuentras, revisa tu carpeta de spam.
+            </p>
+            <Link to="/login" className="auth-link">
+              Volver al inicio de sesión
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <div className="input-group">
+                <FaEnvelope className="input-icon" />
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
+                  placeholder="tu@email.com"
                   disabled={loading}
-                  placeholder="El email asociado a tu cuenta"
+                  required
                 />
               </div>
-              <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
-                {loading ? 'Enviando...' : 'Enviar Enlace de Recuperación'}
-              </button>
-            </form>
-            <div className="auth-links">
-              <Link to="/login">Volver a Iniciar Sesión</Link>
             </div>
-          </div>
-        </div>
-    );
-};
 
-// Estilo simple para la alerta informativa (si no tienes uno global)
-const alertStyle = `
-    .alert { padding: 10px 15px; margin-bottom: 15px; border-radius: 4px; border: 1px solid transparent; }
-    .alert-info { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; }
-`;
-// Inyectar estilos si no existen ya (una forma simple, podría hacerse mejor)
-if (!document.getElementById('alert-styles')) {
-    const styleSheet = document.createElement("style");
-    styleSheet.id = 'alert-styles';
-    styleSheet.innerText = alertStyle;
-    document.head.appendChild(styleSheet);
-}
+            <button type="submit" className="auth-button" disabled={loading}>
+              {loading ? 'Enviando...' : 'Enviar Enlace'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default RequestPasswordResetPage; 

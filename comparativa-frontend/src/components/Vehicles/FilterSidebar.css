@@ -1,33 +1,13 @@
 /* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Vehicles/FilterSidebar.css */
 
 .filter-sidebar {
-<<<<<<< HEAD
     background: white;
     border-radius: 10px;
-    padding: 25px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.filter-sidebar h4 {
-    color: #2c3e50;
-    font-size: 1.2rem;
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.filter-group {
-    margin-bottom: 25px;
-}
-
-.filter-group:last-child {
-    margin-bottom: 0;
-=======
     padding: 20px;
-    background-color: #fff; /* Fondo blanco para la tarjeta */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
 }
 
 .filter-sidebar h4 {
@@ -43,143 +23,130 @@
 }
 
 .filter-group {
-    margin-bottom: 22px; /* Espacio entre grupos de filtros */
->>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 .filter-group label {
     display: block;
-<<<<<<< HEAD
-    color: #4a5568;
-    font-size: 0.95rem;
     margin-bottom: 8px;
-    font-weight: 500;
+    font-weight: 600; /* Semi-negrita */
+    font-size: 0.9rem;
+    color: #444;
 }
 
+/* Estilo base para inputs y selects */
 .filter-input,
 .filter-select {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+    padding: 8px 12px;
     font-size: 0.95rem;
-    color: #2d3748;
-    background-color: white;
-    transition: all 0.2s ease;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
     box-sizing: border-box;
-    height: 42px;
 }
 
 .filter-input:focus,
 .filter-select:focus {
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
-/* Ocultar flechas de input number */
-.filter-input[type="number"]::-webkit-inner-spin-button,
-.filter-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.filter-input[type="number"] {
-    -moz-appearance: textfield;
-}
-
+/* Estilos específicos para rangos */
 .range-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    display: flex;
+    gap: 10px;
     align-items: center;
+    width: 100%;
 }
 
-.range-inputs .filter-input {
-    text-align: center;
+.range-inputs input {
+    width: calc(50% - 5px);
+    min-width: 0;
 }
 
+.range-filter span {
+    flex-shrink: 0;
+    color: #888;
+    font-weight: bold;
+}
+
+/* Estilos para grupo de ordenación */
 .sort-group {
     margin-bottom: 25px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #eee;
 }
 
 .sort-controls {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    gap: 8px;
+    width: 100%;
 }
 
 .sort-controls select {
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
 }
 
 .btn-sort-toggle {
-    background: #f8f9fa;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    color: #4a5568;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
     cursor: pointer;
-    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.btn-sort-toggle:hover {
-    background: #e2e8f0;
-    color: #2d3748;
-}
-
+/* Contenedor de botones de acción */
 .filter-actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
 }
 
 .btn {
-    padding: 12px 16px;
+    width: 100%;
+    padding: 8px 16px;
     border: none;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    border-radius: 4px;
     cursor: pointer;
+    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: all 0.2s ease;
-    height: 45px;
 }
 
-.btn-primary {
-    background: #4299e1;
-    color: white;
+.apply-filters-btn {
+    font-weight: 600;
 }
 
-.btn-primary:hover {
-    background: #3182ce;
+.reset-filters-btn {
+    background-color: #6c757d; /* Gris para reset */
+    border-color: #6c757d;
 }
 
-.btn-secondary {
-    background: #f7fafc;
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
-}
-
-.btn-secondary:hover {
-    background: #edf2f7;
-    color: #2d3748;
+.reset-filters-btn:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
 }
 
 /* Responsive adjustments */
+@media (max-width: 994px) {
+    .filter-sidebar {
+        margin: 0 auto;
+        max-width: 400px;
+    }
+}
+
 @media (max-width: 992px) {
     .filter-actions {
         flex-direction: row;
@@ -205,105 +172,4 @@
         width: 100%;
     }
 }
-=======
-    margin-bottom: 8px;
-    font-weight: 600; /* Semi-negrita */
-    font-size: 0.9rem;
-    color: #444;
-}
-
-/* Estilo base para inputs y selects */
-.filter-input,
-.filter-select {
-    width: 100%;
-    padding: 9px 12px; /* Padding cómodo */
-    font-size: 0.95rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.filter-input:focus,
-.filter-select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-    outline: none;
-}
-
-/* Estilos específicos para rangos */
-.range-filter > .range-inputs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.range-filter .filter-input.range {
-    /* El width: 100% heredado funciona bien con flex */
-    text-align: center; /* Centrar números */
-     /* Ocultar flechas de input number */
-     appearance: textfield;
-     -moz-appearance: textfield;
-}
-.range-filter .filter-input.range::-webkit-outer-spin-button,
-.range-filter .filter-input.range::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-.range-filter span {
-    flex-shrink: 0;
-    color: #888;
-    font-weight: bold;
-}
-
-/* Estilos para grupo de ordenación */
-.sort-group .sort-controls {
-    display: flex;
-    gap: 10px; /* Espacio entre select y botón */
-}
-.sort-group select {
-    flex-grow: 1; /* El select ocupa el espacio disponible */
-}
-.btn-sort-toggle {
-    flex-shrink: 0; /* Evita que el botón se encoja */
-    padding: 8px 10px;
-    font-size: 1.1rem; /* Tamaño del icono */
-    background-color: #e9ecef;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #495057;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-.btn-sort-toggle:hover {
-    background-color: #dee2e6;
-    color: #212529;
-}
-
-/* Contenedor de botones de acción */
-.filter-actions {
-    margin-top: 30px; /* Más espacio antes de los botones */
-    padding-top: 20px; /* Espacio sobre los botones */
-    border-top: 1px solid #eee; /* Línea separadora */
-    display: flex;
-    gap: 10px;
-    justify-content: space-between; /* Botones en extremos */
-}
- .filter-actions .btn {
-     flex-basis: calc(50% - 5px); /* Ocupan aprox mitad del espacio */
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: 6px;
- }
- .apply-filters-btn {
-     font-weight: 600;
- }
- .reset-filters-btn {
-      background-color: #6c757d; /* Gris para reset */
-      border-color: #6c757d;
- }
-  .reset-filters-btn:hover {
-      background-color: #5a6268;
-      border-color: #545b62;
-  }
->>>>>>> d12e99e75d65bd37337c1913d67ec765620ce445
 

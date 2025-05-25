@@ -1,58 +1,167 @@
-import React from 'react';
-import { FaPlusCircle } from 'react-icons/fa'; // Icono de añadir
-import { useAuth } from '../../contexts/AuthContext'; // Para verificar login
-import { toast } from 'react-toastify'; // Para notificaciones
-import { useNavigate, useLocation } from 'react-router-dom'; // Para redirigir
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaList, FaPlus, FaCheck } from 'react-icons/fa';
+import { useAuth } from '../../contexts/AuthContext';
+import apiClient from '../../services/api';
+import { toast } from 'react-toastify';
+import './AddToListButton.css';
 
 /**
- * Botón para añadir un vehículo a una lista del usuario.
- * IMPORTANTE: Esta es una versión Placeholder. La funcionalidad real
- * requeriría implementar un Modal o Dropdown para seleccionar la lista.
+ * Botón para añadir un vehículo a una o varias listas del usuario.
  * @param {object} props - Propiedades.
- * @param {number} props.vehicleId - El ID del vehículo.
+ * @param {number} props.vehicleId - El ID del vehículo al que se asocia el botón.
  */
 const AddToListButton = ({ vehicleId }) => {
-    const { isLoggedIn } = useAuth(); // Verifica si el usuario está logueado
-    const navigate = useNavigate();
-    const location = useLocation();
+  const [lists, setLists] = useState([]);
+  const [selectedLists, setSelectedLists] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [newListName, setNewListName] = useState('');
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-     // Manejador del click en el botón
-     const handleClick = (e) => {
-        e.preventDefault(); // Prevenir acción del padre (ej. Link)
-        e.stopPropagation(); // Detener propagación
+  // Cargar las listas del usuario y verificar en cuáles está el vehículo
+  useEffect(() => {
+    const loadLists = async () => {
+      if (!isAuthenticated || !showModal) return;
 
-         // Si no está logueado, redirigir a login
-         if (!isLoggedIn) {
-            toast.info('Debes iniciar sesión para añadir vehículos a listas.');
-             navigate('/login', { state: { from: location } });
-            return;
-         }
+      try {
+        setLoading(true);
+        const [listsResponse, vehicleListsResponse] = await Promise.all([
+          apiClient.get('/users/lists'),
+          apiClient.get(`/vehicles/${vehicleId}/lists`)
+        ]);
 
-         // --- Lógica para el Modal/Dropdown iría aquí ---
-         // 1. Abrir un componente Modal o un Dropdown.
-         // 2. Dentro del Modal/Dropdown:
-         //    a. Hacer una llamada API a `GET /api/lists` para obtener las listas del usuario.
-         //    b. Mostrar las listas (ej. en un select o lista clickeable).
-         //    c. Opcional: Permitir crear una nueva lista desde aquí.
-         // 3. Al seleccionar una lista:
-         //    a. Obtener el `idLista` seleccionado.
-         //    b. Hacer una llamada API `POST /api/lists/:idLista/vehicles/:vehicleId`.
-         //    c. Cerrar el Modal/Dropdown.
-         //    d. Mostrar notificación de éxito (toast).
-         // 4. Manejar errores en las llamadas API (mostrar toast de error).
-         // -------------------------------------------------
+        const userLists = listsResponse.data;
+        const vehicleLists = vehicleListsResponse.data;
 
-         // Mensaje placeholder actual:
-         toast.info(`FUNCIONALIDAD PENDIENTE: Añadir vehículo ${vehicleId} a una lista.`);
-         console.log(`TODO: Implementar modal/dropdown para añadir vehículo ${vehicleId} a lista.`);
-     };
+        setLists(userLists);
+        setSelectedLists(vehicleLists.map(list => list.id));
+      } catch (error) {
+        console.error('Error al cargar las listas:', error);
+        toast.error('Error al cargar las listas');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Renderizar el botón (solo se muestra si está logueado, o redirige)
-    return (
-        <button className="btn btn-outline-secondary btn-sm" disabled title="Añadir a lista (no implementado)">
-            ➕
-        </button>
-    );
+    loadLists();
+  }, [vehicleId, isAuthenticated, showModal]);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.info('Debes iniciar sesión para gestionar tus listas');
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+
+    setShowModal(true);
+  };
+
+  const handleListToggle = async (listId) => {
+    try {
+      setLoading(true);
+      if (selectedLists.includes(listId)) {
+        await apiClient.delete(`/users/lists/${listId}/vehicles/${vehicleId}`);
+        setSelectedLists(prev => prev.filter(id => id !== listId));
+        toast.success('Vehículo eliminado de la lista');
+      } else {
+        await apiClient.post(`/users/lists/${listId}/vehicles`, { vehicleId });
+        setSelectedLists(prev => [...prev, listId]);
+        toast.success('Vehículo añadido a la lista');
+      }
+    } catch (error) {
+      toast.error('Error al actualizar la lista');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateList = async (e) => {
+    e.preventDefault();
+    if (!newListName.trim()) return;
+
+    try {
+      setLoading(true);
+      const response = await apiClient.post('/users/lists', { 
+        nombre: newListName,
+        vehiculos: [vehicleId]
+      });
+      
+      setLists(prev => [...prev, response.data]);
+      setSelectedLists(prev => [...prev, response.data.id]);
+      setNewListName('');
+      toast.success('Lista creada correctamente');
+    } catch (error) {
+      toast.error('Error al crear la lista');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={handleClick}
+        className="list-button"
+        title="Añadir a una lista"
+      >
+        <FaList />
+      </button>
+
+      {showModal && (
+        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
+          <div className="list-modal" onClick={e => e.stopPropagation()}>
+            <h3>Añadir a lista</h3>
+            
+            <form onSubmit={handleCreateList} className="new-list-form">
+              <input
+                type="text"
+                value={newListName}
+                onChange={(e) => setNewListName(e.target.value)}
+                placeholder="Nombre de la nueva lista"
+                disabled={loading}
+              />
+              <button type="submit" disabled={loading || !newListName.trim()}>
+                <FaPlus /> Crear Lista
+              </button>
+            </form>
+
+            <div className="lists-container">
+              {loading ? (
+                <p>Cargando listas...</p>
+              ) : lists.length === 0 ? (
+                <p>No tienes listas creadas</p>
+              ) : (
+                lists.map(list => (
+                  <button
+                    key={list.id}
+                    onClick={() => handleListToggle(list.id)}
+                    className={`list-item ${selectedLists.includes(list.id) ? 'selected' : ''}`}
+                    disabled={loading}
+                  >
+                    {list.nombre}
+                    {selectedLists.includes(list.id) && <FaCheck className="check-icon" />}
+                  </button>
+                ))
+              )}
+            </div>
+
+            <button 
+              className="close-button"
+              onClick={() => setShowModal(false)}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default AddToListButton; 
