@@ -8,7 +8,7 @@ import './AuthForm.css';
 const ResetPasswordPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   const [validToken, setValidToken] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,32 +30,32 @@ const ResetPasswordPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
     if (!password || !confirmPassword) {
       toast.error('Por favor, completa todos los campos');
-      return;
-    }
+            return;
+        }
     if (password !== confirmPassword) {
       toast.error('Las contraseñas no coinciden');
-      return;
-    }
+             return;
+        }
     if (password.length < 6) {
       toast.error('La contraseña debe tener al menos 6 caracteres');
-      return;
-    }
+            return;
+        }
 
     try {
-      setLoading(true);
+        setLoading(true);
       await apiClient.post(`/auth/reset-password/${token}`, { password });
       toast.success('Contraseña restablecida correctamente');
       navigate('/login');
     } catch (error) {
       toast.error('Error al restablecer la contraseña');
-    } finally {
-      setLoading(false);
-    }
-  };
+        } finally {
+            setLoading(false);
+        }
+    };
 
   if (loading) {
     return (
@@ -87,7 +87,7 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="auth-page">
-      <div className="auth-container">
+         <div className="auth-container">
         <Link to="/login" className="back-link">
           <FaArrowLeft /> Volver al inicio de sesión
         </Link>
@@ -98,47 +98,47 @@ const ResetPasswordPage = () => {
         </p>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
+              <div className="form-group">
             <label htmlFor="password">Nueva Contraseña</label>
             <div className="input-group">
               <FaKey className="input-icon" />
-              <input
-                type="password"
+                <input
+                  type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Ingresa tu nueva contraseña"
                 disabled={loading}
-                required
+                  required
                 minLength={6}
-              />
-            </div>
+                />
+              </div>
           </div>
 
-          <div className="form-group">
+               <div className="form-group">
             <label htmlFor="confirmPassword">Confirmar Contraseña</label>
             <div className="input-group">
               <FaKey className="input-icon" />
-              <input
-                type="password"
+                <input
+                  type="password"
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirma tu nueva contraseña"
                 disabled={loading}
-                required
+                  required
                 minLength={6}
-              />
-            </div>
+                />
+              </div>
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
             {loading ? 'Restableciendo...' : 'Restablecer Contraseña'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+              </button>
+            </form>
+          </div>
+        </div>
+    );
 };
 
 export default ResetPasswordPage; 

@@ -22,8 +22,8 @@ const MyListsPage = () => {
 
   const loadLists = async () => {
     try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
       const response = await apiClient.get('/users/lists');
       setLists(response.data);
     } catch (error) {
@@ -104,17 +104,17 @@ const MyListsPage = () => {
       </header>
 
       <form onSubmit={handleCreateList} className="create-list-form">
-        <input
-          type="text"
+              <input
+                type="text"
           value={newListName}
           onChange={(e) => setNewListName(e.target.value)}
           placeholder="Nombre de la nueva lista"
           disabled={loading}
-        />
+              />
         <button type="submit" disabled={loading || !newListName.trim()}>
           <FaPlus /> Crear Lista
-        </button>
-      </form>
+            </button>
+          </form>
 
       {lists.length === 0 ? (
         <div className="empty-lists">

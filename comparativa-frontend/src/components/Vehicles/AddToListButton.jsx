@@ -18,8 +18,8 @@ const AddToListButton = ({ vehicleId }) => {
   const [loading, setLoading] = useState(false);
   const [newListName, setNewListName] = useState('');
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
   // Cargar las listas del usuario y verificar en cuáles está el vehículo
   useEffect(() => {
@@ -49,15 +49,15 @@ const AddToListButton = ({ vehicleId }) => {
     loadLists();
   }, [vehicleId, isAuthenticated, showModal]);
 
-  const handleClick = (e) => {
+     const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!isAuthenticated) {
       toast.info('Debes iniciar sesión para gestionar tus listas');
-      navigate('/login', { state: { from: location } });
-      return;
-    }
+             navigate('/login', { state: { from: location } });
+            return;
+         }
 
     setShowModal(true);
   };
@@ -103,7 +103,7 @@ const AddToListButton = ({ vehicleId }) => {
     }
   };
 
-  return (
+    return (
     <>
       <button
         onClick={handleClick}
@@ -156,12 +156,12 @@ const AddToListButton = ({ vehicleId }) => {
               onClick={() => setShowModal(false)}
             >
               Cerrar
-            </button>
+        </button>
           </div>
         </div>
       )}
     </>
-  );
+    );
 };
 
 export default AddToListButton; 

@@ -20,8 +20,8 @@ export function AuthProvider({ children }) {
     
     if (token && savedUser) {
       const userData = JSON.parse(savedUser);
-      setUser(userData);
-      setIsAuthenticated(true);
+    setUser(userData);
+    setIsAuthenticated(true);
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     

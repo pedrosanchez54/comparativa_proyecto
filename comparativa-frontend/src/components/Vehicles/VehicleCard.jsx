@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // Importar iconos relevantes
-import { FaTachometerAlt, FaGasPump, FaCalendarAlt, FaEuroSign, FaWeightHanging, FaBolt, FaInfoCircle } from 'react-icons/fa';
+import { FaTachometerAlt, FaGasPump, FaCalendarAlt, FaEuroSign, FaWeightHanging, FaBolt, FaInfoCircle, FaCarSide } from 'react-icons/fa';
 import './VehicleCard.css'; // Importa los estilos específicos para la tarjeta
 // Importar los botones de acción que irán en la tarjeta
 import AddToFavoritesButton from './AddToFavoritesButton';
 import AddToListButton from './AddToListButton'; // El placeholder por ahora
+import { useCompare } from '../../contexts/CompareContext';
+import CompareCarsIcon from '../Common/CompareCarsIcon';
 
 /**
  * Componente que muestra la información resumida de un vehículo en una tarjeta.
@@ -30,8 +32,12 @@ const VehicleCard = ({ vehicle }) => {
   };
 
   // Construir el nombre completo del vehículo
-  const vehicleName = `${vehicle.marca_nombre} ${vehicle.modelo_nombre}`;
+  const vehicleName = `${vehicle.marca} ${vehicle.modelo}`;
   const vehicleVersion = vehicle.version ? `${vehicle.version}` : '';
+
+  const { compareList, addVehicle, removeVehicle, isInCompare } = useCompare();
+  const maxed = compareList.length >= 6;
+  const selected = isInCompare(vehicle.id_vehiculo);
 
   return (
     <div className="vehicle-card card"> {/* Usa clase 'card' global y 'vehicle-card' específica */}
@@ -86,6 +92,14 @@ const VehicleCard = ({ vehicle }) => {
       <div className="vehicle-card-actions">
         <AddToFavoritesButton vehicleId={vehicle.id_vehiculo} />
         <AddToListButton vehicleId={vehicle.id_vehiculo} />
+        <button
+          className={`compare-btn${selected ? ' selected' : ''}`}
+          onClick={() => selected ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
+          disabled={maxed && !selected}
+          title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
+        >
+          <CompareCarsIcon selected={selected} />
+        </button>
       </div>
     </div>
   );

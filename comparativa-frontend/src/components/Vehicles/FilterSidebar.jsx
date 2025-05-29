@@ -34,16 +34,16 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
 
   // Sincronizar estado local si los filtros iniciales cambian (ej. navegación atrás/adelante)
   useEffect(() => {
-    // Solo actualiza si los filtros iniciales son realmente diferentes a los actuales
-    // para evitar re-renders innecesarios. Una comparación profunda sería más robusta.
-    if (JSON.stringify(initialFilters) !== JSON.stringify(filters)) {
-      setFilters(initialFilters || {});
-    }
-    const initialSortBy = initialFilters?.sortBy || 'marca';
-    const initialSortOrder = initialFilters?.sortOrder || 'ASC';
-    if (sort.sortBy !== initialSortBy || sort.sortOrder !== initialSortOrder) {
-      setSort({ sortBy: initialSortBy, sortOrder: initialSortOrder });
-    }
+      // Solo actualiza si los filtros iniciales son realmente diferentes a los actuales
+      // para evitar re-renders innecesarios. Una comparación profunda sería más robusta.
+      if (JSON.stringify(initialFilters) !== JSON.stringify(filters)) {
+          setFilters(initialFilters || {});
+      }
+      const initialSortBy = initialFilters?.sortBy || 'marca';
+      const initialSortOrder = initialFilters?.sortOrder || 'ASC';
+      if (sort.sortBy !== initialSortBy || sort.sortOrder !== initialSortOrder) {
+          setSort({ sortBy: initialSortBy, sortOrder: initialSortOrder });
+      }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilters]); // Dependencia de los filtros iniciales
 
@@ -93,10 +93,10 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
   // Manejador para cambios en los selects de ordenación
   const handleSortSelectChange = (e) => {
     const { name, value } = e.target;
-    const newSort = { ...sort, [name]: value };
+     const newSort = { ...sort, [name]: value };
     setSort(newSort);
-    // Aplicar la ordenación inmediatamente al cambiar el select
-    onSortChange(newSort.sortBy, newSort.sortOrder);
+     // Aplicar la ordenación inmediatamente al cambiar el select
+     onSortChange(newSort.sortBy, newSort.sortOrder);
   };
 
   // Manejador para el botón "Aplicar Filtros"
@@ -108,10 +108,10 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
     onFilterChange(cleanFilters);
   };
 
-  // Manejador para el botón "Limpiar Todo"
-  const handleResetFilters = () => {
+   // Manejador para el botón "Limpiar Todo"
+   const handleResetFilters = () => {
     // Resetear todos los estados locales
-    const defaultSort = { sortBy: 'marca', sortOrder: 'ASC' };
+       const defaultSort = { sortBy: 'marca', sortOrder: 'ASC' };
     
     // Limpiar filtros y ordenación
     setFilters({});
@@ -129,7 +129,7 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
 
     // Actualizar ordenación
     onSortChange(defaultSort.sortBy, defaultSort.sortOrder);
-  };
+   };
 
   // Manejadores de cambio
   const handleMarcaChange = (e) => {
@@ -176,24 +176,24 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
       <h4><FaFilter /> Filtrar y Ordenar</h4>
       <form onSubmit={handleApplyFilters}>
         {/* Sección Ordenación */}
-        <div className="filter-group sort-group">
-          <label htmlFor="sortBy">Ordenar por:</label>
-          <div className='sort-controls'>
-            <select name="sortBy" id="sortBy" value={sort.sortBy} onChange={handleSortSelectChange}>
-              {sortOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => handleSortSelectChange({ target: { name: 'sortOrder', value: sort.sortOrder === 'ASC' ? 'DESC' : 'ASC' } })}
-              className="btn-sort-toggle"
-              title={`Cambiar a orden ${sort.sortOrder === 'ASC' ? 'Descendente' : 'Ascendente'}`}
-            >
-              {sort.sortOrder === 'ASC' ? <FaSortAmountDown /> : <FaSortAmountUp />}
-            </button>
-          </div>
-        </div>
+         <div className="filter-group sort-group">
+             <label htmlFor="sortBy">Ordenar por:</label>
+             <div className='sort-controls'>
+                <select name="sortBy" id="sortBy" value={sort.sortBy} onChange={handleSortSelectChange}>
+                    {sortOptions.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                </select>
+                <button
+                    type="button"
+                    onClick={() => handleSortSelectChange({ target: { name: 'sortOrder', value: sort.sortOrder === 'ASC' ? 'DESC' : 'ASC' } })}
+                    className="btn-sort-toggle"
+                    title={`Cambiar a orden ${sort.sortOrder === 'ASC' ? 'Descendente' : 'Ascendente'}`}
+                >
+                    {sort.sortOrder === 'ASC' ? <FaSortAmountDown /> : <FaSortAmountUp />}
+                </button>
+             </div>
+         </div>
 
         {/* Búsqueda por texto */}
         <div className="filter-group">
@@ -260,8 +260,8 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         )}
 
         {/* Filtro por Combustible (Select) */}
-        <div className="filter-group">
-          <label htmlFor="combustible">Combustible</label>
+         <div className="filter-group">
+           <label htmlFor="combustible">Combustible</label>
           <select 
             id="combustible" 
             name="combustible" 
@@ -269,16 +269,16 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
             onChange={handleCombustibleChange} 
             className="filter-select"
           >
-            <option value="">-- Todos --</option>
-            {options?.combustibles?.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+             <option value="">-- Todos --</option>
+             {options?.combustibles?.map((c) => (
+               <option key={c} value={c}>{c}</option>
+             ))}
+           </select>
         </div>
 
         {/* Filtro por Etiqueta DGT */}
-        <div className="filter-group">
-          <label htmlFor="pegatina_ambiental">Etiqueta DGT</label>
+         <div className="filter-group">
+           <label htmlFor="pegatina_ambiental">Etiqueta DGT</label>
           <select 
             id="pegatina_ambiental" 
             name="pegatina_ambiental" 
@@ -286,51 +286,51 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
             onChange={handlePegatinaChange} 
             className="filter-select"
           >
-            <option value="">-- Todas --</option>
-            {options?.pegatinas?.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
+             <option value="">-- Todas --</option>
+             {options?.pegatinas?.map((p) => (
+               <option key={p} value={p}>{p}</option>
+             ))}
+           </select>
         </div>
 
-        {/* Filtros de Rango (Año, Potencia, Precio, etc.) */}
-        <div className="filter-group range-filter">
-          <label>Año</label>
-          <div className='range-inputs'>
+         {/* Filtros de Rango (Año, Potencia, Precio, etc.) */}
+         <div className="filter-group range-filter">
+            <label>Año</label>
+             <div className='range-inputs'>
             <input type="number" name="anioMin" placeholder="Min" value={filters.anioMin || ''} onChange={handleInputChange} min="1886" max={new Date().getFullYear()+2} className="filter-input range"/>
-            <span>-</span>
+                <span>-</span>
             <input type="number" name="anioMax" placeholder="Max" value={filters.anioMax || ''} onChange={handleInputChange} min="1886" max={new Date().getFullYear()+2} className="filter-input range"/>
-          </div>
-        </div>
-        <div className="filter-group range-filter">
-          <label>Potencia (CV)</label>
-          <div className='range-inputs'>
-            <input type="number" name="potMin" placeholder="Min" value={filters.potMin || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
-            <span>-</span>
-            <input type="number" name="potMax" placeholder="Max" value={filters.potMax || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
-          </div>
-        </div>
-        <div className="filter-group range-filter">
-          <label>Precio Original (€)</label>
-          <div className='range-inputs'>
-            <input type="number" name="precioMin" placeholder="Min" value={filters.precioMin || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
-            <span>-</span>
-            <input type="number" name="precioMax" placeholder="Max" value={filters.precioMax || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
-          </div>
-        </div>
+            </div>
+         </div>
+         <div className="filter-group range-filter">
+            <label>Potencia (CV)</label>
+             <div className='range-inputs'>
+                <input type="number" name="potMin" placeholder="Min" value={filters.potMin || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
+                <span>-</span>
+                <input type="number" name="potMax" placeholder="Max" value={filters.potMax || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
+            </div>
+         </div>
+         <div className="filter-group range-filter">
+            <label>Precio Original (€)</label>
+             <div className='range-inputs'>
+                <input type="number" name="precioMin" placeholder="Min" value={filters.precioMin || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
+                <span>-</span>
+                <input type="number" name="precioMax" placeholder="Max" value={filters.precioMax || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
+            </div>
+         </div>
 
         {/* Botones de Acción */}
         <div className="filter-actions">
-          <button type="submit" className="btn btn-primary btn-sm apply-filters-btn">
-            <FaFilter /> Aplicar Filtros
-          </button>
+            <button type="submit" className="btn btn-primary btn-sm apply-filters-btn">
+                <FaFilter /> Aplicar Filtros
+            </button>
           <button 
             type="button" 
             onClick={handleResetFilters} 
             className="btn btn-secondary btn-sm reset-filters-btn"
           >
-            <FaUndo /> Limpiar Todo
-          </button>
+                <FaUndo /> Limpiar Todo
+            </button>
         </div>
       </form>
     </div>

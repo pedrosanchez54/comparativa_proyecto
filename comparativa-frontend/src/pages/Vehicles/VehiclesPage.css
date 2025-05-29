@@ -1,13 +1,16 @@
 /* Contenedor principal de la página */
 .vehicles-page {
-    box-sizing: border-box; /* Incluir padding en el width */
+    width: 100%;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
 }
 
 .vehicles-page .page-title {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2rem;
-    color: #333;
+    font-size: var(--font-size-xxl);
+    color: var(--text-primary);
     position: relative;
 }
 
@@ -16,7 +19,7 @@
     display: block;
     width: 60px;
     height: 3px;
-    background: #007bff;
+    background: var(--cherry-red);
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -24,35 +27,37 @@
 /* Contenedor principal que organiza sidebar y contenido */
 .vehicles-layout {
     display: flex;
-    gap: 30px; /* Espacio entre sidebar y contenido principal */
-    background: #f8f9fa;
-    border-radius: 12px;
+    gap: 30px;
+    background: var(--background-light);
+    border-radius: var(--border-radius-lg);
     padding: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box; /* Incluir padding en el width */
-    width: 100%; /* Asegurar que ocupe todo el ancho disponible */
-    overflow: hidden; /* Prevenir desbordamiento */
+    box-shadow: var(--shadow-soft);
+    width: 100%;
 }
 
 /* Barra lateral de filtros */
 .vehicles-sidebar {
-    flex: 0 0 280px; /* Ancho fijo para la sidebar, no crece ni decrece */
+    flex: 0 0 280px;
     position: sticky;
-    top: 20px;
+    top: calc(var(--header-height) + 20px);
     align-self: flex-start;
     height: fit-content;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 /* Contenido principal (grid de vehículos y paginación) */
 .vehicles-main-content {
-    flex-grow: 1; /* Ocupa el espacio restante */
-    min-width: 0; /* Importante para evitar que el contenido desborde en flexbox */
+    flex: 1;
+    min-width: 0;
 }
 
 /* Grid para mostrar las tarjetas de vehículos */
 .vehicles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
     margin-bottom: 30px;
 }
@@ -104,55 +109,109 @@
 }
 
 .no-results h3 {
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-bottom: 15px;
+    font-size: var(--font-size-lg);
 }
 
 .no-results p {
-    color: #adb5bd;
+    color: var(--light-grey);
     max-width: 600px;
     margin: 0 auto;
+    font-size: var(--font-size-md);
+}
+
+/* Filtros */
+.filter-label {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.filter-select,
+.filter-input {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    border: 2px solid var(--light-grey);
+    border-radius: var(--border-radius-sm);
+    background-color: white;
+}
+
+.filter-button {
+    width: 100%;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    background-color: var(--cherry-red);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal);
 }
 
 /* Responsive */
-@media (max-width: 992px) {
-    .vehicles-layout {
-        flex-direction: column; /* Apilar sidebar y contenido */
-        gap: 25px;
-    }
-    .vehicles-sidebar {
-        flex: 0 0 auto; /* Permitir que la sidebar tome su ancho natural */
-        width: 100%; /* Ocupa todo el ancho disponible */
-        position: static; /* Eliminar sticky en móvil */
-    }
+@media (max-width: 1200px) {
     .vehicles-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     }
 }
 
-/* Pantallas pequeñas (móviles grandes) */
+@media (max-width: 992px) {
+    .vehicles-layout {
+        flex-direction: column;
+    }
+
+    .vehicles-sidebar {
+        flex: none;
+        width: 100%;
+        position: static;
+    }
+}
+
 @media (max-width: 768px) {
+    .vehicles-page {
+        padding: 0 var(--spacing-md);
+    }
+
     .vehicles-layout {
         padding: 15px;
     }
+
     .vehicles-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 20px;
     }
+
     .vehicles-page .page-title {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
+        font-size: var(--font-size-xl);
+    }
+
+    .no-results h3 {
+        font-size: var(--font-size-md);
+    }
+
+    .no-results p,
+    .filter-label {
+        font-size: var(--font-size-sm);
+    }
+
+    .filter-select,
+    .filter-input,
+    .filter-button {
+        font-size: var(--font-size-xs);
     }
 }
 
-/* Pantallas muy pequeñas (móviles) */
 @media (max-width: 576px) {
     .vehicles-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
+
     .vehicles-layout {
-        gap: 15px;
         padding: 10px;
     }
 }

@@ -83,20 +83,20 @@ const VehiclesPage = () => {
     const updatedParams = { ...currentParams, ...newFilters, page: '1' };
 
     // Limpiar parámetros que estén vacíos
-    for (const key in updatedParams) {
-      if (updatedParams[key] === '' || updatedParams[key] === null || updatedParams[key] === undefined) {
-        delete updatedParams[key]; // Eliminar el parámetro si está vacío
-      }
-    }
+     for (const key in updatedParams) {
+        if (updatedParams[key] === '' || updatedParams[key] === null || updatedParams[key] === undefined) {
+            delete updatedParams[key]; // Eliminar el parámetro si está vacío
+        }
+     }
     // Actualizar los searchParams en la URL, lo que disparará el useEffect de fetchVehicles
     setSearchParams(updatedParams, { replace: true }); // replace: true evita entradas duplicadas en el historial
   }, [searchParams, setSearchParams]);
 
-  const handleSortChange = useCallback((sortBy, sortOrder) => {
-    const currentParams = Object.fromEntries(searchParams.entries());
-    // Actualizar solo sortBy y sortOrder, resetear página a 1
-    setSearchParams({ ...currentParams, sortBy, sortOrder, page: '1' }, { replace: true });
-  }, [searchParams, setSearchParams]);
+   const handleSortChange = useCallback((sortBy, sortOrder) => {
+       const currentParams = Object.fromEntries(searchParams.entries());
+       // Actualizar solo sortBy y sortOrder, resetear página a 1
+       setSearchParams({ ...currentParams, sortBy, sortOrder, page: '1' }, { replace: true });
+   }, [searchParams, setSearchParams]);
 
   const handlePageChange = useCallback((newPage) => {
     // Mantener los filtros/ordenación actuales y solo cambiar la página
@@ -134,15 +134,21 @@ const VehiclesPage = () => {
               {/* Grid de Tarjetas de Vehículo */}
               {vehicles.length > 0 ? (
                 <div className="vehicles-grid">
-                  {vehicles.map((vehicle) => (
-                    <VehicleCard key={vehicle.id_vehiculo} vehicle={vehicle} />
-                  ))}
+                  {vehicles.map((vehicle) => {
+                    // Mapeo de campos para compatibilidad con el resto de la app
+                    const mappedVehicle = {
+                      ...vehicle,
+                      marca: vehicle.marca || vehicle.marca_nombre,
+                      modelo: vehicle.modelo || vehicle.modelo_nombre,
+                    };
+                    return <VehicleCard key={vehicle.id_vehiculo} vehicle={mappedVehicle} />;
+                  })}
                 </div>
               ) : (
                 <div className="no-results">
                   <h3>No se encontraron vehículos</h3>
                   <p>Prueba a ajustar los filtros de búsqueda para ver más resultados.</p>
-                </div>
+                 </div>
               )}
 
               {/* Paginación (solo si hay resultados) */}

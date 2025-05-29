@@ -214,7 +214,7 @@
 
 /* Contenedor de la imagen */
 .vehicle-card-image-container {
-  width: 100%;
+    width: 100%;
   height: 200px;
   object-fit: cover;
   border-bottom: 1px solid #edf2f7;
@@ -264,10 +264,10 @@
   color: #4a5568;
   font-size: 0.95rem;
   margin-bottom: 16px;
-  /* Limitar a 1 línea */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    /* Limitar a 1 línea */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Contenedor de las especificaciones clave */
@@ -288,10 +288,10 @@
 }
 
 /* Estilo para los iconos dentro de las especificaciones */
-.vehicle-card-specs svg {
+ .vehicle-card-specs svg {
   color: #4299e1;
   font-size: 1rem;
-}
+ }
 
 /* Estilo específico para precio */
 .vehicle-card-price {
@@ -308,8 +308,8 @@
 
 /* Estilo opcional para precio estimado */
 .vehicle-card-price.estimated {
-  color: #555;
-  font-weight: normal;
+    color: #555;
+    font-weight: normal;
 }
 
 /* Contenedor para los botones de acción (Favorito, Lista) */
@@ -317,7 +317,7 @@
   margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid #edf2f7;
-  display: flex;
+    display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -325,16 +325,16 @@
 /* Estilos base para los botones de acción (se aplicarán a AddToFavorites y AddToList) */
 .action-button {
   padding: 8px;
-  border: none;
+    border: none;
   border-radius: 6px;
   background: #edf2f7;
   color: #4a5568;
-  cursor: pointer;
+    cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    align-items: center;
+    justify-content: center;
+ }
 
 .action-button:hover {
   background: #e2e8f0;
@@ -352,7 +352,7 @@
 
 /* Estilo opcional para botón de info si se añade */
 .action-button.info:hover {
-  color: #007bff; /* Azul para info */
+    color: #007bff; /* Azul para info */
 }
 
 .vehicle-badges {
@@ -398,4 +398,36 @@
   .vehicle-card-price {
     font-size: 1.3rem;
   }
+}
+
+.compare-btn {
+  background: #fff;
+  border: 2px solid var(--racing-grey);
+  color: var(--racing-grey);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-left: 6px;
+  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(43,45,66,0.08);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+.compare-btn.selected {
+  background: var(--cherry-red);
+  color: #fff;
+  border-color: var(--cherry-red);
+  transform: scale(1.12);
+}
+.compare-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.compare-btn:active {
+  transform: scale(0.95);
 } 

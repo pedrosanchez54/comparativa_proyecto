@@ -136,14 +136,14 @@ exports.getVehicles = async (req, res, next) => {
         g.id_generacion, g.nombre as generacion_nombre, g.anio_inicio, g.anio_fin,
         mo.id_modelo, mo.nombre as modelo_nombre,
         m.id_marca, m.nombre as marca_nombre
-    FROM Vehiculo v
+        FROM Vehiculo v
         JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
         JOIN Generacion g ON mt.id_generacion = g.id_generacion
         JOIN Modelo mo ON g.id_modelo = mo.id_modelo
         JOIN Marca m ON mo.id_marca = m.id_marca
         ${whereClause}
-    ORDER BY ${safeSortBy} ${safeSortOrder}
-    LIMIT ? OFFSET ?`;
+        ORDER BY ${safeSortBy} ${safeSortOrder}
+        LIMIT ? OFFSET ?`;
 
     try {
         const [countResult] = await pool.query(countSql, params);
@@ -183,7 +183,7 @@ exports.getVehicleById = async (req, res, next) => {
         g.nombre as generacion_nombre, g.anio_inicio, g.anio_fin,
         mo.nombre as modelo_nombre,
         m.nombre as marca_nombre
-    FROM Vehiculo v
+        FROM Vehiculo v
         JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
         JOIN Generacion g ON mt.id_generacion = g.id_generacion
         JOIN Modelo mo ON g.id_modelo = mo.id_modelo
@@ -216,7 +216,7 @@ exports.updateVehicle = async (req, res, next) => {
     }
 
     // Construir objeto con los datos permitidos
-    const vehicleData = {};
+     const vehicleData = {};
     const allowedFields = [
         'id_motorizacion', 'anio', 'version', 'pegatina_ambiental',
         'velocidad_max', 'aceleracion_0_100', 'consumo_mixto',
@@ -224,15 +224,15 @@ exports.updateVehicle = async (req, res, next) => {
         'caja_cambios', 'precio_original'
     ];
 
-    for (const field of allowedFields) {
-        if (req.body[field] !== undefined) {
-            vehicleData[field] = req.body[field] === '' ? null : req.body[field];
-        }
-    }
+     for (const field of allowedFields) {
+         if (req.body[field] !== undefined) {
+             vehicleData[field] = req.body[field] === '' ? null : req.body[field];
+         }
+     }
 
-    if (Object.keys(vehicleData).length === 0) {
+     if (Object.keys(vehicleData).length === 0) {
         return res.status(400).json({ message: 'No se proporcionaron datos válidos para actualizar.' });
-    }
+     }
 
     const sql = 'UPDATE Vehiculo SET ? WHERE id_vehiculo = ?';
 
@@ -243,9 +243,9 @@ exports.updateVehicle = async (req, res, next) => {
         }
         res.json({ message: 'Vehículo actualizado correctamente.' });
     } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
+         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({ message: 'Error: Posible vehículo duplicado detectado.' });
-        }
+         }
         console.error("Error actualizando vehículo:", error);
         next(error);
     }

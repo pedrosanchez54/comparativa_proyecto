@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaList, FaTrash, FaArrowLeft, FaExchangeAlt } from 'react-icons/fa';
+import { FaList, FaTrash, FaArrowLeft, FaExchangeAlt, FaCarSide } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import VehicleCard from '../../components/Vehicles/VehicleCard';
+import { useCompare } from '../../contexts/CompareContext';
+import CompareCarsIcon from '../../components/Common/CompareCarsIcon';
 import './ListDetailPage.css';
 
 const ListDetailPage = () => {
@@ -15,6 +17,7 @@ const ListDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedVehicles, setSelectedVehicles] = useState(new Set());
+  const { compareList, isInCompare, addVehicle, removeVehicle } = useCompare();
 
   useEffect(() => {
     loadList();
@@ -22,8 +25,8 @@ const ListDetailPage = () => {
 
   const loadList = async () => {
     try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
       const response = await apiClient.get(`/users/lists/${id_lista}`);
       setList(response.data);
     } catch (error) {
@@ -62,7 +65,7 @@ const ListDetailPage = () => {
   };
 
   const toggleVehicleSelection = (vehicleId) => {
-    setSelectedVehicles(prev => {
+        setSelectedVehicles(prev => {
       const newSelection = new Set(prev);
       if (newSelection.has(vehicleId)) {
         newSelection.delete(vehicleId);
@@ -116,18 +119,26 @@ const ListDetailPage = () => {
             {list.vehiculos.map(vehicle => (
               <div key={vehicle.id_vehiculo} className="vehicle-item">
                 <div className="vehicle-select">
-                  <input
-                    type="checkbox"
+                <input
+                  type="checkbox"
                     id={`select-${vehicle.id_vehiculo}`}
-                    checked={selectedVehicles.has(vehicle.id_vehiculo)}
+                  checked={selectedVehicles.has(vehicle.id_vehiculo)}
                     onChange={() => toggleVehicleSelection(vehicle.id_vehiculo)}
-                    disabled={!selectedVehicles.has(vehicle.id_vehiculo) && selectedVehicles.size >= 4}
-                  />
+                  disabled={!selectedVehicles.has(vehicle.id_vehiculo) && selectedVehicles.size >= 4}
+                />
                   <label htmlFor={`select-${vehicle.id_vehiculo}`}>
                     Seleccionar para comparar
                   </label>
                 </div>
                 <VehicleCard vehicle={vehicle} />
+                <button
+                  className={`compare-btn${isInCompare(vehicle.id_vehiculo) ? ' selected' : ''}`}
+                  onClick={() => isInCompare(vehicle.id_vehiculo) ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
+                  disabled={compareList.length >= 6 && !isInCompare(vehicle.id_vehiculo)}
+                  title={isInCompare(vehicle.id_vehiculo) ? 'Quitar de comparativa' : compareList.length >= 6 ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
+                >
+                  <CompareCarsIcon selected={isInCompare(vehicle.id_vehiculo)} />
+                </button>
                 <button
                   onClick={() => handleRemoveVehicle(vehicle.id_vehiculo)}
                   className="remove-vehicle-button"

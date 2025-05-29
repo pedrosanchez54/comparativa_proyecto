@@ -45,12 +45,20 @@ const Layout = ({ children }) => {
   // Prevenir scroll cuando el menú está abierto
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      // Calcular el ancho del scrollbar
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      // Aplicar padding-right al body para compensar el scrollbar
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      // Añadir clase para manejar el overflow
+      document.body.classList.add('menu-open');
     } else {
-      document.body.style.overflow = 'unset';
+      // Restaurar los estilos originales
+      document.body.style.paddingRight = '';
+      document.body.classList.remove('menu-open');
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '';
+      document.body.classList.remove('menu-open');
     };
   }, [isMenuOpen]);
 
@@ -72,6 +80,11 @@ const Layout = ({ children }) => {
             <span></span>
             <span></span>
           </button>
+
+          <div 
+            className={`menu-overlay ${isMenuOpen ? 'active' : ''}`}
+            onClick={() => setIsMenuOpen(false)}
+          />
 
           <nav 
             ref={navRef}

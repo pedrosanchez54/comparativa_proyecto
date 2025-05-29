@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { CompareProvider } from './contexts/CompareContext';
 // Páginas principales
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/Auth/LoginPage';
@@ -25,81 +26,83 @@ import Layout from './components/Layout/Layout';
 function App() {
   return (
     <AuthProvider>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <ToastContainer 
-          position="top-right" 
-          autoClose={3000} 
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <Layout>
+      <CompareProvider>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ToastContainer 
+            position="top-right" 
+            autoClose={3000} 
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          <Layout>
           <Routes>
-            {/* Rutas públicas */}
+              {/* Rutas públicas */}
             <Route path="/" element={<HomePage />} />
             <Route path="/vehicles" element={<VehiclesPage />} />
             <Route path="/vehicles/:id_vehiculo" element={<VehicleDetailPage />} />
             <Route path="/compare" element={<ComparisonPage />} />
 
-            {/* Rutas de autenticación */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
-            <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+              {/* Rutas de autenticación */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/request-password-reset" element={<RequestPasswordResetPage />} />
+              <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-            {/* Rutas de administrador */}
-            <Route path="/admin" element={
-              <ProtectedRoute adminOnly={true} redirectTo="/">
-                <AdminDashboardPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/vehicles" element={
-              <ProtectedRoute adminOnly={true} redirectTo="/">
-                <AdminVehicleListPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/vehicles/new" element={
-              <ProtectedRoute adminOnly={true} redirectTo="/">
-                <AdminVehicleFormPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/vehicles/edit/:id" element={
-              <ProtectedRoute adminOnly={true} redirectTo="/">
-                <AdminVehicleFormPage />
-              </ProtectedRoute>
-            } />
+              {/* Rutas de administrador */}
+              <Route path="/admin" element={
+                <ProtectedRoute adminOnly={true} redirectTo="/">
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/vehicles" element={
+                <ProtectedRoute adminOnly={true} redirectTo="/">
+                  <AdminVehicleListPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/vehicles/new" element={
+                <ProtectedRoute adminOnly={true} redirectTo="/">
+                  <AdminVehicleFormPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/vehicles/edit/:id" element={
+                <ProtectedRoute adminOnly={true} redirectTo="/">
+                  <AdminVehicleFormPage />
+                </ProtectedRoute>
+              } />
 
-            {/* Rutas de usuario autenticado */}
-            <Route path="/my-lists" element={
-              <ProtectedRoute>
-                <MyListsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-lists/:id_lista" element={
-              <ProtectedRoute>
-                <ListDetailPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/favorites" element={
-              <ProtectedRoute>
-                <FavoritesPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
+              {/* Rutas de usuario autenticado */}
+              <Route path="/my-lists" element={
+                <ProtectedRoute>
+                  <MyListsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-lists/:id_lista" element={
+                <ProtectedRoute>
+                  <ListDetailPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/favorites" element={
+                <ProtectedRoute>
+                  <FavoritesPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } />
 
             {/* Redirección por defecto */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </Layout>
-      </Router>
+          </Layout>
+        </Router>
+      </CompareProvider>
     </AuthProvider>
   );
 }

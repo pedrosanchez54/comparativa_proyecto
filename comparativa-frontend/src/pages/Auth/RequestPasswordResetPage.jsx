@@ -6,12 +6,12 @@ import { toast } from 'react-toastify';
 import './AuthForm.css';
 
 const RequestPasswordResetPage = () => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
     if (!email.trim()) {
       toast.error('Por favor, ingresa tu email');
       return;
@@ -24,14 +24,14 @@ const RequestPasswordResetPage = () => {
       toast.success('Se ha enviado un enlace a tu email para restablecer tu contraseña');
     } catch (error) {
       toast.error('Error al solicitar el restablecimiento de contraseña');
-    } finally {
+        } finally {
       setLoading(false);
-    }
-  };
+        }
+    };
 
-  return (
+    return (
     <div className="auth-page">
-      <div className="auth-container">
+       <div className="auth-container">
         <Link to="/login" className="back-link">
           <FaArrowLeft /> Volver al inicio de sesión
         </Link>
@@ -39,7 +39,7 @@ const RequestPasswordResetPage = () => {
         <h1>Restablecer Contraseña</h1>
         <p className="auth-description">
           Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
-        </p>
+             </p>
 
         {success ? (
           <div className="success-message">
@@ -56,7 +56,7 @@ const RequestPasswordResetPage = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="auth-form">
-            <div className="form-group">
+              <div className="form-group">
               <label htmlFor="email">Email</label>
               <div className="input-group">
                 <FaEnvelope className="input-icon" />
@@ -77,9 +77,9 @@ const RequestPasswordResetPage = () => {
             </button>
           </form>
         )}
-      </div>
-    </div>
-  );
+          </div>
+        </div>
+    );
 };
 
 export default RequestPasswordResetPage; 

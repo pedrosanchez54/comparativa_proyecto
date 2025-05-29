@@ -8,17 +8,26 @@
 
 /* Enlace para volver atrás */
 .vehicle-detail-page .back-link {
-  display: inline-flex; /* Para alinear icono y texto */
+  display: inline-flex;
   align-items: center;
-  gap: 8px; /* Espacio entre icono y texto */
-  margin-bottom: 25px; /* Espacio debajo */
-  color: #555;
+  gap: 8px;
+  margin-bottom: 25px;
+  color: var(--racing-grey);
+  background: #fff;
+  border: 2px solid var(--racing-grey);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 4px 14px;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(43,45,66,0.06);
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
 }
 .vehicle-detail-page .back-link:hover {
-  color: #007bff; /* Azul al pasar */
+  background: var(--cherry-red);
+  color: #fff;
+  border-color: var(--cherry-red);
+  box-shadow: 0 4px 16px rgba(217,4,41,0.12);
 }
 
 /* Cabecera de la página de detalle */
@@ -145,28 +154,28 @@ detail-header h1 {
 }
 
 /* Estilo para cada línea de especificación (Label: Value) */
-.spec-category p {
+ .spec-category p {
     margin-bottom: 10px;
     font-size: 1rem;
     line-height: 1.6;
     display: flex; /* Para alinear mejor */
     flex-wrap: wrap; /* Permitir salto si el valor es largo */
-}
+ }
 
-/* Etiqueta (Label) */
-.spec-category p strong {
+ /* Etiqueta (Label) */
+ .spec-category p strong {
     min-width: 160px; /* Ancho mínimo para alinear valores */
     max-width: 200px; /* Ancho máximo para etiquetas */
     color: #555; /* Color gris oscuro para la etiqueta */
     margin-right: 8px; /* Espacio entre etiqueta y valor */
     flex-shrink: 0; /* Evita que la etiqueta se encoja */
-}
+ }
 
-/* Valor */
-.spec-category p span {
+ /* Valor */
+ .spec-category p span {
     flex: 1; /* El valor ocupa el espacio restante */
     min-width: 120px; /* Ancho mínimo para valores */
-}
+ }
 
 /* --- Estilos para la Pestaña de Imágenes --- */
 .image-gallery {
@@ -289,5 +298,5 @@ detail-header h1 {
 
     .spec-category p span {
         padding-left: 10px; /* Indentar valores */
-    }
-} 
+     }
+  } 

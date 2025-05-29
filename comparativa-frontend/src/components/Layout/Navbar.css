@@ -130,4 +130,118 @@
          padding: 6px 12px;
          font-size: 0.9rem;
      }
+}
+
+.compare-header-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 18px;
+}
+.compare-header-icon {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  display: flex;
+  align-items: center;
+  font-size: 1.7rem;
+  transition: transform 0.2s;
+}
+.compare-header-icon .compare-icon-cars {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.compare-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--cherry-red);
+  color: #fff;
+  border-radius: 50%;
+  min-width: 22px;
+  height: 22px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(217,4,41,0.18);
+  border: 2px solid #fff;
+  z-index: 2;
+  pointer-events: none;
+}
+.compare-appear {
+  animation: compare-pop 0.9s cubic-bezier(.36,1.56,.64,1) both;
+}
+@keyframes compare-pop {
+  0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  30% { opacity: 1; transform: scale(1.2) rotate(7deg); }
+  50% { transform: scale(1.4) rotate(-7deg); }
+  70% { transform: scale(1.2) rotate(7deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+.compare-popover {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  min-width: 270px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(43,45,66,0.18);
+  padding: 18px 12px 12px 12px;
+  z-index: 1002;
+  animation: fadeIn 0.25s;
+}
+.compare-popover ul {
+  list-style: none;
+  margin: 0 0 10px 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.compare-popover li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.compare-popover img {
+  width: 38px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #f0f0f0;
+}
+.compare-popover button {
+  background: none;
+  border: none;
+  color: var(--cherry-red);
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.compare-popover button:hover {
+  background: #fbeaec;
+}
+.clear-compare-btn {
+  width: 100%;
+  background: var(--cherry-red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 0;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.clear-compare-btn:hover {
+  background: var(--dark-cherry);
 } 

@@ -32,12 +32,12 @@ const LoginPage = () => {
 
     try {
       const success = await login(email, password);
-      if (success) {
-        // Si el login fue exitoso (manejado en AuthContext), navegar a la página destino
-        navigate(from, { replace: true }); // 'replace: true' evita que esta página quede en el historial
-      } else {
-        // Si falló, AuthContext ya mostró un toast. Podemos añadir un error local si queremos.
-        setError('Email o contraseña incorrectos. Inténtalo de nuevo.');
+    if (success) {
+      // Si el login fue exitoso (manejado en AuthContext), navegar a la página destino
+      navigate(from, { replace: true }); // 'replace: true' evita que esta página quede en el historial
+    } else {
+      // Si falló, AuthContext ya mostró un toast. Podemos añadir un error local si queremos.
+      setError('Email o contraseña incorrectos. Inténtalo de nuevo.');
       }
     } catch (err) {
       setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');

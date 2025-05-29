@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHeart, FaTrash } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaCarSide } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import VehicleCard from '../../components/Vehicles/VehicleCard';
+import { useCompare } from '../../contexts/CompareContext';
+import CompareCarsIcon from '../../components/Common/CompareCarsIcon';
 import './FavoritesPage.css';
 
 const FavoritesPage = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { compareList, isInCompare, addVehicle, removeVehicle } = useCompare();
 
   // Cargar favoritos al montar el componente
   useEffect(() => {
@@ -20,8 +23,8 @@ const FavoritesPage = () => {
 
   const loadFavorites = async () => {
     try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
       const response = await apiClient.get('/users/favorites');
       setFavorites(response.data);
     } catch (error) {
@@ -75,6 +78,14 @@ const FavoritesPage = () => {
                 title="Eliminar de favoritos"
               >
                 <FaTrash />
+              </button>
+              <button
+                className={`compare-btn${isInCompare(vehicle.id_vehiculo) ? ' selected' : ''}`}
+                onClick={() => isInCompare(vehicle.id_vehiculo) ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
+                disabled={compareList.length >= 6 && !isInCompare(vehicle.id_vehiculo)}
+                title={isInCompare(vehicle.id_vehiculo) ? 'Quitar de comparativa' : compareList.length >= 6 ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
+              >
+                <CompareCarsIcon selected={isInCompare(vehicle.id_vehiculo)} />
               </button>
             </div>
           ))}

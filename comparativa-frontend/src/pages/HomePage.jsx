@@ -12,12 +12,12 @@ const HomePage = () => {
             Bienvenido a ComparativaApp
           </h1>
           <p className="hero-subtitle">
-            Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
-          </p>
+          Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
+        </p>
           <div className="hero-actions">
             <Link to="/vehicles" className="btn btn-primary">
               <FaCar /> Explorar Catálogo
-            </Link>
+          </Link>
             <Link to="/compare" className="btn btn-secondary">
               <FaChartBar /> Ir a Comparativas
             </Link>
@@ -68,7 +68,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </section>
+       </section>
     </div>
   );
 };

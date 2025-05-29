@@ -15,7 +15,7 @@
   --background-light: var(--off-white);
   
   /* Colores de acción */
-  --button-primary: #B80021; /* Rojo más oscuro para botones */
+  --button-primary: #B80021;
   --button-hover: var(--dark-cherry);
   --link-color: var(--racing-grey);
   --link-hover: var(--cherry-red);
@@ -37,22 +37,41 @@
   --transition-slow: 0.5s ease;
   
   /* Espaciado */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+  --spacing-xs: 0.3rem;
+  --spacing-sm: 0.6rem;
+  --spacing-md: 1.2rem;
+  --spacing-lg: 1.8rem;
+  --spacing-xl: 2.4rem;
   
   /* Bordes */
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
+  --border-radius-sm: 5px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 15px;
+
+  /* Layout */
+  --header-height: 75px;
+  --content-max-width: 98%;
+  --content-padding: max(var(--spacing-sm), calc((100% - var(--content-max-width)) / 2));
+
+  /* Tipografía */
+  --font-size-xs: 0.9rem;
+  --font-size-sm: 1.1rem;
+  --font-size-md: 1.3rem;
+  --font-size-lg: 1.5rem;
+  --font-size-xl: 1.8rem;
+  --font-size-xxl: 2.2rem;
+  --font-size-huge: 3rem;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -64,14 +83,33 @@ body {
   background-color: var(--background-light);
   color: var(--text-primary);
   line-height: 1.6;
+  font-size: var(--font-size-md);
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Estilos para cuando el menú está abierto */
+body.menu-open {
+  overflow: hidden;
+  padding-right: var(--scrollbar-width, 0);
+}
+
+.menu-open .app-container {
+  pointer-events: none;
+}
+
+.menu-open .main-nav,
+.menu-open .hamburger-menu {
+  pointer-events: auto;
 }
 
 /* Contenedor principal centrado */
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 var(--content-padding);
 }
 
 /* Estilos de botones globales */

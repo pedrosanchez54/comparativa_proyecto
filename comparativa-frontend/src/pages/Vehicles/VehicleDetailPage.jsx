@@ -5,10 +5,11 @@ import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import AddToFavoritesButton from '../../components/Vehicles/AddToFavoritesButton'; // Botón reutilizable
 import AddToListButton from '../../components/Vehicles/AddToListButton'; // Botón reutilizable (placeholder)
-import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaLeaf, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt, FaEuroSign } from 'react-icons/fa'; // Iconos
+import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaLeaf, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt, FaEuroSign, FaCarSide } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns'; // Para formatear fechas
 import { es } from 'date-fns/locale'; // Para formato español
 import './VehicleDetailPage.css'; // Estilos específicos
+import { useCompare } from '../../contexts/CompareContext';
 
 const VehicleDetailPage = () => {
   const { id_vehiculo } = useParams(); // Obtener el ID del vehículo de la URL (definido en App.js como /vehicles/:id_vehiculo)
@@ -18,6 +19,9 @@ const VehicleDetailPage = () => {
   const [error, setError] = useState(null); // Estado para mensajes de error
   const [activeTab, setActiveTab] = useState('specs'); // Pestaña activa por defecto: 'specs', 'images', 'times'
   const defaultImage = '/placeholder-image.png'; // Ruta a la imagen por defecto en /public
+  const { compareList, addVehicle, removeVehicle, isInCompare } = useCompare();
+  const maxed = compareList.length >= 6;
+  const selected = isInCompare(vehicle?.id_vehiculo);
 
   // useCallback para memorizar la función de carga de datos
   const fetchVehicleDetails = useCallback(async () => {
@@ -181,6 +185,15 @@ const VehicleDetailPage = () => {
         <div className="detail-actions">
            <AddToFavoritesButton vehicleId={vehicle.id_vehiculo} />
            <AddToListButton vehicleId={vehicle.id_vehiculo} />
+           <button
+             className={`compare-btn${selected ? ' selected' : ''}`}
+             onClick={() => selected ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
+             disabled={maxed && !selected}
+             title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
+           >
+             <FaCarSide style={{ transform: 'scaleX(-1)' }} />
+             <FaCarSide style={{ marginLeft: '-8px' }} />
+           </button>
         </div>
       </div>
 
