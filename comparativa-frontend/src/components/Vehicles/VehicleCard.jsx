@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // Importar iconos relevantes
-import { FaTachometerAlt, FaGasPump, FaCalendarAlt, FaEuroSign, FaWeightHanging, FaBolt, FaInfoCircle, FaCarSide } from 'react-icons/fa';
+import { FaTachometerAlt, FaGasPump, FaCalendarAlt, FaEuroSign, FaWeightHanging, FaBolt } from 'react-icons/fa';
 import './VehicleCard.css'; // Importa los estilos específicos para la tarjeta
 // Importar los botones de acción que irán en la tarjeta
 import AddToFavoritesButton from './AddToFavoritesButton';

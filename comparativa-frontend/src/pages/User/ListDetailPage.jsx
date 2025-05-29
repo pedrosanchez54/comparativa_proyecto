@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaList, FaTrash, FaArrowLeft, FaExchangeAlt, FaCarSide } from 'react-icons/fa';
+import { FaList, FaTrash, FaArrowLeft, FaExchangeAlt } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
@@ -21,7 +21,7 @@ const ListDetailPage = () => {
 
   useEffect(() => {
     loadList();
-  }, [id_lista]);
+  }, [id_lista, loadList]);
 
   const loadList = async () => {
     try {

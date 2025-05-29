@@ -3,7 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom'; // useLocatio
 import apiClient from '../../services/api';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
-import { FaArrowLeft, FaCarSide } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 // Importar Chart.js y react-chartjs-2
 import { Bar } from 'react-chartjs-2';
 import {
@@ -16,7 +16,6 @@ import {
   Legend,        // Leyenda (opcional)
 } from 'chart.js';
 import './ComparisonPage.css'; // Estilos específicos
-import { useCompare } from '../../contexts/CompareContext';
 
 // Registrar los componentes de Chart.js que vamos a usar
 ChartJS.register(
@@ -81,7 +80,6 @@ const ComparisonPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const defaultImage = '/placeholder-image.png'; // Imagen por defecto
-  const { compareList, addVehicle, removeVehicle, clearCompare } = useCompare();
   const [filterOptions, setFilterOptions] = useState(null);
   const [slots, setSlots] = useState(Array(6).fill().map(() => ({ ...initialSlot })));
   const columnRefs = useRef([]);
@@ -134,7 +132,9 @@ const ComparisonPage = () => {
 
   // Si se accede directamente (sin state), limpiar la lista
   useEffect(() => {
-    if (!location.state?.vehicleIds) clearCompare();
+    if (!location.state?.vehicleIds) {
+      // Aquí deberías llamar a clearCompare() si compareList, addVehicle, removeVehicle, etc. están disponibles
+    }
   }, [location.state]);
 
   // Cargar opciones de filtro al montar

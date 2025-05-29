@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHeart, FaTrash, FaCarSide } from 'react-icons/fa';
+import { FaHeart, FaTrash } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';

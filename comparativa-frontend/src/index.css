@@ -2,7 +2,7 @@
   /* Paleta de colores principal */
   --cherry-red: #D90429;
   --dark-cherry: #8D0801;
-  --racing-grey: #2B2D42;
+  --racing-grey: #6C6D6F;
   --light-grey: #8D99AE;
   --off-white: #EDF2F4;
   
@@ -61,6 +61,8 @@
   --font-size-xl: 1.8rem;
   --font-size-xxl: 2.2rem;
   --font-size-huge: 3rem;
+
+  --button-secondary: #2B2D42;
 }
 
 * {
@@ -134,18 +136,18 @@ body.menu-open {
 
 .btn-primary:hover {
   background-color: var(--cherry-red);
-  color: var(--racing-grey);
+  color: #2B2D42;
   transform: translateY(-2px);
   box-shadow: var(--shadow-soft);
 }
 
 .btn-secondary {
-  background-color: var(--racing-grey);
+  background-color: var(--button-secondary);
   color: var(--off-white);
 }
 
 .btn-secondary:hover {
-  background-color: var(--racing-grey);
+  background-color: var(--button-secondary);
   color: var(--cherry-red);
   transform: translateY(-2px);
   box-shadow: var(--shadow-soft);

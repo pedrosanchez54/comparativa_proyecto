@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom'; // useParams para leer ID, Link/useNavigate para navegación
+import { useParams, useNavigate } from 'react-router-dom'; // useParams para leer ID, Link/useNavigate para navegación
 import apiClient from '../../services/api'; // Nuestro cliente Axios
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import AddToFavoritesButton from '../../components/Vehicles/AddToFavoritesButton'; // Botón reutilizable
 import AddToListButton from '../../components/Vehicles/AddToListButton'; // Botón reutilizable (placeholder)
-import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaLeaf, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt, FaEuroSign, FaCarSide } from 'react-icons/fa'; // Iconos
+import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt, FaCarSide } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns'; // Para formatear fechas
 import { es } from 'date-fns/locale'; // Para formato español
 import './VehicleDetailPage.css'; // Estilos específicos
