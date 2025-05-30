@@ -327,9 +327,9 @@ const ComparisonPage = () => {
   return (
     <div className="container vehicle-detail-page">
       {/* Botón para volver a la página anterior, igual que en detalle */}
-      <button onClick={() => navigate(-1)} className="back-link">
-        <FaArrowLeft /> Volver
-      </button>
+       <button onClick={() => navigate(-1)} className="back-link">
+           <FaArrowLeft /> Volver
+       </button>
       <h1 className="page-title">Comparativa de Vehículos</h1>
 
       {/* Contenedor que envuelve columnas, botón y SVG */}
@@ -438,74 +438,74 @@ const ComparisonPage = () => {
       ) : (
         // ... el resto del renderizado de la tabla y gráficos ...
         <>
-          {/* Contenedor de la tabla con scroll */}
-          <div className="comparison-table-container">
-            <table className="comparison-table">
-              {/* Encabezado Fijo (Sticky) */}
-              <thead>
-                <tr>
-                  {/* Celda vacía o con título para la columna de especificaciones */}
-                  <th className='spec-label-col'>Especificación</th>
-                  {/* Cabecera para cada vehículo */}
-                  {vehicles.map((vehicle) => (
-                    <th key={vehicle.id_vehiculo} className="vehicle-header-col">
-                       {/* Enlace a la página de detalle del vehículo */}
-                       <Link to={`/vehicles/${vehicle.id_vehiculo}`}>
-                           <img
-                                src={getPrimaryImage(vehicle)}
-                                alt={`${vehicle.marca} ${vehicle.modelo}`}
-                                className="comparison-header-image"
-                                onError={(e) => { e.target.onerror = null; e.target.src=defaultImage; }}
-                                loading="lazy"
-                           />
-                           <span className='comparison-header-name'>{vehicle.marca} {vehicle.modelo}</span>
-                            {vehicle.generacion && <span className='comparison-header-generation'>{vehicle.generacion}</span>}
-                            {vehicle.motorizacion && <span className='comparison-header-motor'>{vehicle.motorizacion}</span>}
-                            {vehicle.version && <span className='comparison-header-version'>{vehicle.version}</span>}
-                             <span className='comparison-header-year'>({vehicle.anio})</span>
-                       </Link>
-                    </th>
-                  ))}
+      {/* Contenedor de la tabla con scroll */}
+      <div className="comparison-table-container">
+        <table className="comparison-table">
+          {/* Encabezado Fijo (Sticky) */}
+          <thead>
+            <tr>
+              {/* Celda vacía o con título para la columna de especificaciones */}
+              <th className='spec-label-col'>Especificación</th>
+              {/* Cabecera para cada vehículo */}
+              {vehicles.map((vehicle) => (
+                <th key={vehicle.id_vehiculo} className="vehicle-header-col">
+                   {/* Enlace a la página de detalle del vehículo */}
+                   <Link to={`/vehicles/${vehicle.id_vehiculo}`}>
+                       <img
+                            src={getPrimaryImage(vehicle)}
+                            alt={`${vehicle.marca} ${vehicle.modelo}`}
+                            className="comparison-header-image"
+                            onError={(e) => { e.target.onerror = null; e.target.src=defaultImage; }}
+                            loading="lazy"
+                       />
+                       <span className='comparison-header-name'>{vehicle.marca} {vehicle.modelo}</span>
+                        {vehicle.generacion && <span className='comparison-header-generation'>{vehicle.generacion}</span>}
+                        {vehicle.motorizacion && <span className='comparison-header-motor'>{vehicle.motorizacion}</span>}
+                        {vehicle.version && <span className='comparison-header-version'>{vehicle.version}</span>}
+                         <span className='comparison-header-year'>({vehicle.anio})</span>
+                   </Link>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {/* Cuerpo de la tabla con las especificaciones */}
+          <tbody>
+            {/* Iterar sobre el orden definido de especificaciones */}
+            {specOrder.map((key) => {
+                 // Comprobar si la etiqueta existe y si al menos un vehículo tiene dato para esta clave
+                const label = specLabels[key];
+                const hasData = vehicles.some(v => v[key] !== null && v[key] !== undefined && v[key] !== '');
+
+                // Si no hay etiqueta o ningún coche tiene dato, no mostrar la fila
+                if (!label || !hasData) return null;
+
+                // Obtener todos los valores para esta clave para la lógica de 'best value'
+                const allValuesForKey = vehicles.map(v => v[key]);
+
+              return (
+                <tr key={key}>
+                  {/* Celda con la etiqueta de la especificación (fija a la izquierda) */}
+                  <td className='spec-label-col'>{label}</td>
+                  {/* Celda para cada vehículo con su valor */}
+                  {vehicles.map((vehicle) => {
+                      const value = vehicle[key];
+                      // Determinar si este valor es el "mejor" (para resaltarlo)
+                      const isBest = isBestValue(key, value, allValuesForKey);
+                    return (
+                        <td key={`${vehicle.id_vehiculo}-${key}`} className={`spec-value ${isBest ? 'best-value' : ''}`}>
+                            {/* Formatear el valor para mostrarlo */}
+                            {formatValue(value)}
+                        </td>
+                    );
+                  })}
                 </tr>
-              </thead>
-              {/* Cuerpo de la tabla con las especificaciones */}
-              <tbody>
-                {/* Iterar sobre el orden definido de especificaciones */}
-                {specOrder.map((key) => {
-                     // Comprobar si la etiqueta existe y si al menos un vehículo tiene dato para esta clave
-                    const label = specLabels[key];
-                    const hasData = vehicles.some(v => v[key] !== null && v[key] !== undefined && v[key] !== '');
+              );
+            })}
+          </tbody>
+        </table>
+      </div>{/* Fin de comparison-table-container */}
 
-                    // Si no hay etiqueta o ningún coche tiene dato, no mostrar la fila
-                    if (!label || !hasData) return null;
-
-                    // Obtener todos los valores para esta clave para la lógica de 'best value'
-                    const allValuesForKey = vehicles.map(v => v[key]);
-
-                  return (
-                    <tr key={key}>
-                      {/* Celda con la etiqueta de la especificación (fija a la izquierda) */}
-                      <td className='spec-label-col'>{label}</td>
-                      {/* Celda para cada vehículo con su valor */}
-                      {vehicles.map((vehicle) => {
-                          const value = vehicle[key];
-                          // Determinar si este valor es el "mejor" (para resaltarlo)
-                          const isBest = isBestValue(key, value, allValuesForKey);
-                        return (
-                            <td key={`${vehicle.id_vehiculo}-${key}`} className={`spec-value ${isBest ? 'best-value' : ''}`}>
-                                {/* Formatear el valor para mostrarlo */}
-                                {formatValue(value)}
-                            </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>{/* Fin de comparison-table-container */}
-
-          {/* Sección de Gráficos (si hay alguno para mostrar) */}
+        {/* Sección de Gráficos (si hay alguno para mostrar) */}
           {graphSpecs.map(specInfo => {
               const { key, label, higherIsBetter } = specInfo;
               // Filtrar vehículos que tengan un valor numérico válido para esta métrica
@@ -549,11 +549,11 @@ const ComparisonPage = () => {
               return (
                   <div key={key} className="chart-container" style={{ height: chartHeight, position: 'relative', marginBottom: '30px' }}>
                       <Bar options={chartOptions} data={chartData} />
-                  </div>
+             </div>
               );
           }).filter(Boolean)}
         </>
-      )}
+        )}
     </div>
   );
 };

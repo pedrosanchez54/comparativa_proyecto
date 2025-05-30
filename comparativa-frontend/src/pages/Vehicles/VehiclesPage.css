@@ -7,8 +7,8 @@
 }
 
 .vehicles-page .page-title {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
     font-size: var(--font-size-xxl);
     color: var(--text-primary);
     position: relative;
@@ -26,7 +26,7 @@
 
 /* Contenedor principal que organiza sidebar y contenido */
 .vehicles-layout {
-    display: flex;
+  display: flex;
     gap: 30px;
     background: var(--background-light);
     border-radius: var(--border-radius-lg);
@@ -56,7 +56,7 @@
 
 /* Grid para mostrar las tarjetas de vehículos */
 .vehicles-grid {
-    display: grid;
+  display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
     margin-bottom: 30px;
@@ -160,15 +160,15 @@
 }
 
 @media (max-width: 992px) {
-    .vehicles-layout {
+   .vehicles-layout {
         flex-direction: column;
-    }
+   }
 
-    .vehicles-sidebar {
+   .vehicles-sidebar {
         flex: none;
         width: 100%;
         position: static;
-    }
+   }
 }
 
 @media (max-width: 768px) {
@@ -182,10 +182,10 @@
 
     .vehicles-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
+         gap: 20px;
     }
 
-    .vehicles-page .page-title {
+     .vehicles-page .page-title {
         font-size: var(--font-size-xl);
     }
 
@@ -202,16 +202,16 @@
     .filter-input,
     .filter-button {
         font-size: var(--font-size-xs);
-    }
+     }
 }
 
-@media (max-width: 576px) {
-    .vehicles-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
+ @media (max-width: 576px) {
+     .vehicles-grid {
+          grid-template-columns: 1fr;
+          gap: 15px;
+     }
 
-    .vehicles-layout {
+     .vehicles-layout {
         padding: 10px;
-    }
-}
+     }
+ } 

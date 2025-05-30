@@ -1,31 +1,42 @@
 .list-button {
-  background: var(--racing-grey);
+  background: #2B2D42;
   border: none;
-  padding: 0.75rem;
+  color: white;
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  color: var(--off-white);
+  font-size: 1.1rem;
   border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .list-button:hover {
-  background-color: var(--cherry-red);
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #2B2D42;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.list-button:hover svg {
+  color: #D90429;
 }
 
 .list-button:disabled {
-  opacity: 0.6;
+  background-color: #6c757d;
+  color: #ccc;
+  opacity: 0.65;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.list-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Modal */

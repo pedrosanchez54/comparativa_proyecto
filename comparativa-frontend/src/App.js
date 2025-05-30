@@ -40,12 +40,12 @@ function App() {
             pauseOnHover
           />
           <Layout>
-          <Routes>
+        <Routes>
               {/* Rutas públicas */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/vehicles" element={<VehiclesPage />} />
-            <Route path="/vehicles/:id_vehiculo" element={<VehicleDetailPage />} />
-            <Route path="/compare" element={<ComparisonPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/vehicles" element={<VehiclesPage />} />
+          <Route path="/vehicles/:id_vehiculo" element={<VehicleDetailPage />} />
+          <Route path="/compare" element={<ComparisonPage />} />
 
               {/* Rutas de autenticación */}
               <Route path="/login" element={<LoginPage />} />
@@ -97,11 +97,11 @@ function App() {
                 </ProtectedRoute>
               } />
 
-            {/* Redirección por defecto */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+          {/* Redirección por defecto */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
           </Layout>
-        </Router>
+      </Router>
       </CompareProvider>
     </AuthProvider>
   );

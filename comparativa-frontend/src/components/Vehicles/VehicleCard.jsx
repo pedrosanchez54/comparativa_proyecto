@@ -7,7 +7,6 @@ import './VehicleCard.css'; // Importa los estilos específicos para la tarjeta
 import AddToFavoritesButton from './AddToFavoritesButton';
 import AddToListButton from './AddToListButton'; // El placeholder por ahora
 import { useCompare } from '../../contexts/CompareContext';
-import CompareCarsIcon from '../Common/CompareCarsIcon';
 
 /**
  * Componente que muestra la información resumida de un vehículo en una tarjeta.
@@ -98,7 +97,7 @@ const VehicleCard = ({ vehicle }) => {
           disabled={maxed && !selected}
           title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
         >
-          <CompareCarsIcon selected={selected} />
+          <img src="/img/iconos/icono_comparativo.png" alt="Añadir a comparativa" />
         </button>
       </div>
     </div>

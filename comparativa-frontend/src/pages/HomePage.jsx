@@ -25,17 +25,17 @@ const HomePage = () => {
               Bienvenido a ComparativaApp
             </h1>
             <p className="hero-subtitle">
-              Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
-            </p>
+          Tu plataforma definitiva para explorar, comparar y guardar especificaciones de vehículos.
+        </p>
             <div className="hero-actions">
               <Link to="/compare" className="btn btn-primary">
                 <FaChartBar /> Ir a Comparativas
-              </Link>
+          </Link>
               <Link to="/vehicles" className="btn btn-secondary">
                 <FaCar /> Explorar Catálogo
-              </Link>
+          </Link>
             </div>
-          </div>
+        </div>
         </section>
 
         <section className="features-section">
@@ -62,7 +62,7 @@ const HomePage = () => {
               <p>Guarda tus favoritos y crea listas personalizadas de comparación.</p>
             </div>
           </div>
-        </section>
+      </section>
 
         <section className="cta-section">
           <div className="cta-content">
@@ -77,8 +77,8 @@ const HomePage = () => {
               </Link>
             </div>
           </div>
-        </section>
-      </div>
+       </section>
+    </div>
     </>
   );
 };

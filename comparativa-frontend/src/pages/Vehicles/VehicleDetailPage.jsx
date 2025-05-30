@@ -5,7 +5,7 @@ import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import AddToFavoritesButton from '../../components/Vehicles/AddToFavoritesButton'; // Botón reutilizable
 import AddToListButton from '../../components/Vehicles/AddToListButton'; // Botón reutilizable (placeholder)
-import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt, FaCarSide } from 'react-icons/fa'; // Iconos
+import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns'; // Para formatear fechas
 import { es } from 'date-fns/locale'; // Para formato español
 import './VehicleDetailPage.css'; // Estilos específicos
@@ -186,13 +186,12 @@ const VehicleDetailPage = () => {
            <AddToFavoritesButton vehicleId={vehicle.id_vehiculo} />
            <AddToListButton vehicleId={vehicle.id_vehiculo} />
            <button
-             className={`compare-btn${selected ? ' selected' : ''}`}
+             className={`compare-btn action-button${selected ? ' selected' : ''}`}
              onClick={() => selected ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
              disabled={maxed && !selected}
              title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
            >
-             <FaCarSide style={{ transform: 'scaleX(-1)' }} />
-             <FaCarSide style={{ marginLeft: '-8px' }} />
+             <img src="/img/iconos/icono_comparativo.png" alt="Añadir a comparativa" />
            </button>
         </div>
       </div>

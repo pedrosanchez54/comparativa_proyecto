@@ -61,9 +61,9 @@
   margin: 0 auto;
   padding: 0 var(--content-padding);
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   position: relative;
+  height: 100%;
 }
 
 .brand-link {
@@ -77,11 +77,25 @@
   gap: var(--spacing-sm);
   position: relative;
   z-index: 1001;
-  margin-right: auto;
+  margin-right: var(--spacing-md);
 }
 
 .brand-link:hover {
   color: var(--cherry-red);
+}
+
+/* Nuevo: Contenedor para los elementos a la derecha del nav-container (comparativa, hamburguesa) */
+.nav-actions-cluster {
+  margin-left: auto; /* Empuja este grupo a la derecha */
+  display: flex; /* Para alinear sus hijos (icono de comparativa y hamburguesa) */
+  align-items: center;
+}
+
+/* Contenedor del icono de comparativa en la barra de navegación */
+.compare-header-icon-wrapper {
+  position: relative;
+  display: inline-block; /* o flex si necesita alinear items internos */
+  /* margin-left: auto; QUITADO - ahora el padre .nav-actions-cluster maneja el empuje a la derecha */
 }
 
 /* Menú Hamburguesa Animado */
@@ -486,4 +500,187 @@
     text-align: center;
     padding: 0.2rem 0.5rem;
   }
+}
+
+/* ESTILOS DEL POPOVER DE COMPARACIÓN Y SU ICONO */
+/* Estos estilos estaban originalmente en Navbar.css */
+/* Si Navbar.css no se carga globalmente, deben estar aquí o en un archivo CSS importado por Layout.jsx */
+
+.compare-main-icon {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+.compare-header-icon:hover .compare-main-icon {
+  transform: scale(1.1);
+}
+
+.compare-header-icon {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  display: flex;
+  align-items: center;
+  color: var(--off-white);
+}
+
+.compare-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--cherry-red);
+  color: #fff;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  border: 1.5px solid var(--off-white);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.compare-appear {
+  animation: compare-pop 0.9s cubic-bezier(.36,1.56,.64,1) both;
+}
+
+@keyframes compare-pop {
+  0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  30% { opacity: 1; transform: scale(1.2) rotate(7deg); }
+  50% { transform: scale(1.4) rotate(-7deg); }
+  70% { transform: scale(1.2) rotate(7deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.compare-popover {
+  position: absolute;
+  top: calc(100% + 12px); /* Espacio desde el icono, más la flecha */
+  right: 0; /* Alineado al borde derecho del compare-header-icon-wrapper */
+  transform: translateX(0); /* No necesita translateX si está alineado a la derecha */
+  min-width: 320px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  padding: 15px;
+  z-index: 1002;
+  animation: fadeIn 0.2s ease-out;
+  color: #333;
+}
+
+.compare-popover::before { /* Flecha */
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 15px; /* Ajustar para que apunte al icono (aprox. ancho del icono / 2) */
+  /* left: 50%; QUITADO */
+  /* transform: translateX(-50%); QUITADO */
+  border-width: 9px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+
+.compare-popover ul {
+  list-style: none;
+  margin: 0 0 15px 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.compare-popover li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Empuja la 'x' a la derecha */
+  padding: 10px 5px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.compare-popover li:last-child {
+  border-bottom: none;
+}
+
+.compare-popover-vehicle-img {
+  width: 45px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+  background-color: #e9ecef;
+}
+
+.compare-popover-vehicle-name {
+  flex-grow: 1; /* Toma el espacio disponible */
+  margin-right: 10px; /* Espacio antes de la 'x' */
+  font-size: 0.95rem;
+  color: #343a40;
+}
+
+.compare-popover-remove-btn {
+  flex-shrink: 0; /* Evita que el botón se encoja */
+  background: none;
+  border: none;
+  color: #adb5bd;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.compare-popover-remove-btn:hover {
+  color: var(--cherry-red);
+}
+
+.compare-popover-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  margin-top: 5px;
+  border-top: 1px solid #e9ecef;
+}
+
+.compare-popover-btn {
+  padding: 9px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.compare-popover-btn.clear {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.compare-popover-btn.clear:hover {
+  background-color: #e9ecef;
+}
+
+.compare-popover-btn.go-to-compare {
+  background-color: var(--button-secondary);
+  color: white;
+}
+
+.compare-popover-btn.go-to-compare:hover {
+  background-color: #1E1F2E;
+}
+
+.compare-popover-empty {
+  text-align: center;
+  padding: 15px 0;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.95rem;
 } 

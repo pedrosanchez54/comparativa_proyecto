@@ -130,7 +130,7 @@
          padding: 6px 12px;
          font-size: 0.9rem;
      }
-}
+} 
 
 .compare-header-icon-wrapper {
   position: relative;
@@ -154,6 +154,19 @@
   align-items: center;
   position: relative;
 }
+
+/* Estilo para el nuevo icono principal de comparación en la navbar */
+.compare-main-icon {
+  width: 28px; /* Ajusta según sea necesario */
+  height: 28px; /* Ajusta según sea necesario */
+  filter: brightness(0) invert(1); /* Convertir a blanco */
+  transition: transform 0.2s ease;
+}
+
+.compare-header-icon:hover .compare-main-icon {
+  transform: scale(1.1);
+}
+
 .compare-badge {
   position: absolute;
   top: -8px;
@@ -185,50 +198,120 @@
 }
 .compare-popover {
   position: absolute;
-  top: 38px;
+  top: calc(100% + 10px); /* Un poco más de espacio desde el icono */
   right: 0;
-  min-width: 270px;
+  min-width: 300px; /* Un poco más ancho para acomodar mejor el contenido */
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(43,45,66,0.18);
-  padding: 18px 12px 12px 12px;
+  border-radius: 8px; /* Radio de borde estándar */
+  box-shadow: 0 5px 25px rgba(0,0,0,0.15); /* Sombra más suave y moderna */
+  padding: 15px;
   z-index: 1002;
-  animation: fadeIn 0.25s;
+  animation: fadeIn 0.2s ease-out;
+  color: #333; /* Color de texto base para el popover */
 }
+
+.compare-popover::before { /* Pequeña flecha/triángulo apuntando al icono */
+  content: "";
+  position: absolute;
+  bottom: 100%; /* Encima del popover */
+  right: 15px; /* Alineado con el icono aproximadamente */
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent #fff transparent;
+}
+
 .compare-popover ul {
   list-style: none;
-  margin: 0 0 10px 0;
+  margin: 0 0 15px 0; /* Espacio antes de los botones de acción */
   padding: 0;
-  max-height: 220px;
+  max-height: 240px; /* Altura máxima antes de scroll */
   overflow-y: auto;
 }
+
 .compare-popover li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
 }
-.compare-popover img {
-  width: 38px;
-  height: 28px;
+
+.compare-popover li:last-child {
+  border-bottom: none;
+}
+
+.compare-popover-vehicle-img {
+  width: 40px;
+  height: 30px; /* Proporción más de coche */
   object-fit: cover;
   border-radius: 4px;
-  background: #f0f0f0;
+  margin-right: 10px;
+  background-color: #f0f0f0; /* Fondo para imágenes que no cargan */
 }
-.compare-popover button {
+
+.compare-popover-vehicle-name {
+  flex-grow: 1;
+  font-size: 0.9rem;
+  color: #444;
+  margin-right: 10px;
+}
+
+.compare-popover-remove-btn {
   background: none;
   border: none;
-  color: var(--cherry-red);
-  font-size: 1.2rem;
+  color: #aaa;
+  font-size: 1.4rem;
   cursor: pointer;
-  margin-left: auto;
-  padding: 2px 6px;
-  border-radius: 4px;
-  transition: background 0.2s;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
 }
-.compare-popover button:hover {
-  background: #fbeaec;
+
+.compare-popover-remove-btn:hover {
+  color: var(--cherry-red);
 }
+
+.compare-popover-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #eee; /* Separador para los botones */
+}
+
+.compare-popover-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.compare-popover-btn.clear {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.compare-popover-btn.clear:hover {
+  background-color: #e0e0e0;
+}
+
+.compare-popover-btn.go-to-compare {
+  background-color: var(--cherry-red);
+  color: white;
+}
+
+.compare-popover-btn.go-to-compare:hover {
+  background-color: var(--dark-cherry);
+}
+
+.compare-popover-empty {
+  text-align: center;
+  padding: 10px 0;
+  color: #777;
+  font-style: italic;
+}
+
 .clear-compare-btn {
   width: 100%;
   background: var(--cherry-red);

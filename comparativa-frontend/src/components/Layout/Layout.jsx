@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCompare } from '../../contexts/CompareContext';
 import { FaUser, FaHeart, FaList, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaCar, FaExchangeAlt } from 'react-icons/fa';
 import './Layout.css';
 
 const Layout = ({ children }) => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { compareList, removeVehicle, clearCompare } = useCompare();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showComparePopover, setShowComparePopover] = useState(false);
   const navRef = useRef(null);
   const buttonRef = useRef(null);
+  const compareIconRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -62,6 +66,19 @@ const Layout = ({ children }) => {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    // Animación de aparición para el icono de comparativa
+    if (compareList.length === 1 && compareIconRef.current) {
+      compareIconRef.current.classList.add('compare-appear');
+      const timer = setTimeout(() => {
+        if (compareIconRef.current) {
+          compareIconRef.current.classList.remove('compare-appear');
+        }
+      }, 900);
+      return () => clearTimeout(timer);
+    }
+  }, [compareList.length]);
+
   return (
     <div className="app-container">
       <header className="main-header">
@@ -70,16 +87,75 @@ const Layout = ({ children }) => {
             Comparativa Vehículos
           </Link>
 
-          <button 
-            ref={buttonRef}
-            className={`hamburger-menu ${isMenuOpen ? 'open' : ''}`}
-            onClick={toggleMenu}
-            aria-label="Menú principal"
-            aria-expanded={isMenuOpen}
-          >
-            <span></span>
-            <span></span>
-          </button>
+          {/* Nuevo contenedor para agrupar acciones de la derecha (comparativa y menú hamburguesa) */}
+          <div className="nav-actions-cluster">
+            {/* Icono de Comparativa Rápida (Visible si hay items) */}
+            {compareList.length > 0 && (
+              <div 
+                className="compare-header-icon-wrapper" 
+                ref={compareIconRef}
+                onMouseEnter={() => setShowComparePopover(true)}
+                onMouseLeave={() => setShowComparePopover(false)}
+              >
+                <button 
+                  className="compare-header-icon" 
+                  onClick={() => { navigate('/compare'); setShowComparePopover(false); }}
+                  title="Ir a la página de comparación"
+                >
+                  <img src="/img/iconos/icono_comparativo.png" alt="Comparar vehículos" className="compare-main-icon" />
+                  <span className="compare-badge">{compareList.length}</span>
+                </button>
+                {showComparePopover && (
+                  <div className="compare-popover">
+                    {compareList.length > 0 ? (
+                      <>
+                        <ul>
+                          {compareList.map(v => (
+                            <li key={v.id_vehiculo}>
+                              <img 
+                                src={v.imagen_principal || '/placeholder-image.png'} 
+                                alt={`${v.marca} ${v.modelo}`}
+                                className="compare-popover-vehicle-img"
+                              />
+                              <span className="compare-popover-vehicle-name">{v.marca} {v.modelo} {v.version ? `- ${v.version}` : ''}</span>
+                              <button 
+                                onClick={() => removeVehicle(v.id_vehiculo)} 
+                                className="compare-popover-remove-btn"
+                                title="Quitar de la comparativa"
+                              >
+                                &times;
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="compare-popover-actions">
+                          <button className="compare-popover-btn clear" onClick={clearCompare}>
+                            Vaciar Lista
+                          </button>
+                          <button className="compare-popover-btn go-to-compare" onClick={() => { navigate('/compare'); setShowComparePopover(false); }}>
+                            Comparar
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="compare-popover-empty">Añade vehículos para comparar.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button 
+              ref={buttonRef}
+              className={`hamburger-menu ${isMenuOpen ? 'open' : ''}`}
+              onClick={toggleMenu}
+              aria-label="Menú principal"
+              aria-expanded={isMenuOpen}
+            >
+              <span></span>
+              <span></span>
+            </button>
+          </div> {/* Fin de nav-actions-cluster */}
 
           <div 
             className={`menu-overlay ${isMenuOpen ? 'active' : ''}`}
