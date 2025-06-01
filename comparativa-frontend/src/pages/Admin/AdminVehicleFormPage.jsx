@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'; // useParams pa
 import apiClient from '../../services/api';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
-import { FaSave, FaTimes, FaArrowLeft, FaCar, FaBolt, FaRulerCombined, FaCogs, FaLeaf, FaTachometerAlt } from 'react-icons/fa'; // Iconos
+import { FaSave, FaTimes, FaCar, FaBolt, FaRulerCombined, FaCogs, FaLeaf, FaTachometerAlt } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns';
 import { toast } from 'react-toastify';
 import BackButton from '../../components/Common/BackButton';

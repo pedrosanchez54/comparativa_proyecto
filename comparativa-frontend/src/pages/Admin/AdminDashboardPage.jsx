@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // Importar iconos relevantes
-import { FaTachometerAlt, FaCar, FaUsers, FaPlusCircle } from 'react-icons/fa';
+import { FaTachometerAlt, FaCar, FaPlusCircle } from 'react-icons/fa';
 import './AdminPages.css'; // Estilos específicos de Admin
 
 const AdminDashboardPage = () => {

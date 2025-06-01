@@ -79,7 +79,7 @@ const AddToListButton = ({ vehicleId }) => {
         setSelectedLists(prev => prev.filter(id => id !== listId));
         toast.success('Vehículo eliminado de la lista');
       } else {
-        const response = await apiClient.post(`/users/lists/${listId}/vehicles/${vehicleId}`, {});
+        await apiClient.post(`/users/lists/${listId}/vehicles/${vehicleId}`, {});
         setSelectedLists(prev => [...prev, listId]);
         toast.success('Vehículo añadido a la lista');
       }

@@ -145,7 +145,7 @@ exports.createVehicle = async (req, res, next) => {
  * Obtiene una lista de vehículos con filtros, paginación y ordenación.
  */
 exports.getVehicles = async (req, res, next) => {
-    const { page = 1, limit = 12, sortBy = 'm.nombre', sortOrder = 'ASC' } = req.query;
+    const { page = 1, limit = 10, sortBy = 'm.nombre', sortOrder = 'ASC' } = req.query;
     const offset = (page - 1) * limit;
     const { whereClause, params } = buildWhereClause(req.query);
     
@@ -209,36 +209,36 @@ exports.getVehicles = async (req, res, next) => {
             tipo: v.tipo,
             combustible: v.combustible,
             pegatina_ambiental: v.pegatina_ambiental,
-            potencia: v.potencia,
-            par_motor: v.par_motor,
-            velocidad_max: v.velocidad_max,
-            aceleracion_0_100: v.aceleracion_0_100,
-            distancia_frenado_100_0: v.distancia_frenado_100_0,
-            consumo_urbano: v.consumo_urbano,
-            consumo_extraurbano: v.consumo_extraurbano,
-            consumo_mixto: v.consumo_mixto,
-            emisiones: v.emisiones,
-            autonomia_electrica: v.autonomia_electrica,
-            capacidad_bateria: v.capacidad_bateria,
-            tiempo_carga_ac: v.tiempo_carga_ac,
-            potencia_carga_dc: v.potencia_carga_dc,
-            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80,
-            peso: v.peso,
+            potencia: v.potencia ? parseFloat(v.potencia) : null,
+            par_motor: v.par_motor ? parseFloat(v.par_motor) : null,
+            velocidad_max: v.velocidad_max ? parseFloat(v.velocidad_max) : null,
+            aceleracion_0_100: v.aceleracion_0_100 ? parseFloat(v.aceleracion_0_100) : null,
+            distancia_frenado_100_0: v.distancia_frenado_100_0 ? parseFloat(v.distancia_frenado_100_0) : null,
+            consumo_urbano: v.consumo_urbano ? parseFloat(v.consumo_urbano) : null,
+            consumo_extraurbano: v.consumo_extraurbano ? parseFloat(v.consumo_extraurbano) : null,
+            consumo_mixto: v.consumo_mixto ? parseFloat(v.consumo_mixto) : null,
+            emisiones: v.emisiones ? parseInt(v.emisiones) : null,
+            autonomia_electrica: v.autonomia_electrica ? parseFloat(v.autonomia_electrica) : null,
+            capacidad_bateria: v.capacidad_bateria ? parseFloat(v.capacidad_bateria) : null,
+            tiempo_carga_ac: v.tiempo_carga_ac ? parseFloat(v.tiempo_carga_ac) : null,
+            potencia_carga_dc: v.potencia_carga_dc ? parseFloat(v.potencia_carga_dc) : null,
+            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80 ? parseFloat(v.tiempo_carga_dc_10_80) : null,
+            peso: v.peso ? parseFloat(v.peso) : null,
             num_puertas: v.num_puertas,
             num_plazas: v.num_plazas,
-            vol_maletero: v.vol_maletero,
-            vol_maletero_max: v.vol_maletero_max,
-            dimension_largo: v.dimension_largo,
-            dimension_ancho: v.dimension_ancho,
-            dimension_alto: v.dimension_alto,
-            distancia_entre_ejes: v.distancia_entre_ejes,
+            vol_maletero: v.vol_maletero ? parseFloat(v.vol_maletero) : null,
+            vol_maletero_max: v.vol_maletero_max ? parseFloat(v.vol_maletero_max) : null,
+            dimension_largo: v.dimension_largo ? parseFloat(v.dimension_largo) : null,
+            dimension_ancho: v.dimension_ancho ? parseFloat(v.dimension_ancho) : null,
+            dimension_alto: v.dimension_alto ? parseFloat(v.dimension_alto) : null,
+            distancia_entre_ejes: v.distancia_entre_ejes ? parseFloat(v.distancia_entre_ejes) : null,
             traccion: v.traccion,
             caja_cambios: v.caja_cambios,
             num_marchas: v.num_marchas,
-            precio_original: v.precio_original,
-            precio_actual_estimado: v.precio_actual_estimado,
+            precio_original: v.precio_original ? parseFloat(v.precio_original) : null,
+            precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             fecha_lanzamiento: v.fecha_lanzamiento,
-            imagen_principal: v.imagen_principal,
+            imagen_principal: v.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${v.imagen_principal}` : null,
             fecha_creacion: v.fecha_creacion,
             fecha_actualizacion: v.fecha_actualizacion
         }));
@@ -276,7 +276,8 @@ exports.getVehicleById = async (req, res, next) => {
         mt.combustible, mt.potencia, mt.par_motor,
         g.nombre as generacion_nombre, g.anio_inicio, g.anio_fin,
         mo.nombre as modelo_nombre,
-        m.nombre as marca_nombre
+        m.nombre as marca_nombre,
+        (SELECT ruta_local FROM Imagenes WHERE id_vehiculo = v.id_vehiculo ORDER BY orden LIMIT 1) as imagen_principal
         FROM Vehiculo v
         JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
         JOIN Generacion g ON mt.id_generacion = g.id_generacion
@@ -289,9 +290,14 @@ exports.getVehicleById = async (req, res, next) => {
         if (vehicles.length === 0) {
             return res.status(404).json({ message: 'Vehículo no encontrado.' });
         }
+        
+        // Formatear la imagen principal
+        const vehicle = vehicles[0];
+        vehicle.imagen_principal = vehicle.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${vehicle.imagen_principal}` : null;
+        
         res.json({ 
             success: true,
-            data: vehicles[0]
+            data: vehicle
         });
     } catch (error) {
         console.error("Error obteniendo vehículo:", error);
@@ -466,41 +472,41 @@ exports.getVehiclesForComparison = async (req, res, next) => {
             
             // Motor y rendimiento
             combustible: v.combustible,
-            potencia: v.potencia,
-            par_motor: v.par_motor,
-            cilindrada: v.cilindrada,
+            potencia: v.potencia ? parseFloat(v.potencia) : null,
+            par_motor: v.par_motor ? parseFloat(v.par_motor) : null,
+            cilindrada: v.cilindrada ? parseFloat(v.cilindrada) : null,
             num_cilindros: v.num_cilindros,
             arquitectura: v.arquitectura,
             
             // Prestaciones
-            velocidad_max: v.velocidad_max,
-            aceleracion_0_100: v.aceleracion_0_100,
-            distancia_frenado_100_0: v.distancia_frenado_100_0,
+            velocidad_max: v.velocidad_max ? parseFloat(v.velocidad_max) : null,
+            aceleracion_0_100: v.aceleracion_0_100 ? parseFloat(v.aceleracion_0_100) : null,
+            distancia_frenado_100_0: v.distancia_frenado_100_0 ? parseFloat(v.distancia_frenado_100_0) : null,
             
-            // Consumo y emisiones
-            consumo_urbano: v.consumo_urbano,
-            consumo_extraurbano: v.consumo_extraurbano,
-            consumo_mixto: v.consumo_mixto,
-            emisiones: v.emisiones,
+            // Consumo y emisiones - CONVERTIR A NÚMEROS
+            consumo_urbano: v.consumo_urbano ? parseFloat(v.consumo_urbano) : null,
+            consumo_extraurbano: v.consumo_extraurbano ? parseFloat(v.consumo_extraurbano) : null,
+            consumo_mixto: v.consumo_mixto ? parseFloat(v.consumo_mixto) : null,
+            emisiones: v.emisiones ? parseInt(v.emisiones) : null,
             pegatina_ambiental: v.pegatina_ambiental,
             
             // Eléctrico
-            autonomia_electrica: v.autonomia_electrica,
-            capacidad_bateria: v.capacidad_bateria,
-            tiempo_carga_ac: v.tiempo_carga_ac,
-            potencia_carga_dc: v.potencia_carga_dc,
-            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80,
+            autonomia_electrica: v.autonomia_electrica ? parseFloat(v.autonomia_electrica) : null,
+            capacidad_bateria: v.capacidad_bateria ? parseFloat(v.capacidad_bateria) : null,
+            tiempo_carga_ac: v.tiempo_carga_ac ? parseFloat(v.tiempo_carga_ac) : null,
+            potencia_carga_dc: v.potencia_carga_dc ? parseFloat(v.potencia_carga_dc) : null,
+            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80 ? parseFloat(v.tiempo_carga_dc_10_80) : null,
             
             // Dimensiones y capacidades
-            peso: v.peso,
+            peso: v.peso ? parseFloat(v.peso) : null,
             num_puertas: v.num_puertas,
             num_plazas: v.num_plazas,
-            vol_maletero: v.vol_maletero,
-            vol_maletero_max: v.vol_maletero_max,
-            dimension_largo: v.dimension_largo,
-            dimension_ancho: v.dimension_ancho,
-            dimension_alto: v.dimension_alto,
-            distancia_entre_ejes: v.distancia_entre_ejes,
+            vol_maletero: v.vol_maletero ? parseFloat(v.vol_maletero) : null,
+            vol_maletero_max: v.vol_maletero_max ? parseFloat(v.vol_maletero_max) : null,
+            dimension_largo: v.dimension_largo ? parseFloat(v.dimension_largo) : null,
+            dimension_ancho: v.dimension_ancho ? parseFloat(v.dimension_ancho) : null,
+            dimension_alto: v.dimension_alto ? parseFloat(v.dimension_alto) : null,
+            distancia_entre_ejes: v.distancia_entre_ejes ? parseFloat(v.distancia_entre_ejes) : null,
             
             // Transmisión
             traccion: v.traccion,
@@ -508,11 +514,13 @@ exports.getVehiclesForComparison = async (req, res, next) => {
             num_marchas: v.num_marchas,
             
             // Precios
-            precio_original: v.precio_original,
-            precio_actual_estimado: v.precio_actual_estimado,
+            precio_original: v.precio_original ? parseFloat(v.precio_original) : null,
+            precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             
             // Imagen
-            imagen_principal: v.imagen_principal ? `/api/images/vehicles/${v.imagen_principal}` : null
+            imagen_principal: v.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${v.imagen_principal}` : null,
+            fecha_creacion: v.fecha_creacion,
+            fecha_actualizacion: v.fecha_actualizacion
         }));
         
         res.json({ 

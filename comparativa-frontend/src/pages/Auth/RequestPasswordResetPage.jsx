@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import BackButton from '../../components/Common/BackButton';

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import VehicleCard from '../../components/Vehicles/VehicleCard';
+import ScrollToTopCar from '../../components/Common/ScrollToTopCar';
 import './FavoritesPage.css';
 
 const FavoritesPage = () => {
@@ -89,6 +90,9 @@ const FavoritesPage = () => {
           ))}
         </div>
       )}
+      
+      {/* Coche animado para volver arriba */}
+      <ScrollToTopCar />
     </div>
   );
 };

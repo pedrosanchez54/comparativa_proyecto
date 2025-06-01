@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaKey, FaArrowLeft } from 'react-icons/fa';
+import { FaKey } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import BackButton from '../../components/Common/BackButton';
@@ -14,11 +14,7 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  useEffect(() => {
-    validateToken();
-  }, [token]);
-
-  const validateToken = async () => {
+  const validateToken = useCallback(async () => {
     try {
       setLoading(true);
       await apiClient.get(`/auth/validate-reset-token/${token}`);
@@ -29,7 +25,11 @@ const ResetPasswordPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, navigate]);
+
+  useEffect(() => {
+    validateToken();
+  }, [validateToken]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

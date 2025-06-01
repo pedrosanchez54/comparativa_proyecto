@@ -81,7 +81,7 @@ const MyListsPage = () => {
     if (!editingName.trim()) return;
 
     try {
-      const response = await apiClient.put(`/users/lists/${listId}`, { nombre: editingName });
+      await apiClient.put(`/users/lists/${listId}`, { nombre: editingName });
       setLists(prev => Array.isArray(prev) ? prev.map(list => 
         list.id === listId ? { ...list, nombre: editingName } : list
       ) : []);

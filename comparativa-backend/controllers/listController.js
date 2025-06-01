@@ -96,9 +96,16 @@ exports.getListDetails = async (req, res, next) => {
             return res.status(403).json({ message: 'No tienes permiso para ver esta lista.' });
         }
         const [vehicles] = await pool.query(vehiclesSql, [idLista]);
+        
+        // Formatear las imágenes principales de los vehículos
+        const formattedVehicles = vehicles.map(vehicle => ({
+            ...vehicle,
+            imagen_principal: vehicle.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${vehicle.imagen_principal}` : null
+        }));
+        
         const responseData = {
             ...list,
-            vehiculos: vehicles
+            vehiculos: formattedVehicles
         };
         res.status(200).json({ message: 'Detalles de la lista obtenidos.', data: responseData });
     } catch (error) {

@@ -17,7 +17,7 @@ const VehiclesPage = () => {
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
-    itemsPerPage: 8, // Cambiado de 12 a 8 vehículos por página
+    itemsPerPage: 10, // Cambiado de 12 a 10 vehículos por página
   });
   const [filterOptions, setFilterOptions] = useState(null); // Opciones para los selects (marcas, tipos...)
   const [searchParams, setSearchParams] = useSearchParams(); // Hook para leer/escribir query params (ej. ?page=2&marca=Ford)

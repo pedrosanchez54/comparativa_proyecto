@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../../services/api';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
@@ -6,7 +6,6 @@ import ErrorMessage from '../../components/Common/ErrorMessage';
 import Pagination from '../../components/Common/Pagination';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaEye } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns'; // Formatear fechas
-import { es } from 'date-fns/locale'; // Formato español
 import { toast } from 'react-toastify'; // Notificaciones
 import './AdminPages.css'; // Estilos Admin
 

@@ -4,7 +4,8 @@ import apiClient from '../../services/api';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import BackButton from '../../components/Common/BackButton';
-import { FaArrowLeft, FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar } from 'react-icons/fa';
+import ScrollToTopCar from '../../components/Common/ScrollToTopCar';
+import { FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar } from 'react-icons/fa';
 import './ComparisonPage.css';
 
 // Paleta de colores moderna para los vehículos
@@ -15,33 +16,79 @@ const VEHICLE_COLORS = [
 // Función para calcular la autonomía estimada
 const calculateAutonomy = (vehicle) => {
   if (!vehicle) return null;
-  if (vehicle.autonomia_electrica) return vehicle.autonomia_electrica;
   
+  // Si ya tiene autonomía eléctrica definida, usarla
+  if (vehicle.autonomia_electrica && vehicle.autonomia_electrica > 0) {
+    return vehicle.autonomia_electrica;
+  }
+  
+  // Para vehículos eléctricos, calcular basándose en capacidad batería y consumo
+  if (vehicle.combustible === 'Eléctrico' && vehicle.capacidad_bateria && vehicle.capacidad_bateria > 0) {
+    // Consumo promedio eléctrico: ~20 kWh/100km (ajustar según tipo de vehículo)
+    let consumoElectricoPromedio = 20; // kWh/100km
+    
+    switch(vehicle.tipo) {
+      case 'Urbano':
+      case 'Hatchback':
+        consumoElectricoPromedio = 16; // Más eficientes
+        break;
+      case 'Sedán':
+        consumoElectricoPromedio = 18;
+        break;
+      case 'SUV':
+      case 'Pick-up':
+        consumoElectricoPromedio = 25; // Menos eficientes
+        break;
+      case 'Deportivo':
+      case 'Coupé':
+        consumoElectricoPromedio = 22; // Performance oriented
+        break;
+      case 'Familiar':
+        consumoElectricoPromedio = 19;
+        break;
+      default:
+        consumoElectricoPromedio = 20;
+        break;
+    }
+    
+    // Autonomía = (Capacidad batería / Consumo por 100km) * 100
+    return Math.round((vehicle.capacidad_bateria / consumoElectricoPromedio) * 100);
+  }
+  
+  // Para vehículos de combustión, estimar basándose en tipo y consumo
   let estimatedTankSize = 50;
   
   switch(vehicle.tipo) {
     case 'Urbano':
     case 'Hatchback':
-      estimatedTankSize = 45;
+      estimatedTankSize = 45; // Depositos típicos pequeños
       break;
     case 'Sedán':
-    case 'Familiar':
       estimatedTankSize = 60;
       break;
+    case 'Familiar':
+      estimatedTankSize = 65; // Un poco más grandes
+      break;
     case 'SUV':
+      estimatedTankSize = 75; // SUVs suelen tener tanques grandes
+      break;
     case 'Pick-up':
-      estimatedTankSize = 70;
+      estimatedTankSize = 80; // Los más grandes
       break;
     case 'Deportivo':
     case 'Coupé':
-      estimatedTankSize = 55;
+      estimatedTankSize = 55; // Mediano, optimizado para performance
       break;
     case 'Monovolumen':
     case 'Furgoneta':
-      estimatedTankSize = 80;
+      estimatedTankSize = 80; // Grandes para viajes largos
+      break;
+    default:
+      estimatedTankSize = 50;
       break;
   }
   
+  // Si tenemos consumo mixto, calcular autonomía
   if (vehicle.consumo_mixto && vehicle.consumo_mixto > 0) {
     return Math.round((estimatedTankSize / vehicle.consumo_mixto) * 100);
   }
@@ -54,12 +101,11 @@ const initialSlot = { marca: '', modelo: '', generacion: '', motorizacion: '', v
 
 // Componente para mostrar una barra de progreso comparativa intercalada
 const InterleavedComparisonBar = ({ vehicles, property, label, unit = '', higherIsBetter = true }) => {
-  const values = vehicles.map(v => v[property]).filter(v => v != null && typeof v === 'number' && !isNaN(v));
+  const values = vehicles.map(v => v[property]).filter(v => v != null && typeof v === 'number' && !isNaN(v) && v > 0);
   if (values.length === 0) return null;
   
-  const maxValue = higherIsBetter ? Math.max(...values) : Math.min(...values);
-  const minValue = higherIsBetter ? Math.min(...values) : Math.max(...values);
-  const range = Math.abs(maxValue - minValue) || 1;
+  const maxValue = Math.max(...values);
+  const minValue = Math.min(...values);
 
   return (
     <div className="interleaved-comparison-section">
@@ -67,12 +113,12 @@ const InterleavedComparisonBar = ({ vehicles, property, label, unit = '', higher
       <div className="interleaved-bars">
         {vehicles.map((vehicle, index) => {
           const value = vehicle[property];
-          if (value == null || typeof value !== 'number' || isNaN(value)) return null;
+          if (value == null || typeof value !== 'number' || isNaN(value) || value <= 0) return null;
           
-          const percentage = higherIsBetter 
-            ? (value / maxValue) * 100 
-            : range > 0 ? ((maxValue - value) / range) * 100 : 0;
+          // La barra SIEMPRE representa la proporción real del valor
+          const percentage = (value / maxValue) * 100;
           
+          // El ganador depende del criterio higherIsBetter
           const isBest = higherIsBetter ? value === maxValue : value === minValue;
           
           return (
@@ -89,7 +135,7 @@ const InterleavedComparisonBar = ({ vehicles, property, label, unit = '', higher
                 <div 
                   className={`comparison-bar-fill ${isBest ? 'best' : ''}`}
                   style={{ 
-                    width: `${Math.min(100, Math.max(0, percentage))}%`,
+                    width: `${Math.min(100, Math.max(5, percentage))}%`,
                     backgroundColor: VEHICLE_COLORS[index]
                   }}
                 />
@@ -126,69 +172,128 @@ const DimensionVisualization = ({ vehicles }) => {
   const maxWidth = Math.max(...vehicles.map(v => v.dimension_ancho || 0));
   const maxHeight = Math.max(...vehicles.map(v => v.dimension_alto || 0));
 
+  // Función para calcular el área/volumen y ordenar vehículos
+  const getOrderedVehiclesForTopView = () => {
+    return vehicles
+      .map((vehicle, index) => ({
+        ...vehicle,
+        originalIndex: index,
+        area: (vehicle.dimension_largo || 0) * (vehicle.dimension_ancho || 0)
+      }))
+      .sort((a, b) => b.area - a.area); // Más grandes primero (irán atrás)
+  };
+
+  const getOrderedVehiclesForSideView = () => {
+    return vehicles
+      .map((vehicle, index) => ({
+        ...vehicle,
+        originalIndex: index,
+        area: (vehicle.dimension_largo || 0) * (vehicle.dimension_alto || 0)
+      }))
+      .sort((a, b) => b.area - a.area); // Más grandes primero (irán atrás)
+  };
+
   return (
     <div className="dimension-visualization">
       <h4>Comparación visual de dimensiones</h4>
+      
+      {/* Leyenda de vehículos */}
+      <div className="dimension-legend">
+        <h5>Leyenda de vehículos:</h5>
+        <div className="legend-items-inline">
+          {vehicles.map((vehicle, index) => (
+            <div key={vehicle.id_vehiculo} className="legend-item-inline">
+              <div className="legend-color-box" style={{ backgroundColor: VEHICLE_COLORS[index] }}></div>
+              <span className="legend-text">{vehicle.marca} {vehicle.modelo}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
       <div className="dimension-container">
         <div className="dimension-view">
           <h5>Vista superior (Largo × Ancho)</h5>
-          <div className="top-view">
-            {vehicles.map((vehicle, index) => {
-              const widthPercent = ((vehicle.dimension_largo || 0) / maxLength) * 100;
-              const heightPercent = ((vehicle.dimension_ancho || 0) / maxWidth) * 100;
-              
-              return (
-                <div
-                  key={vehicle.id_vehiculo}
-                  className="vehicle-silhouette top"
-                  style={{
-                    width: `${widthPercent}%`,
-                    height: `${heightPercent}%`,
-                    backgroundColor: VEHICLE_COLORS[index] + '40',
-                    border: `2px solid ${VEHICLE_COLORS[index]}`,
-                    position: 'absolute',
-                    top: `${index * 5}px`,
-                    left: `${index * 5}px`
-                  }}
-                >
-                  <span className="dimension-label">
-                    {vehicle.marca} {vehicle.modelo}
-                  </span>
-                </div>
-              );
-            })}
+          <div className="dimension-viewport">
+            <div className="top-view">
+              {getOrderedVehiclesForTopView().map((vehicle, stackIndex) => {
+                const widthPercent = Math.min(90, ((vehicle.dimension_largo || 0) / maxLength) * 85);
+                const heightPercent = Math.min(90, ((vehicle.dimension_ancho || 0) / maxWidth) * 85);
+                
+                return (
+                  <div
+                    key={vehicle.id_vehiculo}
+                    className="vehicle-silhouette top"
+                    style={{
+                      width: `${widthPercent}%`,
+                      height: `${heightPercent}%`,
+                      backgroundColor: VEHICLE_COLORS[vehicle.originalIndex] + '30',
+                      border: `2px solid ${VEHICLE_COLORS[vehicle.originalIndex]}`,
+                      position: 'absolute',
+                      top: '10%', // Todos empiezan desde el mismo punto
+                      left: '10%', // Todos empiezan desde el mismo punto
+                      zIndex: stackIndex + 1 // Los más grandes (primeros en orden) tienen z-index menor
+                    }}
+                    title={`${vehicle.marca} ${vehicle.modelo}: ${vehicle.dimension_largo}mm × ${vehicle.dimension_ancho}mm`}
+                  >
+                    {/* Etiqueta solo para el vehículo más pequeño (el que está delante) */}
+                    {stackIndex === getOrderedVehiclesForTopView().length - 1 && (
+                      <div className="dimension-label">
+                        {vehicle.dimension_largo} × {vehicle.dimension_ancho} mm
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         
         <div className="dimension-view">
           <h5>Vista lateral (Largo × Alto)</h5>
-          <div className="side-view">
-            {vehicles.map((vehicle, index) => {
-              const widthPercent = ((vehicle.dimension_largo || 0) / maxLength) * 100;
-              const heightPercent = ((vehicle.dimension_alto || 0) / maxHeight) * 100;
-              
-              return (
-                <div
-                  key={vehicle.id_vehiculo}
-                  className="vehicle-silhouette side"
-                  style={{
-                    width: `${widthPercent}%`,
-                    height: `${heightPercent}%`,
-                    backgroundColor: VEHICLE_COLORS[index] + '40',
-                    border: `2px solid ${VEHICLE_COLORS[index]}`,
-                    position: 'absolute',
-                    bottom: `${index * 3}px`,
-                    left: `${index * 5}px`
-                  }}
-                >
-                  <span className="dimension-label">
-                    {vehicle.marca} {vehicle.modelo}
-                  </span>
-                </div>
-              );
-            })}
+          <div className="dimension-viewport">
+            <div className="side-view">
+              {getOrderedVehiclesForSideView().map((vehicle, stackIndex) => {
+                const widthPercent = Math.min(90, ((vehicle.dimension_largo || 0) / maxLength) * 85);
+                const heightPercent = Math.min(90, ((vehicle.dimension_alto || 0) / maxHeight) * 85);
+                
+                return (
+                  <div
+                    key={vehicle.id_vehiculo}
+                    className="vehicle-silhouette side"
+                    style={{
+                      width: `${widthPercent}%`,
+                      height: `${heightPercent}%`,
+                      backgroundColor: VEHICLE_COLORS[vehicle.originalIndex] + '30',
+                      border: `2px solid ${VEHICLE_COLORS[vehicle.originalIndex]}`,
+                      position: 'absolute',
+                      bottom: '10%', // Todos empiezan desde la misma base
+                      left: '10%', // Todos empiezan desde el mismo punto
+                      zIndex: stackIndex + 1 // Los más grandes (primeros en orden) tienen z-index menor
+                    }}
+                    title={`${vehicle.marca} ${vehicle.modelo}: ${vehicle.dimension_largo}mm × ${vehicle.dimension_alto}mm`}
+                  >
+                    {/* Etiqueta solo para el vehículo más pequeño (el que está delante) */}
+                    {stackIndex === getOrderedVehiclesForSideView().length - 1 && (
+                      <div className="dimension-label">
+                        {vehicle.dimension_largo} × {vehicle.dimension_alto} mm
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
+      </div>
+      
+      <div className="dimension-explanation">
+        <p><strong>💡 Cómo leer la comparación:</strong></p>
+        <ul>
+          <li>Todos los vehículos se dibujan desde la misma esquina para comparar tamaños reales</li>
+          <li>Los vehículos más grandes se muestran atrás (más transparentes)</li>
+          <li>Los vehículos más pequeños se muestran delante (más opacos)</li>
+          <li>Puedes ver exactamente cuánto sobresalen los vehículos grandes respecto a los pequeños</li>
+        </ul>
       </div>
       
       <div className="dimension-specs-table">
@@ -207,18 +312,16 @@ const DimensionVisualization = ({ vehicles }) => {
           <tbody>
             {vehicles.map((vehicle, index) => (
               <tr key={vehicle.id_vehiculo}>
-                <td>
-                  <div className="table-vehicle-name">
-                    <div className="table-color-indicator" style={{ backgroundColor: VEHICLE_COLORS[index] }}></div>
-                    {vehicle.marca} {vehicle.modelo}
-                  </div>
+                <td className="table-vehicle-name">
+                  <div className="table-color-indicator" style={{ backgroundColor: VEHICLE_COLORS[index] }}></div>
+                  {vehicle.marca} {vehicle.modelo}
                 </td>
-                <td>{vehicle.dimension_largo || '-'}</td>
-                <td>{vehicle.dimension_ancho || '-'}</td>
-                <td>{vehicle.dimension_alto || '-'}</td>
-                <td>{vehicle.distancia_entre_ejes || '-'}</td>
-                <td>{vehicle.peso || '-'}</td>
-                <td>{vehicle.vol_maletero || '-'}</td>
+                <td>{vehicle.dimension_largo || 'N/A'}</td>
+                <td>{vehicle.dimension_ancho || 'N/A'}</td>
+                <td>{vehicle.dimension_alto || 'N/A'}</td>
+                <td>{vehicle.distancia_entre_ejes || 'N/A'}</td>
+                <td>{vehicle.peso || 'N/A'}</td>
+                <td>{vehicle.vol_maletero || 'N/A'}</td>
               </tr>
             ))}
           </tbody>
@@ -251,49 +354,64 @@ const SmartSummary = ({ vehicles }) => {
       property: 'potencia', 
       unit: ' CV', 
       higherIsBetter: true,
-      icon: <FaTachometerAlt />
+      icon: <FaTachometerAlt />,
+      insight: (winner) => `Con ${winner.potencia} CV, es el más potente del grupo.`
     },
     { 
       title: 'Más Eficiente', 
       property: 'consumo_mixto', 
       unit: ' L/100km', 
       higherIsBetter: false,
-      icon: <FaGasPump />
+      icon: <FaGasPump />,
+      insight: (winner) => `Su consumo de ${winner.consumo_mixto} L/100km lo hace el más eficiente.`
     },
     { 
       title: 'Menos Emisiones', 
       property: 'emisiones', 
       unit: ' g/km', 
       higherIsBetter: false,
-      icon: <FaGasPump />
+      icon: <FaBolt />,
+      insight: (winner) => `Emite solo ${winner.emisiones} g/km de CO2, siendo el más limpio.`
     },
     { 
       title: 'Más Rápido (0-100)', 
       property: 'aceleracion_0_100', 
       unit: ' s', 
       higherIsBetter: false,
-      icon: <FaTachometerAlt />
+      icon: <FaTachometerAlt />,
+      insight: (winner) => `Acelera de 0-100 km/h en ${winner.aceleracion_0_100}s.`
     },
     { 
       title: 'Mayor Velocidad', 
       property: 'velocidad_max', 
       unit: ' km/h', 
       higherIsBetter: true,
-      icon: <FaTachometerAlt />
+      icon: <FaTachometerAlt />,
+      insight: (winner) => `Alcanza ${winner.velocidad_max} km/h de velocidad máxima.`
     },
     { 
-      title: 'Mayor Maletero', 
+      title: 'Más Espacioso', 
       property: 'vol_maletero', 
       unit: ' L', 
       higherIsBetter: true,
-      icon: <FaRuler />
+      icon: <FaRuler />,
+      insight: (winner) => `Su maletero de ${winner.vol_maletero}L es el más amplio.`
     },
     { 
-      title: 'Mejor Precio', 
-      property: 'precio_actual_estimado', 
-      unit: ' €', 
+      title: 'Mejor Autonomía', 
+      property: 'autonomia_calculada', 
+      unit: ' km', 
+      higherIsBetter: true,
+      icon: <FaGasPump />,
+      insight: (winner) => `Puede recorrer hasta ${winner.autonomia_calculada} km con una carga/depósito.`
+    },
+    { 
+      title: 'Mejor Relación Peso/Potencia', 
+      property: 'ratio_peso_potencia', 
+      unit: ' kg/CV', 
       higherIsBetter: false,
-      icon: <FaEuroSign />
+      icon: <FaTachometerAlt />,
+      insight: (winner) => `Con ${winner.ratio_peso_potencia.toFixed(1)} kg/CV, tiene la mejor relación peso/potencia.`
     }
   ];
 
@@ -316,6 +434,11 @@ const SmartSummary = ({ vehicles }) => {
                 <div className="winner-info">
                   <strong>{winner.marca} {winner.modelo}</strong>
                   <span>{winner[category.property]}{category.unit}</span>
+                  {category.insight && (
+                    <div className="winner-insight">
+                      {category.insight(winner)}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -384,7 +507,6 @@ const ComparisonPage = () => {
   const [filterOptions, setFilterOptions] = useState(null);
   const [slots, setSlots] = useState(Array(6).fill().map(() => ({ ...initialSlot })));
   const [showSelector, setShowSelector] = useState(true);
-  const [selectedVehicleIds, setSelectedVehicleIds] = useState([]);
   const columnRefs = useRef([]);
   const buttonRef = useRef(null);
   const containerRef = useRef(null);
@@ -436,7 +558,8 @@ const ComparisonPage = () => {
       } else {
         const vehiclesWithCalculations = response.data.data.map(v => ({
           ...v,
-          autonomia_calculada: calculateAutonomy(v)
+          autonomia_calculada: calculateAutonomy(v),
+          ratio_peso_potencia: (v.peso && v.potencia && v.potencia > 0) ? v.peso / v.potencia : null
         }));
         setVehicles(vehiclesWithCalculations);
         setShowSelector(false);
@@ -467,22 +590,22 @@ const ComparisonPage = () => {
     
     const updateLineCoords = () => {
       try {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const btnRect = buttonRef.current.getBoundingClientRect();
-        const btnX = btnRect.left + btnRect.width / 2 - containerRect.left;
-        const btnY = btnRect.top - containerRect.top;
-        const colCount = slots.length;
-        const colWidth = containerRect.width / colCount;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const btnRect = buttonRef.current.getBoundingClientRect();
+    const btnX = btnRect.left + btnRect.width / 2 - containerRect.left;
+    const btnY = btnRect.top - containerRect.top;
+    const colCount = slots.length;
+    const colWidth = containerRect.width / colCount;
           
-        const coords = slots.map((_, idx) => {
-          const ref = columnRefs.current[idx];
-          let startX, startY;
-          if (ref) {
-            const rect = ref.getBoundingClientRect();
-            startX = rect.left + rect.width / 2 - containerRect.left;
-            startY = rect.bottom - containerRect.top;
-          } else {
-            startX = colWidth * idx + colWidth / 2;
+    const coords = slots.map((_, idx) => {
+      const ref = columnRefs.current[idx];
+      let startX, startY;
+      if (ref) {
+        const rect = ref.getBoundingClientRect();
+        startX = rect.left + rect.width / 2 - containerRect.left;
+        startY = rect.bottom - containerRect.top;
+      } else {
+        startX = colWidth * idx + colWidth / 2;
             startY = 80;
           }
           return { startX, startY, endX: btnX, endY: btnY };
@@ -567,7 +690,6 @@ const ComparisonPage = () => {
       const validIds = vehicleIds.filter(id => id !== null);
 
       if (validIds.length >= 2) {
-        setSelectedVehicleIds(validIds);
         fetchComparisonData(validIds);
       } else {
         setError('No se pudieron encontrar suficientes vehículos con los criterios seleccionados');
@@ -623,7 +745,6 @@ const ComparisonPage = () => {
   // Función para reiniciar y volver al selector
   const handleResetComparison = () => {
     setVehicles([]);
-    setSelectedVehicleIds([]);
     setShowSelector(true);
     setSlots(Array(6).fill().map(() => ({ ...initialSlot })));
   };
@@ -632,13 +753,13 @@ const ComparisonPage = () => {
 
   // Renderizar el selector visual
   if (showSelector) {
-    const isDesktop = window.innerWidth >= 1200;
+  const isDesktop = window.innerWidth >= 1200;
 
-    return (
+  return (
       <div className="comparison-page-modern">
         <div className="comparison-header">
           <BackButton onClick={() => navigate(-1)} />
-          <h1 className="page-title">Comparativa de Vehículos</h1>
+      <h1 className="page-title">Comparativa de Vehículos</h1>
           <div className="header-spacer"></div>
         </div>
 
@@ -646,40 +767,40 @@ const ComparisonPage = () => {
           <h2 className="selector-title">Selecciona los vehículos a comparar</h2>
           <p className="selector-subtitle">Elige entre 2 y 6 vehículos para realizar una comparativa detallada</p>
 
-          {isDesktop && (
-            <svg
+        {isDesktop && (
+          <svg
               className="selector-lines"
-              width="100%"
+            width="100%"
               height={containerRef.current ? containerRef.current.offsetHeight : 400}
-            >
-              {lineCoords.map((coord, idx) => {
-                if (!coord) return null;
-                const { startX, startY, endX, endY } = coord;
-                const slot = slots[idx];
+          >
+            {lineCoords.map((coord, idx) => {
+              if (!coord) return null;
+              const { startX, startY, endX, endY } = coord;
+              const slot = slots[idx];
                 const isComplete = slot.marca && slot.modelo && slot.generacion && slot.motorizacion;
-                const c1Y = startY + 60;
-                const c2Y = endY - 60;
-                return (
-                  <path
-                    key={idx}
-                    d={`M${startX},${startY} C${startX},${c1Y} ${endX},${c2Y} ${endX},${endY}`}
+              const c1Y = startY + 60;
+              const c2Y = endY - 60;
+              return (
+                <path
+                  key={idx}
+                  d={`M${startX},${startY} C${startX},${c1Y} ${endX},${c2Y} ${endX},${endY}`}
                     stroke={isComplete ? 'var(--cherry-red, #D90429)' : '#ddd'}
                     strokeWidth={3}
-                    fill="none"
-                    style={{ transition: 'stroke 0.3s' }}
-                  />
-                );
-              })}
-            </svg>
-          )}
+                  fill="none"
+                  style={{ transition: 'stroke 0.3s' }}
+                />
+              );
+            })}
+          </svg>
+        )}
 
           <div className="slots-grid">
-            {slots.map((slot, idx) => {
+          {slots.map((slot, idx) => {
               const isComplete = slot.marca && slot.modelo && slot.generacion && slot.motorizacion;
-              return (
-                <div
-                  key={idx}
-                  ref={el => columnRefs.current[idx] = el}
+            return (
+              <div
+                key={idx}
+                ref={el => columnRefs.current[idx] = el}
                   className={`slot-card ${isComplete ? 'complete' : ''}`}
                 >
                   <div className="slot-number">{idx + 1}</div>
@@ -693,7 +814,7 @@ const ComparisonPage = () => {
                       {getFilteredOptions(slot, 'marca').map(m => (
                         <option key={m.id_marca} value={m.id_marca}>{m.nombre}</option>
                       ))}
-                    </select>
+                  </select>
 
                     <select 
                       value={slot.modelo} 
@@ -705,7 +826,7 @@ const ComparisonPage = () => {
                       {getFilteredOptions(slot, 'modelo').map(mo => (
                         <option key={mo.id_modelo} value={mo.id_modelo}>{mo.nombre}</option>
                       ))}
-                    </select>
+                  </select>
 
                     <select 
                       value={slot.generacion} 
@@ -719,7 +840,7 @@ const ComparisonPage = () => {
                           {g.nombre} {g.anio_inicio && `(${g.anio_inicio}-${g.anio_fin || '...'})`}
                         </option>
                       ))}
-                    </select>
+                  </select>
 
                     <select 
                       value={slot.motorizacion} 
@@ -733,7 +854,7 @@ const ComparisonPage = () => {
                           {mt.nombre}
                         </option>
                       ))}
-                    </select>
+                  </select>
                   </div>
                   
                   {isComplete && (
@@ -745,21 +866,21 @@ const ComparisonPage = () => {
                       <FaTimes />
                     </button>
                   )}
-                </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
+        </div>
 
           <div className="selector-actions">
             <button
               ref={buttonRef}
               className="compare-button"
               style={{ backgroundColor: compareBtnColor }}
-              disabled={compareBtnDisabled}
+            disabled={compareBtnDisabled}
               onClick={handleCompareFromSelector}
-            >
+          >
               Comparar {selectedCount > 0 && `(${selectedCount})`}
-            </button>
+          </button>
           </div>
 
           <div className="selector-info">
@@ -842,7 +963,7 @@ const ComparisonPage = () => {
                   </span>
                 )}
               </div>
-            </Link>
+                   </Link>
           </div>
         ))}
       </div>
@@ -850,7 +971,7 @@ const ComparisonPage = () => {
   );
 
   // Renderizar comparación detallada
-  return (
+              return (
     <div className="comparison-page-modern">
       <div className="comparison-header">
         <BackButton onClick={() => navigate(-1)} />
@@ -866,7 +987,7 @@ const ComparisonPage = () => {
         <div className="section-tabs">
           {sections.map(section => {
             const IconComponent = section.icon;
-            return (
+                    return (
               <button
                 key={section.id}
                 className="section-tab"
@@ -877,8 +998,8 @@ const ComparisonPage = () => {
                 </span>
                 <span>{section.name}</span>
               </button>
-            );
-          })}
+                    );
+                  })}
         </div>
       </div>
 
@@ -895,9 +1016,30 @@ const ComparisonPage = () => {
 
         <div className="comparison-section" ref={sectionRefs.consumo} id="consumo">
           <h2 className="section-title">Consumo y Emisiones</h2>
-          <InterleavedComparisonBar vehicles={vehicles} property="consumo_mixto" label="Consumo Mixto" unit=" L/100km" higherIsBetter={false} />
-          <InterleavedComparisonBar vehicles={vehicles} property="emisiones" label="Emisiones CO2" unit=" g/km" higherIsBetter={false} />
-          <InterleavedComparisonBar vehicles={vehicles} property="autonomia_calculada" label="Autonomía Estimada" unit=" km" higherIsBetter={true} />
+          
+          {/* Consumos */}
+          <div className="consumption-subsection">
+            <h3 className="subsection-title">Consumos</h3>
+            <InterleavedComparisonBar vehicles={vehicles} property="consumo_urbano" label="Consumo Urbano" unit=" L/100km" higherIsBetter={false} />
+            <InterleavedComparisonBar vehicles={vehicles} property="consumo_extraurbano" label="Consumo Extraurbano" unit=" L/100km" higherIsBetter={false} />
+            <InterleavedComparisonBar vehicles={vehicles} property="consumo_mixto" label="Consumo Mixto" unit=" L/100km" higherIsBetter={false} />
+          </div>
+          
+          {/* Emisiones */}
+          <div className="emissions-subsection">
+            <h3 className="subsection-title">Emisiones y Eficiencia</h3>
+            <InterleavedComparisonBar vehicles={vehicles} property="emisiones" label="Emisiones CO2" unit=" g/km" higherIsBetter={false} />
+          </div>
+          
+          {/* Autonomía */}
+          <div className="autonomy-subsection">
+            <h3 className="subsection-title">Autonomía Estimada</h3>
+            <InterleavedComparisonBar vehicles={vehicles} property="autonomia_calculada" label="Autonomía Estimada" unit=" km" higherIsBetter={true} />
+            <div className="autonomy-explanation">
+              <p><strong>Nota:</strong> Para vehículos eléctricos se calcula basándose en la capacidad de batería y consumo promedio. 
+              Para vehículos de combustión se estima según el tamaño del depósito de combustible y el consumo mixto.</p>
+            </div>
+          </div>
         </div>
 
         <div className="comparison-section" ref={sectionRefs.dimensiones} id="dimensiones">
@@ -907,15 +1049,81 @@ const ComparisonPage = () => {
 
         <div className="comparison-section" ref={sectionRefs.precio} id="precio">
           <h2 className="section-title">Precio</h2>
-          <InterleavedComparisonBar vehicles={vehicles} property="precio_original" label="Precio Original" unit=" €" higherIsBetter={false} />
-          <InterleavedComparisonBar vehicles={vehicles} property="precio_actual_estimado" label="Precio Actual Estimado" unit=" €" higherIsBetter={false} />
+          
+          {/* Verificar si hay datos de precio */}
+          {vehicles.some(v => v.precio_original || v.precio_actual_estimado) ? (
+            <>
+              <InterleavedComparisonBar vehicles={vehicles} property="precio_original" label="Precio Original" unit=" €" higherIsBetter={false} />
+              <InterleavedComparisonBar vehicles={vehicles} property="precio_actual_estimado" label="Precio Actual Estimado" unit=" €" higherIsBetter={false} />
+              
+              <div className="price-analysis">
+                <h3 className="subsection-title">Análisis de Precios</h3>
+                <div className="price-insights">
+                  {(() => {
+                    const priceInsights = [];
+                    
+                    // Encontrar el más caro y más barato
+                    const withPrices = vehicles.filter(v => v.precio_actual_estimado && v.precio_actual_estimado > 0);
+                    if (withPrices.length > 1) {
+                      const mostExpensive = withPrices.reduce((prev, current) => 
+                        (current.precio_actual_estimado > prev.precio_actual_estimado) ? current : prev
+                      );
+                      const cheapest = withPrices.reduce((prev, current) => 
+                        (current.precio_actual_estimado < prev.precio_actual_estimado) ? current : prev
+                      );
+                      
+                      const priceDiff = mostExpensive.precio_actual_estimado - cheapest.precio_actual_estimado;
+                      const percentDiff = ((priceDiff / cheapest.precio_actual_estimado) * 100).toFixed(1);
+                      
+                      priceInsights.push(
+                        `El ${mostExpensive.marca} ${mostExpensive.modelo} es ${percentDiff}% más caro que el ${cheapest.marca} ${cheapest.modelo} (diferencia de ${priceDiff.toLocaleString('es-ES')}€).`
+                      );
+                      
+                      // Análisis valor/prestaciones
+                      const withPowerAndPrice = vehicles.filter(v => v.precio_actual_estimado > 0 && v.potencia > 0);
+                      if (withPowerAndPrice.length > 1) {
+                        const bestValueCar = withPowerAndPrice.reduce((prev, current) => {
+                          const prevRatio = prev.potencia / prev.precio_actual_estimado * 1000;
+                          const currentRatio = current.potencia / current.precio_actual_estimado * 1000;
+                          return currentRatio > prevRatio ? current : prev;
+                        });
+                        
+                        priceInsights.push(
+                          `El ${bestValueCar.marca} ${bestValueCar.modelo} ofrece la mejor relación potencia/precio con ${(bestValueCar.potencia / bestValueCar.precio_actual_estimado * 1000).toFixed(2)} CV por cada 1000€.`
+                        );
+                      }
+                    }
+                    
+                    if (priceInsights.length === 0) {
+                      priceInsights.push('Los precios varían según las características y posicionamiento de mercado de cada vehículo.');
+                    }
+                    
+                    return priceInsights.map((insight, idx) => (
+                      <div key={idx} className="price-insight">
+                        <FaStar className="insight-icon" />
+                        <span>{insight}</span>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="no-price-data">
+              <p>⚠️ No hay datos de precio disponibles para los vehículos seleccionados.</p>
+              <p>Los precios pueden variar según la configuración, año del modelo y disponibilidad en el mercado.</p>
+            </div>
+          )}
         </div>
 
         <div className="comparison-section" ref={sectionRefs.resumen} id="resumen">
           <h2 className="section-title">Resumen Inteligente</h2>
           <SmartSummary vehicles={vehicles} />
         </div>
-      </div>
+             </div>
+             
+      {/* Coche animado para volver arriba */}
+      <ScrollToTopCar />
     </div>
   );
 };

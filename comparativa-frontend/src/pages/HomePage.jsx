@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaCar, FaChartBar, FaUserPlus } from 'react-icons/fa';
+import { FaCar, FaChartBar, FaUserPlus, FaHeart, FaList, FaUser, FaRocket } from 'react-icons/fa';
+import { useAuth } from '../contexts/AuthContext';
 import './HomePage.css';
 
 const HomePage = () => {
+  const { isAuthenticated, user } = useAuth();
+
   return (
     <>
       <div
@@ -66,16 +69,40 @@ const HomePage = () => {
 
         <section className="cta-section">
           <div className="cta-content">
-            <h2>¿Listo para empezar?</h2>
-            <p className="cta-description-blanca">Únete a nuestra comunidad y descubre todas las funcionalidades.</p>
-            <div className="cta-buttons">
-              <Link to="/register" className="btn btn-primary">
-                Regístrate Gratis
-              </Link>
-              <Link to="/login" className="btn btn-secondary">
-                Inicia Sesión
-              </Link>
-            </div>
+            {isAuthenticated ? (
+              // Contenido para usuarios autenticados
+              <>
+                <h2 className="welcome-message">¡Hola {user?.nombre?.split(' ')[0]}! 👋</h2>
+                <p className="cta-description-blanca">
+                  ¡Qué bueno verte de vuelta! Explora nuestras funciones personalizadas.
+                </p>
+                <div className="cta-buttons">
+                  <Link to="/favorites" className="btn btn-primary">
+                    <FaHeart /> Mis Favoritos
+                  </Link>
+                  <Link to="/my-lists" className="btn btn-secondary">
+                    <FaList /> Mis Listas
+                  </Link>
+                  <Link to="/profile" className="btn btn-accent">
+                    <FaUser /> Mi Perfil
+                  </Link>
+                </div>
+              </>
+            ) : (
+              // Contenido para usuarios no autenticados
+              <>
+                <h2>¿Listo para empezar?</h2>
+                <p className="cta-description-blanca">Únete a nuestra comunidad y descubre todas las funcionalidades.</p>
+                <div className="cta-buttons">
+                  <Link to="/register" className="btn btn-primary">
+                    <FaRocket /> Regístrate Gratis
+                  </Link>
+                  <Link to="/login" className="btn btn-secondary">
+                    <FaUserPlus /> Inicia Sesión
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
        </section>
     </div>

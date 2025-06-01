@@ -48,7 +48,15 @@ app.use(cors({
 
 // 2. Helmet
 // Añade varias cabeceras HTTP para mejorar la seguridad (protección contra XSS, clickjacking, etc.)
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "img-src": ["'self'", "data:", "http://192.168.1.82:4000"],
+    },
+  },
+}));
 
 // 3. Body Parsers
 // Permite a Express leer datos JSON enviados en el cuerpo de las peticiones (POST, PUT)
@@ -59,6 +67,10 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // 4. Logger de Peticiones HTTP (Morgan)
 // Muestra información sobre cada petición recibida en la consola (útil para depuración)
 app.use(httpLogger);
+
+// 4.5. Servir archivos estáticos de imágenes de vehículos
+const path = require('path');
+app.use('/api/images/vehicles', express.static(path.join(__dirname, '../comparativa-frontend/public/img/vehicles')));
 
 // 5. Configuración de Sesiones (express-session)
 // Crea y gestiona las sesiones de usuario usando cookies

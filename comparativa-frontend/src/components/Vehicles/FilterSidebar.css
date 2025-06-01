@@ -186,21 +186,31 @@
 
 /* Estilos de scroll personalizado */
 .filter-sidebar::-webkit-scrollbar {
-    width: 6px;
+    width: 12px;
 }
 
 .filter-sidebar::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
+    background: #e8e8e8;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    margin: 4px 0;
 }
 
 .filter-sidebar::-webkit-scrollbar-thumb {
-    background: var(--cherry-red);
-    border-radius: 3px;
+    background: #9ca3af;
+    border-radius: 6px;
+    border: 2px solid #e8e8e8;
+    transition: all 0.2s ease;
 }
 
 .filter-sidebar::-webkit-scrollbar-thumb:hover {
-    background: var(--dark-cherry);
+    background: #6b7280;
+    border-color: #d1d5db;
+    transform: scale(1.02);
+}
+
+.filter-sidebar::-webkit-scrollbar-thumb:active {
+    background: #4b5563;
 }
 
 /* Responsive adjustments */

@@ -226,7 +226,13 @@ const Layout = ({ children }) => {
               {/* Información del usuario en la parte inferior */}
               {isAuthenticated && (
                 <div className="nav-user-section">
-                  <div className="user-info">
+                  <div 
+                    className="user-info"
+                    onClick={() => {
+                      navigate('/profile');
+                      setIsMenuOpen(false);
+                    }}
+                  >
                     <div className="user-avatar">
                       <FaUser />
                     </div>

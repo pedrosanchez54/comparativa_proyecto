@@ -123,7 +123,14 @@ const getFavorites = async (req, res, next) => {
         
     try {
         const [favorites] = await pool.query(sql, [userId]);
-        res.status(200).json({ message: 'Favoritos obtenidos.', data: favorites });
+        
+        // Formatear las imágenes principales
+        const formattedFavorites = favorites.map(fav => ({
+            ...fav,
+            imagen_principal: fav.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${fav.imagen_principal}` : null
+        }));
+        
+        res.status(200).json({ message: 'Favoritos obtenidos.', data: formattedFavorites });
     } catch (error) {
         console.error(`Error obteniendo favoritos de usuario ${userId}:`, error);
         next(error);
@@ -404,9 +411,15 @@ const getListDetails = async (req, res, next) => {
 
         const [vehicles] = await pool.query(vehiclesSql, [listId]);
 
+        // Formatear las imágenes principales de los vehículos
+        const formattedVehicles = vehicles.map(vehicle => ({
+            ...vehicle,
+            imagen_principal: vehicle.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${vehicle.imagen_principal}` : null
+        }));
+
         const responseData = {
             ...list,
-            vehiculos: vehicles
+            vehiculos: formattedVehicles
         };
 
         res.status(200).json({ message: 'Detalles de la lista obtenidos.', data: responseData });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaList, FaTrash } from 'react-icons/fa';
 import apiClient from '../../services/api';
@@ -22,11 +22,7 @@ const ListDetailPage = () => {
     vehicleName: ''
   });
 
-  useEffect(() => {
-    loadList();
-  }, [id_lista]);
-
-  const loadList = async () => {
+  const loadList = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -40,7 +36,11 @@ const ListDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id_lista]);
+
+  useEffect(() => {
+    loadList();
+  }, [loadList]);
 
   const handleRemoveVehicle = (vehicleId, vehicleName) => {
     setConfirmModal({

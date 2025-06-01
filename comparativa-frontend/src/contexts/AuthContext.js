@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
   // Función para registrar un usuario
   const register = async (nombre, email, password) => {
     try {
-      const response = await apiClient.post('/auth/register', { nombre, email, contraseña: password });
+      await apiClient.post('/auth/register', { nombre, email, contraseña: password });
       toast.success('Registro exitoso. Ahora puedes iniciar sesión.');
       return true;
     } catch (error) {

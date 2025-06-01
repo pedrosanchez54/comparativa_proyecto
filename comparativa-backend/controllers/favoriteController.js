@@ -97,7 +97,14 @@ exports.getMyFavorites = async (req, res, next) => {
         ORDER BY f.fecha_agregado DESC`;
     try {
         const [favorites] = await pool.query(sql, [id_usuario]);
-        res.status(200).json({ message: 'Favoritos obtenidos.', data: favorites });
+        
+        // Formatear las imágenes principales
+        const formattedFavorites = favorites.map(fav => ({
+            ...fav,
+            imagen_principal: fav.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${fav.imagen_principal}` : null
+        }));
+        
+        res.status(200).json({ message: 'Favoritos obtenidos.', data: formattedFavorites });
     } catch (error) {
         console.error(`Error obteniendo favoritos de usuario ${id_usuario}:`, error);
         next(error);

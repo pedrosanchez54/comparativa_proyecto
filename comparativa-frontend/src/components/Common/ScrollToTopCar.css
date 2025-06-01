@@ -1,0 +1,242 @@
+/* Contenedor principal del coche */
+.scroll-to-top-car {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  cursor: pointer;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+/* Animación de entrada desde abajo */
+.scroll-to-top-car.car-enter {
+  transform: translateY(0);
+  opacity: 1;
+  animation: carEnterFromBottom 0.6s ease-out;
+}
+
+/* Animación de salida hacia arriba */
+.scroll-to-top-car.car-exit {
+  animation: carExitToTop 0.8s ease-in forwards;
+}
+
+/* Cuerpo del coche */
+.car-body {
+  position: relative;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Hover: el coche se agita (ruedas queman) */
+.scroll-to-top-car:hover .car-body {
+  animation: carBurnout 0.5s ease-in-out infinite;
+}
+
+/* Ruedas traseras que se agitan */
+.scroll-to-top-car:hover .rear-wheel-left {
+  animation: rearWheelShake 0.1s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.scroll-to-top-car:hover .rear-wheel-right {
+  animation: rearWheelShake 0.1s ease-in-out infinite reverse;
+  transform-origin: center;
+}
+
+/* Partículas de velocidad */
+.speed-particles {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-to-top-car:hover .speed-particles {
+  opacity: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 8px;
+  background: linear-gradient(to bottom, #ff6b35, transparent);
+  border-radius: 50%;
+  animation: particleFloat 0.6s ease-out infinite;
+}
+
+.particle:nth-child(1) {
+  left: -8px;
+  animation-delay: 0s;
+}
+
+.particle:nth-child(2) {
+  left: 0px;
+  animation-delay: 0.2s;
+}
+
+.particle:nth-child(3) {
+  left: 8px;
+  animation-delay: 0.4s;
+}
+
+/* Estela del coche al subir */
+.car-trail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 0;
+  background: linear-gradient(to bottom, 
+    rgba(255, 107, 53, 0.8) 0%,
+    rgba(255, 107, 53, 0.4) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.scroll-to-top-car.car-exit .car-trail {
+  height: 300px;
+  opacity: 1;
+  animation: trailFade 0.8s ease-out;
+}
+
+/* KEYFRAMES */
+
+/* Entrada desde abajo */
+@keyframes carEnterFromBottom {
+  0% {
+    transform: translateY(100px) scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-10px) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Salida hacia arriba */
+@keyframes carExitToTop {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Agitación del coche (burnout) */
+@keyframes carBurnout {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-1px) rotate(-0.5deg);
+  }
+  75% {
+    transform: translateX(1px) rotate(0.5deg);
+  }
+}
+
+/* Agitación de ruedas traseras */
+@keyframes rearWheelShake {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-0.5px, -0.5px);
+  }
+  50% {
+    transform: translate(0.5px, 0.5px);
+  }
+  75% {
+    transform: translate(-0.5px, 0.5px);
+  }
+}
+
+/* Partículas flotantes */
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Fade de la estela */
+@keyframes trailFade {
+  0% {
+    opacity: 1;
+    height: 0;
+  }
+  50% {
+    opacity: 0.8;
+    height: 300px;
+  }
+  100% {
+    opacity: 0;
+    height: 300px;
+  }
+}
+
+/* Efectos adicionales en hover */
+.scroll-to-top-car:hover {
+  transform: translateY(-3px);
+}
+
+.scroll-to-top-car:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* SVG del coche */
+.car-svg {
+  display: block;
+  transition: filter 0.3s ease;
+}
+
+.scroll-to-top-car:hover .car-svg {
+  filter: brightness(1.1) drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .scroll-to-top-car {
+    bottom: 20px;
+    right: 20px;
+    transform: translateY(80px);
+  }
+  
+  .car-body {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-to-top-car {
+    bottom: 15px;
+    right: 15px;
+  }
+  
+  .car-body {
+    transform: scale(0.75);
+  }
+} 

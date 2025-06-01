@@ -1,9 +1,7 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext'; // Para obtener datos del usuario logueado
-import { format, parseISO } from 'date-fns'; // Para formatear fechas
-import { es } from 'date-fns/locale'; // Formato español
-import { FaUserCircle, FaEnvelope, FaCalendarAlt, FaIdBadge } from 'react-icons/fa'; // Iconos
-import './UserPages.css'; // Estilos comunes (incluye .profile-page, .profile-card)
+import { FaUser, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
+import { useAuth } from '../../contexts/AuthContext';
+import './ProfilePage.css';
 
 const ProfilePage = () => {
   const { user } = useAuth(); // Obtiene el objeto 'user' del contexto
@@ -27,7 +25,7 @@ const ProfilePage = () => {
       <h1 className="page-title">Mi Perfil</h1>
       <div className="card profile-card">
         <div className="profile-header" style={{ textAlign: 'center', marginBottom: '25px' }}>
-          <FaUserCircle size={80} color="#007bff" /> {/* Icono grande de usuario */}
+          <FaUser size={80} color="#007bff" /> {/* Icono grande de usuario */}
           <h2 style={{ marginTop: '10px', marginBottom: '5px' }}>{user.nombre}</h2>
           <p style={{ color: '#6c757d', margin: 0 }}>{user.rol === 'admin' ? 'Administrador' : 'Usuario Registrado'}</p>
         </div>

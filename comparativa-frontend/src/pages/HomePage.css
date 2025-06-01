@@ -279,6 +279,15 @@
   font-weight: 700;
 }
 
+/* Estilo especial para el saludo personalizado */
+.cta-section h2.welcome-message {
+  background: linear-gradient(135deg, var(--cherry-red) 0%, #ff6b6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
   .hero-content, .features-grid, .cta-content {
@@ -310,21 +319,70 @@
     min-height: calc(100vh - 120px);
   }
 
+  .hero-content {
+    max-width: 85%;
+    padding: 0 1rem;
+  }
+
   .hero-title {
     font-size: 2.2rem;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-subtitle {
     font-size: 1.1rem;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.2rem;
   }
 
   .hero-actions {
     flex-direction: column;
     gap: 0.8rem;
+    align-items: center;
+  }
+
+  /* Hacer los botones más estrechos en móviles */
+  .hero-actions .btn {
+    max-width: 280px;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fade-out lateral para botones hero en móviles */
+  .hero-actions .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 8%,
+      rgba(0,0,0,0.15) 12%,
+      rgba(0,0,0,0.08) 16%,
+      transparent 20%,
+      transparent 80%,
+      rgba(0,0,0,0.08) 84%,
+      rgba(0,0,0,0.15) 88%,
+      transparent 92%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-actions .btn > * {
+    position: relative;
+    z-index: 2;
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
     gap: 1.2rem;
   }
 
@@ -350,18 +408,108 @@
   .cta-section p {
     font-size: 0.95rem;
   }
+
+  /* Hacer los botones del CTA también más estrechos */
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .cta-buttons .btn {
+    max-width: 280px;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fade-out lateral para botones CTA en móviles */
+  .cta-buttons .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 8%,
+      rgba(0,0,0,0.15) 12%,
+      rgba(0,0,0,0.08) 16%,
+      transparent 20%,
+      transparent 80%,
+      rgba(0,0,0,0.08) 84%,
+      rgba(0,0,0,0.15) 88%,
+      transparent 92%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cta-buttons .btn > * {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 @media (max-width: 576px) {
   .hero-content, .features-grid, .cta-content {
     padding: 0 0.5rem;
+    max-width: 80%;
   }
+
   .hero-title {
     font-size: 1.8rem;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-subtitle {
     font-size: 1rem;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Botones aún más estrechos en pantallas muy pequeñas */
+  .hero-actions .btn,
+  .cta-buttons .btn {
+    max-width: 240px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fade-out lateral para botones en pantallas muy pequeñas */
+  .hero-actions .btn::before,
+  .cta-buttons .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 10%,
+      rgba(0,0,0,0.18) 14%,
+      rgba(0,0,0,0.1) 18%,
+      transparent 22%,
+      transparent 78%,
+      rgba(0,0,0,0.1) 82%,
+      rgba(0,0,0,0.18) 86%,
+      transparent 90%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-actions .btn > *,
+  .cta-buttons .btn > * {
+    position: relative;
+    z-index: 2;
   }
 
   .feature-card {
