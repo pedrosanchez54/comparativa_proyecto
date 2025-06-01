@@ -13,7 +13,7 @@ exports.addFavorite = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idVehiculo } = req.params;
-    const id_usuario = req.session.userId; // Obtenido de la sesión
+    const id_usuario = req.user.id; // Obtenido del middleware de autenticación
 
     try {
          // 2. Opcional pero recomendado: Verificar si el vehículo realmente existe
@@ -53,7 +53,7 @@ exports.removeFavorite = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idVehiculo } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
 
     // 2. Ejecutar DELETE en la tabla Favoritos
     const sql = 'DELETE FROM Favoritos WHERE id_usuario = ? AND id_vehiculo = ?';
@@ -77,7 +77,7 @@ exports.removeFavorite = async (req, res, next) => {
  * Obtiene la lista de vehículos favoritos del usuario autenticado.
  */
 exports.getMyFavorites = async (req, res, next) => {
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
     const sql = `
         SELECT
             v.id_vehiculo, v.anio, v.tipo, v.version, v.pegatina_ambiental, v.velocidad_max, v.aceleracion_0_100, v.consumo_mixto, v.emisiones, v.peso, v.precio_original, v.precio_actual_estimado,
@@ -115,12 +115,7 @@ exports.getMyFavorites = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idVehiculo } = req.params;
-    const id_usuario = req.session.userId;
-
-    // Si el usuario no está logueado, no puede ser favorito
-    if (!id_usuario) {
-        return res.status(200).json({ isFavorite: false });
-    }
+    const id_usuario = req.user.id;
 
     // 2. Consultar si existe la relación en la tabla Favoritos
     // Usar COUNT(*) es eficiente para solo saber si existe (1) o no (0)

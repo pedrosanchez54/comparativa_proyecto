@@ -15,9 +15,10 @@ function buildWhereClause(queryParams) {
         id_marca, id_modelo, id_generacion, id_motorizacion,
         tipo, combustible, pegatina_ambiental, traccion, caja_cambios, num_puertas, num_plazas,
         anioMin, anioMax, potMin, potMax, precioMin, precioMax, pesoMin, pesoMax,
-        searchText
+        searchText, version, anio
     } = queryParams;
 
+    // Búsqueda por texto (marca, modelo, versión)
     if (searchText) {
         whereClause += ` AND (
             m.nombre LIKE ? OR 
@@ -29,10 +30,13 @@ function buildWhereClause(queryParams) {
         params.push(searchPattern, searchPattern, searchPattern, searchPattern);
     }
 
+    // Filtros por ID (relaciones)
     if (id_marca)        { whereClause += ' AND m.id_marca = ?'; params.push(id_marca); }
     if (id_modelo)       { whereClause += ' AND mo.id_modelo = ?'; params.push(id_modelo); }
     if (id_generacion)   { whereClause += ' AND g.id_generacion = ?'; params.push(id_generacion); }
-    if (id_motorizacion) { whereClause += ' AND mt.id_motorizacion = ?'; params.push(id_motorizacion); }
+    if (id_motorizacion) { whereClause += ' AND v.id_motorizacion = ?'; params.push(id_motorizacion); }
+    
+    // Filtros por campos categóricos
     if (tipo)            { whereClause += ' AND v.tipo = ?'; params.push(tipo); }
     if (combustible)     { whereClause += ' AND mt.combustible = ?'; params.push(combustible); }
     if (pegatina_ambiental) { whereClause += ' AND v.pegatina_ambiental = ?'; params.push(pegatina_ambiental); }
@@ -40,14 +44,43 @@ function buildWhereClause(queryParams) {
     if (caja_cambios)    { whereClause += ' AND v.caja_cambios = ?'; params.push(caja_cambios); }
     if (num_puertas)     { whereClause += ' AND v.num_puertas = ?'; params.push(num_puertas); }
     if (num_plazas)      { whereClause += ' AND v.num_plazas = ?'; params.push(num_plazas); }
+    if (version)         { whereClause += ' AND v.version = ?'; params.push(version); }
+    
+    // Filtros por año
+    if (anio)            { whereClause += ' AND v.anio = ?'; params.push(anio); }
     if (anioMin)         { whereClause += ' AND v.anio >= ?'; params.push(anioMin); }
     if (anioMax)         { whereClause += ' AND v.anio <= ?'; params.push(anioMax); }
-    if (potMin)          { whereClause += ' AND mt.potencia >= ?'; params.push(potMin); }
-    if (potMax)          { whereClause += ' AND mt.potencia <= ?'; params.push(potMax); }
-    if (precioMin)       { whereClause += ' AND v.precio_original >= ?'; params.push(precioMin); }
-    if (precioMax)       { whereClause += ' AND v.precio_original <= ?'; params.push(precioMax); }
-    if (pesoMin)         { whereClause += ' AND v.peso >= ?'; params.push(pesoMin); }
-    if (pesoMax)         { whereClause += ' AND v.peso <= ?'; params.push(pesoMax); }
+    
+    // Filtros por potencia (con manejo de NULL)
+    if (potMin)          { 
+        whereClause += ' AND mt.potencia IS NOT NULL AND mt.potencia >= ?'; 
+        params.push(potMin); 
+    }
+    if (potMax)          { 
+        whereClause += ' AND mt.potencia IS NOT NULL AND mt.potencia <= ?'; 
+        params.push(potMax); 
+    }
+    
+    // Filtros por precio (con manejo de NULL)
+    if (precioMin)       { 
+        whereClause += ' AND v.precio_original IS NOT NULL AND v.precio_original >= ?'; 
+        params.push(precioMin); 
+    }
+    if (precioMax)       { 
+        whereClause += ' AND v.precio_original IS NOT NULL AND v.precio_original <= ?'; 
+        params.push(precioMax); 
+    }
+    
+    // Filtros por peso (con manejo de NULL)
+    if (pesoMin)         { 
+        whereClause += ' AND v.peso IS NOT NULL AND v.peso >= ?'; 
+        params.push(pesoMin); 
+    }
+    if (pesoMax)         { 
+        whereClause += ' AND v.peso IS NOT NULL AND v.peso <= ?'; 
+        params.push(pesoMax); 
+    }
+    
     return { whereClause, params };
 }
 
@@ -115,9 +148,18 @@ exports.getVehicles = async (req, res, next) => {
     const { page = 1, limit = 12, sortBy = 'm.nombre', sortOrder = 'ASC' } = req.query;
     const offset = (page - 1) * limit;
     const { whereClause, params } = buildWhereClause(req.query);
-    const allowedSortBy = ['m.nombre','mo.nombre','g.nombre','mt.nombre','v.anio','mt.potencia','v.precio_original','v.precio_actual_estimado'];
+    
+    // Campos permitidos para ordenar (deben coincidir con los del frontend)
+    const allowedSortBy = [
+        'm.nombre', 'mo.nombre', 'g.nombre', 'mt.nombre', 
+        'v.anio', 'mt.potencia', 'v.precio_original', 'v.precio_actual_estimado',
+        'v.peso', 'v.aceleracion_0_100', 'v.velocidad_max', 'v.emisiones',
+        'v.fecha_creacion', 'v.fecha_actualizacion'
+    ];
+    
     const safeSortBy = allowedSortBy.includes(sortBy) ? sortBy : 'm.nombre';
     const safeSortOrder = sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    
     // Query con JOINs para devolver datos anidados
     const countSql = `SELECT COUNT(*) as total FROM Vehiculo v
         JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
@@ -127,15 +169,21 @@ exports.getVehicles = async (req, res, next) => {
         ${whereClause}`;
 
     const dataSql = `SELECT DISTINCT
-        v.id_vehiculo, v.anio, v.version, v.pegatina_ambiental, 
-        v.velocidad_max, v.aceleracion_0_100, v.consumo_mixto, 
-        v.emisiones, v.num_puertas, v.num_plazas, v.traccion, 
-        v.caja_cambios, v.precio_original, v.precio_actual_estimado,
+        v.id_vehiculo, v.anio, v.version, v.tipo, v.pegatina_ambiental, 
+        v.velocidad_max, v.aceleracion_0_100, v.distancia_frenado_100_0,
+        v.consumo_urbano, v.consumo_extraurbano, v.consumo_mixto, 
+        v.emisiones, v.autonomia_electrica, v.capacidad_bateria,
+        v.tiempo_carga_ac, v.potencia_carga_dc, v.tiempo_carga_dc_10_80,
+        v.peso, v.num_puertas, v.num_plazas, v.vol_maletero, v.vol_maletero_max,
+        v.dimension_largo, v.dimension_ancho, v.dimension_alto, v.distancia_entre_ejes,
+        v.traccion, v.caja_cambios, v.num_marchas, v.precio_original, v.precio_actual_estimado,
+        v.fecha_lanzamiento, v.fecha_creacion, v.fecha_actualizacion,
         mt.id_motorizacion, mt.nombre as motorizacion_nombre, mt.codigo_motor,
         mt.combustible, mt.potencia, mt.par_motor, mt.cilindrada, mt.num_cilindros, mt.arquitectura,
         g.id_generacion, g.nombre as generacion_nombre, g.anio_inicio, g.anio_fin,
         mo.id_modelo, mo.nombre as modelo_nombre,
-        m.id_marca, m.nombre as marca_nombre
+        m.id_marca, m.nombre as marca_nombre,
+        (SELECT ruta_local FROM Imagenes WHERE id_vehiculo = v.id_vehiculo ORDER BY orden LIMIT 1) as imagen_principal
         FROM Vehiculo v
         JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
         JOIN Generacion g ON mt.id_generacion = g.id_generacion
@@ -149,6 +197,52 @@ exports.getVehicles = async (req, res, next) => {
         const [countResult] = await pool.query(countSql, params);
         const [vehicles] = await pool.query(dataSql, [...params, parseInt(limit), parseInt(offset)]);
 
+        // Formatear los datos para el frontend
+        const formattedVehicles = vehicles.map(v => ({
+            id_vehiculo: v.id_vehiculo,
+            marca: v.marca_nombre,
+            modelo: v.modelo_nombre,
+            generacion: v.generacion_nombre,
+            motorizacion: v.motorizacion_nombre,
+            version: v.version,
+            anio: v.anio,
+            tipo: v.tipo,
+            combustible: v.combustible,
+            pegatina_ambiental: v.pegatina_ambiental,
+            potencia: v.potencia,
+            par_motor: v.par_motor,
+            velocidad_max: v.velocidad_max,
+            aceleracion_0_100: v.aceleracion_0_100,
+            distancia_frenado_100_0: v.distancia_frenado_100_0,
+            consumo_urbano: v.consumo_urbano,
+            consumo_extraurbano: v.consumo_extraurbano,
+            consumo_mixto: v.consumo_mixto,
+            emisiones: v.emisiones,
+            autonomia_electrica: v.autonomia_electrica,
+            capacidad_bateria: v.capacidad_bateria,
+            tiempo_carga_ac: v.tiempo_carga_ac,
+            potencia_carga_dc: v.potencia_carga_dc,
+            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80,
+            peso: v.peso,
+            num_puertas: v.num_puertas,
+            num_plazas: v.num_plazas,
+            vol_maletero: v.vol_maletero,
+            vol_maletero_max: v.vol_maletero_max,
+            dimension_largo: v.dimension_largo,
+            dimension_ancho: v.dimension_ancho,
+            dimension_alto: v.dimension_alto,
+            distancia_entre_ejes: v.distancia_entre_ejes,
+            traccion: v.traccion,
+            caja_cambios: v.caja_cambios,
+            num_marchas: v.num_marchas,
+            precio_original: v.precio_original,
+            precio_actual_estimado: v.precio_actual_estimado,
+            fecha_lanzamiento: v.fecha_lanzamiento,
+            imagen_principal: v.imagen_principal,
+            fecha_creacion: v.fecha_creacion,
+            fecha_actualizacion: v.fecha_actualizacion
+        }));
+
         // Calcular información de paginación
         const totalItems = countResult[0].total;
         const totalPages = Math.ceil(totalItems / limit);
@@ -157,7 +251,7 @@ exports.getVehicles = async (req, res, next) => {
         res.json({
             success: true,
             data: {
-                vehicles,
+                vehicles: formattedVehicles,
                 currentPage: parseInt(page),
                 totalPages,
                 totalItems,
@@ -306,6 +400,127 @@ exports.getFilterOptions = async (req, res, next) => {
         });
     } catch (error) {
         console.error("Error obteniendo opciones de filtros:", error);
+        next(error);
+    }
+};
+
+/**
+ * Obtiene múltiples vehículos para comparación por sus IDs.
+ * Query param: ?ids=1,2,3,4
+ */
+exports.getVehiclesForComparison = async (req, res, next) => {
+    const { ids } = req.query;
+    
+    if (!ids) {
+        return res.status(400).json({ message: 'Se requiere el parámetro "ids".' });
+    }
+    
+    // Convertir string de IDs a array y validar
+    const vehicleIds = ids.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
+    
+    if (vehicleIds.length === 0) {
+        return res.status(400).json({ message: 'No se proporcionaron IDs válidos.' });
+    }
+    
+    if (vehicleIds.length > 6) {
+        return res.status(400).json({ message: 'Máximo 6 vehículos para comparar.' });
+    }
+    
+    // Crear placeholders para la consulta SQL
+    const placeholders = vehicleIds.map(() => '?').join(',');
+    
+    const sql = `SELECT 
+        v.*, 
+        mt.nombre as motorizacion_nombre, mt.codigo_motor,
+        mt.combustible, mt.potencia, mt.par_motor, mt.cilindrada, 
+        mt.num_cilindros, mt.arquitectura,
+        g.nombre as generacion_nombre, g.anio_inicio, g.anio_fin,
+        mo.nombre as modelo_nombre,
+        m.nombre as marca_nombre,
+        (SELECT ruta_local FROM Imagenes WHERE id_vehiculo = v.id_vehiculo ORDER BY orden LIMIT 1) as imagen_principal
+        FROM Vehiculo v
+        JOIN Motorizacion mt ON v.id_motorizacion = mt.id_motorizacion
+        JOIN Generacion g ON mt.id_generacion = g.id_generacion
+        JOIN Modelo mo ON g.id_modelo = mo.id_modelo
+        JOIN Marca m ON mo.id_marca = m.id_marca
+        WHERE v.id_vehiculo IN (${placeholders})
+        ORDER BY FIELD(v.id_vehiculo, ${placeholders})`;
+    
+    try {
+        const [vehicles] = await pool.query(sql, [...vehicleIds, ...vehicleIds]);
+        
+        if (vehicles.length < 2) {
+            return res.status(404).json({ message: 'No se encontraron suficientes vehículos para comparar.' });
+        }
+        
+        // Formatear los datos para facilitar el uso en el frontend
+        const formattedVehicles = vehicles.map(v => ({
+            id_vehiculo: v.id_vehiculo,
+            marca: v.marca_nombre,
+            modelo: v.modelo_nombre,
+            generacion: v.generacion_nombre,
+            motorizacion: v.motorizacion_nombre,
+            version: v.version,
+            anio: v.anio,
+            tipo: v.tipo,
+            
+            // Motor y rendimiento
+            combustible: v.combustible,
+            potencia: v.potencia,
+            par_motor: v.par_motor,
+            cilindrada: v.cilindrada,
+            num_cilindros: v.num_cilindros,
+            arquitectura: v.arquitectura,
+            
+            // Prestaciones
+            velocidad_max: v.velocidad_max,
+            aceleracion_0_100: v.aceleracion_0_100,
+            distancia_frenado_100_0: v.distancia_frenado_100_0,
+            
+            // Consumo y emisiones
+            consumo_urbano: v.consumo_urbano,
+            consumo_extraurbano: v.consumo_extraurbano,
+            consumo_mixto: v.consumo_mixto,
+            emisiones: v.emisiones,
+            pegatina_ambiental: v.pegatina_ambiental,
+            
+            // Eléctrico
+            autonomia_electrica: v.autonomia_electrica,
+            capacidad_bateria: v.capacidad_bateria,
+            tiempo_carga_ac: v.tiempo_carga_ac,
+            potencia_carga_dc: v.potencia_carga_dc,
+            tiempo_carga_dc_10_80: v.tiempo_carga_dc_10_80,
+            
+            // Dimensiones y capacidades
+            peso: v.peso,
+            num_puertas: v.num_puertas,
+            num_plazas: v.num_plazas,
+            vol_maletero: v.vol_maletero,
+            vol_maletero_max: v.vol_maletero_max,
+            dimension_largo: v.dimension_largo,
+            dimension_ancho: v.dimension_ancho,
+            dimension_alto: v.dimension_alto,
+            distancia_entre_ejes: v.distancia_entre_ejes,
+            
+            // Transmisión
+            traccion: v.traccion,
+            caja_cambios: v.caja_cambios,
+            num_marchas: v.num_marchas,
+            
+            // Precios
+            precio_original: v.precio_original,
+            precio_actual_estimado: v.precio_actual_estimado,
+            
+            // Imagen
+            imagen_principal: v.imagen_principal ? `/api/images/vehicles/${v.imagen_principal}` : null
+        }));
+        
+        res.json({ 
+            success: true,
+            data: formattedVehicles
+        });
+    } catch (error) {
+        console.error("Error obteniendo vehículos para comparación:", error);
         next(error);
     }
 };

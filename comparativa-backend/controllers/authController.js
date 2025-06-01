@@ -3,6 +3,7 @@
 const { pool } = require('../config/db');
 const { hashPassword, verifyPassword } = require('../utils/hashUtils');
 const { generateSecureToken } = require('../utils/tokenUtils');
+const { generateToken, verifyToken } = require('../utils/jwtUtils');
 const { sendPasswordResetEmail } = require('../utils/mailerUtils');
 const { validationResult } = require('express-validator');
 
@@ -107,18 +108,22 @@ exports.login = async (req, res, next) => {
          }
     }
 
-    // 7. Éxito: Resetear intentos y establecer sesión
+    // 7. Éxito: Resetear intentos y establecer sesión + generar JWT
      await resetLoginAttempts(email, user.id_usuario);
 
-    // Guardar información esencial en la sesión
+    // Guardar información esencial en la sesión (compatibilidad)
     req.session.userId = user.id_usuario;
     req.session.userName = user.nombre;
     req.session.userEmail = user.email;
     req.session.userRole = user.rol; // Guardar rol para usar en middleware isAdmin
 
-    // Enviar respuesta exitosa con datos básicos del usuario
+    // Generar token JWT
+    const token = generateToken(user);
+
+    // Enviar respuesta exitosa con token y datos básicos del usuario
     res.status(200).json({
       message: 'Inicio de sesión correcto.',
+      token: token,
       user: {
         id: user.id_usuario,
         nombre: user.nombre,
@@ -192,6 +197,32 @@ exports.requestPasswordReset = async (req, res, next) => {
 };
 
 /**
+ * Valida un token de restablecimiento de contraseña.
+ */
+exports.validateResetToken = async (req, res, next) => {
+    const { token } = req.params;
+
+    try {
+        // Buscar usuario con token válido y no expirado
+        const [users] = await pool.query(
+            'SELECT id_usuario FROM Usuarios WHERE token_recuperacion = ? AND expiracion_token > NOW() LIMIT 1',
+            [token]
+        );
+
+        // Si no se encuentra o ha expirado
+        if (users.length === 0) {
+            return res.status(400).json({ message: 'El token de restablecimiento es inválido o ha expirado.' });
+        }
+
+        // Token válido
+        res.status(200).json({ message: 'Token válido.' });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * Restablece la contraseña usando un token válido.
  */
 exports.resetPassword = async (req, res, next) => {
@@ -238,9 +269,28 @@ exports.resetPassword = async (req, res, next) => {
  * Comprueba el estado de la sesión actual y devuelve datos del usuario si está logueado.
  */
 exports.checkSession = (req, res) => {
-    // Verifica si la sesión existe y tiene el userId
+    // Primero verificar autenticación JWT
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        const payload = verifyToken(token);
+        
+        if (payload) {
+            return res.status(200).json({
+                isLoggedIn: true,
+                user: {
+                    id: payload.id,
+                    nombre: payload.nombre,
+                    email: payload.email,
+                    rol: payload.rol
+                }
+            });
+        }
+    }
+    
+    // Si no hay JWT válido, verificar sesión
     if (req.session && req.session.userId) {
-        // Usuario logueado, devuelve sus datos (los guardados en sesión)
+        // Usuario logueado por sesión, devuelve sus datos
         res.status(200).json({
             isLoggedIn: true,
             user: {

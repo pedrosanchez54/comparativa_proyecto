@@ -49,71 +49,73 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form card">
-        <h2 className="auth-title"><FaUserPlus /> Crear Cuenta</h2>
-        <form onSubmit={handleSubmit}>
-          {error && <ErrorMessage message={error} />} {/* Mostrar errores de validación frontend */}
-           <div className="form-group">
-            <label htmlFor="nombre">Nombre Completo</label>
-            <input
-              type="text"
-              id="nombre"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-              autoComplete="name"
-              disabled={loading}
-              placeholder="Tu nombre y apellidos"
-            />
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-form">
+          <h2 className="auth-title"><FaUserPlus /> Crear Cuenta</h2>
+          <form onSubmit={handleSubmit}>
+            {error && <ErrorMessage message={error} />}
+            <div className="form-group">
+              <label htmlFor="nombre">Nombre Completo</label>
+              <input
+                type="text"
+                id="nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                required
+                autoComplete="name"
+                disabled={loading}
+                placeholder="Tu nombre y apellidos"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Correo Electrónico</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                disabled={loading}
+                placeholder="tu@email.com"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Contraseña (mín. 8 caracteres)</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength="8"
+                autoComplete="new-password"
+                disabled={loading}
+                placeholder="Crea una contraseña segura"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength="8"
+                autoComplete="new-password"
+                disabled={loading}
+                placeholder="Repite la contraseña"
+              />
+            </div>
+            <button type="submit" className="auth-button" disabled={loading}>
+              {loading ? 'Registrando...' : 'REGISTRARSE'}
+            </button>
+          </form>
+          <div className="auth-links">
+            <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></p>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Correo Electrónico</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              disabled={loading}
-              placeholder="tu@email.com"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Contraseña (mín. 8 caracteres)</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength="8"
-              autoComplete="new-password"
-              disabled={loading}
-              placeholder="Crea una contraseña segura"
-            />
-          </div>
-           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              minLength="8"
-              autoComplete="new-password"
-              disabled={loading}
-              placeholder="Repite la contraseña"
-            />
-          </div>
-          <button type="submit" className="btn btn-primary auth-button" disabled={loading}>
-            {loading ? 'Registrando...' : 'Registrarse'}
-          </button>
-        </form>
-        <div className="auth-links">
-          <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></p>
         </div>
       </div>
     </div>

@@ -47,54 +47,52 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form card">
-        <h2 className="auth-title"><FaSignInAlt /> Iniciar Sesión</h2>
-        <form onSubmit={handleSubmit}>
-          {/* Muestra el error local si existe */}
-          {error && <ErrorMessage message={error} />}
-          <div className="form-group">
-            <label htmlFor="email">Correo Electrónico</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required // Campo obligatorio HTML5
-              autoComplete="email"
-              disabled={loading} // Deshabilitar mientras carga
-              placeholder="tu@email.com"
-              className="form-control"
-            />
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-form">
+          <h2 className="auth-title"><FaSignInAlt /> Iniciar Sesión</h2>
+          <form onSubmit={handleSubmit}>
+            {error && <ErrorMessage message={error} />}
+            <div className="form-group">
+              <label htmlFor="email">Correo Electrónico</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                disabled={loading}
+                placeholder="tu@email.com"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                disabled={loading}
+                placeholder="Tu contraseña"
+              />
+            </div>
+            <button 
+              type="submit" 
+              className="auth-button" 
+              disabled={loading || !email || !password}
+            >
+              {loading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}
+            </button>
+          </form>
+          <div className="auth-links">
+            <Link to="/request-password-reset" className="forgot-password-link">
+              ¿Olvidaste tu contraseña?
+            </Link>
+            <p>¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link></p>
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              disabled={loading}
-              placeholder="Tu contraseña"
-              className="form-control"
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="btn btn-primary auth-button" 
-            disabled={loading || !email || !password}
-          >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
-        </form>
-        <div className="auth-links">
-          {/* Enlace para recuperar contraseña */}
-          <Link to="/request-password-reset" className="forgot-password-link">
-            ¿Olvidaste tu contraseña?
-          </Link>
-          <p>¿No tienes cuenta? <Link to="/register" className="register-link">Regístrate aquí</Link></p>
         </div>
       </div>
     </div>

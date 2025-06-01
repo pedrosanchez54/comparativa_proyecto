@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaKey, FaArrowLeft } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
+import BackButton from '../../components/Common/BackButton';
 import './AuthForm.css';
 
 const ResetPasswordPage = () => {
@@ -47,7 +48,7 @@ const ResetPasswordPage = () => {
 
     try {
         setLoading(true);
-      await apiClient.post(`/auth/reset-password/${token}`, { password });
+      await apiClient.post(`/auth/reset-password/${token}`, { nuevaContraseña: password });
       toast.success('Contraseña restablecida correctamente');
       navigate('/login');
     } catch (error) {
@@ -61,8 +62,10 @@ const ResetPasswordPage = () => {
     return (
       <div className="auth-page">
         <div className="auth-container">
-          <div className="loading-message">
-            <p>Verificando enlace...</p>
+          <div className="auth-form">
+            <div className="loading-message">
+              <p>Verificando enlace...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -73,12 +76,14 @@ const ResetPasswordPage = () => {
     return (
       <div className="auth-page">
         <div className="auth-container">
-          <div className="error-message">
-            <h2>Enlace no válido</h2>
-            <p>El enlace de restablecimiento no es válido o ha expirado.</p>
-            <Link to="/request-password-reset" className="auth-link">
-              Solicitar un nuevo enlace
-            </Link>
+          <div className="auth-form">
+            <div className="error-message">
+              <h3>Enlace no válido</h3>
+              <p>El enlace de restablecimiento no es válido o ha expirado.</p>
+              <div className="auth-links">
+                <Link to="/request-password-reset">Solicitar un nuevo enlace</Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -87,58 +92,52 @@ const ResetPasswordPage = () => {
 
   return (
     <div className="auth-page">
-         <div className="auth-container">
-        <Link to="/login" className="back-link">
-          <FaArrowLeft /> Volver al inicio de sesión
-        </Link>
+      <div className="auth-container">
+        <BackButton goBack="/login" text="Volver al inicio de sesión" />
+        
+        <div className="auth-form">
+          <h2 className="auth-title"><FaKey /> Restablecer Contraseña</h2>
+          <p className="auth-description">
+            Ingresa tu nueva contraseña.
+          </p>
 
-        <h1>Restablecer Contraseña</h1>
-        <p className="auth-description">
-          Ingresa tu nueva contraseña.
-        </p>
-
-        <form onSubmit={handleSubmit} className="auth-form">
-              <div className="form-group">
-            <label htmlFor="password">Nueva Contraseña</label>
-            <div className="input-group">
-              <FaKey className="input-icon" />
-                <input
-                  type="password"
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="password">Nueva Contraseña</label>
+              <input
+                type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Ingresa tu nueva contraseña"
                 disabled={loading}
-                  required
+                required
                 minLength={6}
-                />
-              </div>
-          </div>
+              />
+            </div>
 
-               <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-            <div className="input-group">
-              <FaKey className="input-icon" />
-                <input
-                  type="password"
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+              <input
+                type="password"
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirma tu nueva contraseña"
                 disabled={loading}
-                  required
+                required
                 minLength={6}
-                />
-              </div>
-          </div>
+              />
+            </div>
 
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Restableciendo...' : 'Restablecer Contraseña'}
-              </button>
-            </form>
-          </div>
+            <button type="submit" className="auth-button" disabled={loading}>
+              {loading ? 'Restableciendo...' : 'RESTABLECER CONTRASEÑA'}
+            </button>
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ResetPasswordPage; 

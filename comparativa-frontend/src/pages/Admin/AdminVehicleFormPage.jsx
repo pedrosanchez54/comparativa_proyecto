@@ -6,6 +6,7 @@ import ErrorMessage from '../../components/Common/ErrorMessage';
 import { FaSave, FaTimes, FaArrowLeft, FaCar, FaBolt, FaRulerCombined, FaCogs, FaLeaf, FaTachometerAlt } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns';
 import { toast } from 'react-toastify';
+import BackButton from '../../components/Common/BackButton';
 import './AdminPages.css'; // Estilos Admin
 
 // --- Definiciones Constantes (ENUMs de la BD) ---
@@ -197,9 +198,7 @@ const AdminVehicleFormPage = () => {
   return (
     <div className="container admin-page">
        {/* Enlace para volver a la lista */}
-       <Link to="/admin/vehicles" className="back-link" style={{ marginBottom: '20px', display: 'inline-block' }}>
-           <FaArrowLeft /> Volver a la lista de vehículos
-       </Link>
+       <BackButton goBack="/admin/vehicles" text="Volver a la lista de vehículos" />
 
       <h1 className="page-title">{isEditing ? 'Editar Vehículo' : 'Añadir Nuevo Vehículo'}</h1>
 

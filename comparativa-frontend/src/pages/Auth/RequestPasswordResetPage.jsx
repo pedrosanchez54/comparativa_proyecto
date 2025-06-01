@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaEnvelope, FaArrowLeft } from 'react-icons/fa';
 import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
+import BackButton from '../../components/Common/BackButton';
 import './AuthForm.css';
 
 const RequestPasswordResetPage = () => {
@@ -32,34 +33,31 @@ const RequestPasswordResetPage = () => {
     return (
     <div className="auth-page">
        <div className="auth-container">
-        <Link to="/login" className="back-link">
-          <FaArrowLeft /> Volver al inicio de sesión
-        </Link>
+        <BackButton goBack="/login" text="Volver al inicio de sesión" />
+        
+        <div className="auth-form">
+          <h2 className="auth-title"><FaEnvelope /> Restablecer Contraseña</h2>
+          <p className="auth-description">
+            Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+          </p>
 
-        <h1>Restablecer Contraseña</h1>
-        <p className="auth-description">
-          Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
-             </p>
-
-        {success ? (
-          <div className="success-message">
-            <h2>¡Revisa tu email!</h2>
-            <p>
-              Hemos enviado un enlace a <strong>{email}</strong> con las instrucciones para restablecer tu contraseña.
-            </p>
-            <p>
-              Si no lo encuentras, revisa tu carpeta de spam.
-            </p>
-            <Link to="/login" className="auth-link">
-              Volver al inicio de sesión
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="auth-form">
+          {success ? (
+            <div className="success-message">
+              <h3>¡Revisa tu email!</h3>
+              <p>
+                Hemos enviado un enlace a <strong>{email}</strong> con las instrucciones para restablecer tu contraseña.
+              </p>
+              <p>
+                Si no lo encuentras, revisa tu carpeta de spam.
+              </p>
+              <div className="auth-links">
+                <Link to="/login">Volver al inicio de sesión</Link>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <div className="input-group">
-                <FaEnvelope className="input-icon" />
+                <label htmlFor="email">Correo Electrónico</label>
                 <input
                   type="email"
                   id="email"
@@ -70,15 +68,15 @@ const RequestPasswordResetPage = () => {
                   required
                 />
               </div>
-            </div>
 
-            <button type="submit" className="auth-button" disabled={loading}>
-              {loading ? 'Enviando...' : 'Enviar Enlace'}
-            </button>
-          </form>
-        )}
-          </div>
+              <button type="submit" className="auth-button" disabled={loading}>
+                {loading ? 'Enviando...' : 'ENVIAR ENLACE'}
+              </button>
+            </form>
+          )}
         </div>
+      </div>
+    </div>
     );
 };
 

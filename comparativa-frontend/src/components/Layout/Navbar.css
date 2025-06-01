@@ -167,25 +167,7 @@
   transform: scale(1.1);
 }
 
-.compare-badge {
-  position: absolute;
-  top: -8px;
-  right: -10px;
-  background: var(--cherry-red);
-  color: #fff;
-  border-radius: 50%;
-  min-width: 22px;
-  height: 22px;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(217,4,41,0.18);
-  border: 2px solid #fff;
-  z-index: 2;
-  pointer-events: none;
-}
+
 .compare-appear {
   animation: compare-pop 0.9s cubic-bezier(.36,1.56,.64,1) both;
 }
@@ -196,29 +178,7 @@
   70% { transform: scale(1.2) rotate(7deg); }
   100% { opacity: 1; transform: scale(1) rotate(0); }
 }
-.compare-popover {
-  position: absolute;
-  top: calc(100% + 10px); /* Un poco más de espacio desde el icono */
-  right: 0;
-  min-width: 300px; /* Un poco más ancho para acomodar mejor el contenido */
-  background: #fff;
-  border-radius: 8px; /* Radio de borde estándar */
-  box-shadow: 0 5px 25px rgba(0,0,0,0.15); /* Sombra más suave y moderna */
-  padding: 15px;
-  z-index: 1002;
-  animation: fadeIn 0.2s ease-out;
-  color: #333; /* Color de texto base para el popover */
-}
 
-.compare-popover::before { /* Pequeña flecha/triángulo apuntando al icono */
-  content: "";
-  position: absolute;
-  bottom: 100%; /* Encima del popover */
-  right: 15px; /* Alineado con el icono aproximadamente */
-  border-width: 8px;
-  border-style: solid;
-  border-color: transparent transparent #fff transparent;
-}
 
 .compare-popover ul {
   list-style: none;

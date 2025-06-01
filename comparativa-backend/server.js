@@ -21,6 +21,7 @@ const authRoutes = require('./routes/authRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
 const listRoutes = require('./routes/listRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
+const userRoutes = require('./routes/userRoutes');
 const timeRoutes = require('./routes/timeRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 
@@ -88,6 +89,7 @@ app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/vehicles`, vehicleRoutes);
 app.use(`${apiPrefix}/lists`, listRoutes);
 app.use(`${apiPrefix}/favorites`, favoriteRoutes);
+app.use(`${apiPrefix}/users`, userRoutes);
 app.use(`${apiPrefix}/times`, timeRoutes);
 app.use(`${apiPrefix}/images`, imageRoutes);
 

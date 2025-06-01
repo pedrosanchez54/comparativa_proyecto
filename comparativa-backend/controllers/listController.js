@@ -15,7 +15,7 @@ exports.createList = async (req, res, next) => {
 
     // 2. Obtener datos y ID de usuario de la sesión
     const { nombre_lista, descripcion, es_publica } = req.body;
-    const id_usuario = req.session.userId; // Asume que isAuthenticated ya se ejecutó
+    const id_usuario = req.user.id; // Asume que isAuthenticated ya se ejecutó
 
     // 3. Insertar en la BD
     const sql = 'INSERT INTO Listas (id_usuario, nombre_lista, descripcion, es_publica) VALUES (?, ?, ?, ?)';
@@ -37,7 +37,7 @@ exports.createList = async (req, res, next) => {
  * Obtiene todas las listas creadas por el usuario autenticado.
  */
 exports.getMyLists = async (req, res, next) => {
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
     const sql = `
         SELECT
             l.id_lista, l.nombre_lista, l.descripcion, l.es_publica,
@@ -66,7 +66,7 @@ exports.getListDetails = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idLista } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
     const listSql = 'SELECT id_lista, id_usuario, nombre_lista, descripcion, es_publica, fecha_creacion, fecha_actualizacion FROM Listas WHERE id_lista = ? LIMIT 1';
     // JOINs para devolver datos anidados del vehículo
     const vehiclesSql = `
@@ -117,7 +117,7 @@ exports.updateList = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idLista } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
     const { nombre_lista, descripcion, es_publica } = req.body;
 
     // 2. Construir objeto de actualización solo con los campos proporcionados
@@ -172,7 +172,7 @@ exports.deleteList = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
      }
     const { idLista } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
 
     // 2. Ejecutar DELETE, asegurando que solo el dueño pueda borrar
     const sql = 'DELETE FROM Listas WHERE id_lista = ? AND id_usuario = ?';
@@ -210,7 +210,7 @@ exports.addVehicleToList = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idLista, idVehiculo } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
     const { notas } = req.body;
 
     // 2. Verificar que la lista pertenece al usuario
@@ -246,7 +246,7 @@ exports.removeVehicleFromList = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { idLista, idVehiculo } = req.params;
-    const id_usuario = req.session.userId;
+    const id_usuario = req.user.id;
 
     // 2. Verificar que la lista pertenece al usuario
     const [list] = await pool.query('SELECT id_lista FROM Listas WHERE id_lista = ? AND id_usuario = ? LIMIT 1', [idLista, id_usuario]);

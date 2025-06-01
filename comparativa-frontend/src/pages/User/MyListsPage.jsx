@@ -22,13 +22,16 @@ const MyListsPage = () => {
 
   const loadLists = async () => {
     try {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
+      
       const response = await apiClient.get('/users/lists');
-      setLists(response.data);
+      const listsData = response.data.data || [];
+      setLists(Array.isArray(listsData) ? listsData : []);
     } catch (error) {
       console.error('Error al cargar listas:', error);
       setError('No se pudieron cargar tus listas. Por favor, inténtalo de nuevo más tarde.');
+      setLists([]); // Asegurar que lists sea siempre un array
     } finally {
       setLoading(false);
     }
@@ -41,7 +44,8 @@ const MyListsPage = () => {
     try {
       setLoading(true);
       const response = await apiClient.post('/users/lists', { nombre: newListName });
-      setLists(prev => [...prev, response.data]);
+      const newList = response.data.data;
+      setLists(prev => Array.isArray(prev) ? [...prev, newList] : [newList]);
       setNewListName('');
       toast.success('Lista creada correctamente');
     } catch (error) {
@@ -56,7 +60,7 @@ const MyListsPage = () => {
 
     try {
       await apiClient.delete(`/users/lists/${listId}`);
-      setLists(prev => prev.filter(list => list.id !== listId));
+      setLists(prev => Array.isArray(prev) ? prev.filter(list => list.id !== listId) : []);
       toast.success('Lista eliminada correctamente');
     } catch (error) {
       toast.error('Error al eliminar la lista');
@@ -78,9 +82,9 @@ const MyListsPage = () => {
 
     try {
       const response = await apiClient.put(`/users/lists/${listId}`, { nombre: editingName });
-      setLists(prev => prev.map(list => 
+      setLists(prev => Array.isArray(prev) ? prev.map(list => 
         list.id === listId ? { ...list, nombre: editingName } : list
-      ));
+      ) : []);
       setEditingListId(null);
       toast.success('Lista actualizada correctamente');
     } catch (error) {
@@ -152,7 +156,7 @@ const MyListsPage = () => {
               ) : (
                 <>
                   <h3>{list.nombre}</h3>
-                  <p>{list.vehiculos?.length || 0} vehículos</p>
+                  <p>{list.vehicle_count || 0} vehículos</p>
                   
                   <div className="list-actions">
                     <Link to={`/my-lists/${list.id}`} className="view-button">

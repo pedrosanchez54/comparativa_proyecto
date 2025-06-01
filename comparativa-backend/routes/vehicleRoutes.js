@@ -23,6 +23,10 @@ router.get('/', getVehiclesQueryValidation, vehicleController.getVehicles);
 // GET /api/vehicles/options - Obtener listas de opciones para los filtros (marcas, tipos, etc.)
 router.get('/options', vehicleController.getFilterOptions);
 
+// GET /api/vehicles/compare - Obtener múltiples vehículos para comparación
+// Query param: ?ids=1,2,3,4
+router.get('/compare', vehicleController.getVehiclesForComparison);
+
 // GET /api/vehicles/:id - Obtener detalles de un vehículo específico por ID
 // Valida que el 'id' en la URL sea un entero
 router.get('/:id', vehicleIdParamValidation, vehicleController.getVehicleById);

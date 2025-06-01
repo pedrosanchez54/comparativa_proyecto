@@ -32,6 +32,9 @@ router.post('/logout', isAuthenticated, authController.logout);
 // Valida el email del body
 router.post('/request-password-reset', requestPasswordResetValidation, authController.requestPasswordReset);
 
+// GET /api/auth/validate-reset-token/:token - Validar token de reset
+router.get('/validate-reset-token/:token', authController.validateResetToken);
+
 // POST /api/auth/reset-password/:token - Restablecer contraseña usando el token de la URL
 // Valida la nueva contraseña del body
 router.post('/reset-password/:token', resetPasswordValidation, authController.resetPassword);

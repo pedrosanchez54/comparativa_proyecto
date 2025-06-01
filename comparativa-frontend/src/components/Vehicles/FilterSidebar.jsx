@@ -12,18 +12,42 @@ import './FilterSidebar.css'; // Importa los estilos
  */
 const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }) => {
   // Estado local para manejar los valores de los filtros mientras el usuario interactúa
-  const [filters, setFilters] = useState(initialFilters || {});
+  const [filters, setFilters] = useState(() => {
+    // Inicializar con valores por defecto para todos los campos
+    const defaultFilters = {
+      searchText: '',
+      combustible: '',
+      tipo: '',
+      pegatina_ambiental: '',
+      traccion: '',
+      caja_cambios: '',
+      anioMin: '',
+      anioMax: '',
+      potMin: '',
+      potMax: '',
+      precioMin: '',
+      precioMax: '',
+      pesoMin: '',
+      pesoMax: ''
+    };
+    
+    // Sobrescribir con los valores iniciales si existen
+    return { ...defaultFilters, ...(initialFilters || {}) };
+  });
   // Estado local para la ordenación
   const [sort, setSort] = useState({
-    sortBy: initialFilters?.sortBy || 'marca', // Campo por defecto para ordenar
+    sortBy: initialFilters?.sortBy || 'm.nombre', // Campo por defecto para ordenar
     sortOrder: initialFilters?.sortOrder || 'ASC' // Orden por defecto
   });
 
+  // NUEVO: Estado para forzar re-renderizado cuando sea necesario
+  const [resetKey, setResetKey] = useState(0);
+
   // NUEVO: Filtros encadenados por IDs
-  const [selectedMarca, setSelectedMarca] = useState('');
-  const [selectedModelo, setSelectedModelo] = useState('');
-  const [selectedGeneracion, setSelectedGeneracion] = useState('');
-  const [selectedMotorizacion, setSelectedMotorizacion] = useState('');
+  const [selectedMarca, setSelectedMarca] = useState(initialFilters?.id_marca || '');
+  const [selectedModelo, setSelectedModelo] = useState(initialFilters?.id_modelo || '');
+  const [selectedGeneracion, setSelectedGeneracion] = useState(initialFilters?.id_generacion || '');
+  const [selectedMotorizacion, setSelectedMotorizacion] = useState(initialFilters?.id_motorizacion || '');
 
   // Filtrar modelos según marca seleccionada
   const modelosFiltrados = options?.modelos?.filter(m => m.id_marca === parseInt(selectedMarca)) || [];
@@ -34,141 +58,252 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
 
   // Sincronizar estado local si los filtros iniciales cambian (ej. navegación atrás/adelante)
   useEffect(() => {
-      // Solo actualiza si los filtros iniciales son realmente diferentes a los actuales
-      // para evitar re-renders innecesarios. Una comparación profunda sería más robusta.
-      if (JSON.stringify(initialFilters) !== JSON.stringify(filters)) {
-          setFilters(initialFilters || {});
-      }
-      const initialSortBy = initialFilters?.sortBy || 'marca';
-      const initialSortOrder = initialFilters?.sortOrder || 'ASC';
-      if (sort.sortBy !== initialSortBy || sort.sortOrder !== initialSortOrder) {
-          setSort({ sortBy: initialSortBy, sortOrder: initialSortOrder });
-      }
+    const defaultFilters = {
+      searchText: '',
+      combustible: '',
+      tipo: '',
+      pegatina_ambiental: '',
+      traccion: '',
+      caja_cambios: '',
+      anioMin: '',
+      anioMax: '',
+      potMin: '',
+      potMax: '',
+      precioMin: '',
+      precioMax: '',
+      pesoMin: '',
+      pesoMax: ''
+    };
+    
+    const newFilters = { ...defaultFilters, ...(initialFilters || {}) };
+    
+    if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
+      setFilters(newFilters);
+      setSelectedMarca(initialFilters?.id_marca || '');
+      setSelectedModelo(initialFilters?.id_modelo || '');
+      setSelectedGeneracion(initialFilters?.id_generacion || '');
+      setSelectedMotorizacion(initialFilters?.id_motorizacion || '');
+    }
+    const initialSortBy = initialFilters?.sortBy || 'm.nombre';
+    const initialSortOrder = initialFilters?.sortOrder || 'ASC';
+    if (sort.sortBy !== initialSortBy || sort.sortOrder !== initialSortOrder) {
+      setSort({ sortBy: initialSortBy, sortOrder: initialSortOrder });
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFilters]); // Dependencia de los filtros iniciales
 
-  // Manejadores específicos para combustible y etiqueta DGT
-  const handleCombustibleChange = (e) => {
-    const value = e.target.value;
-    if (value === '') {
-      onFilterChange({}); // Limpiar todos los filtros cuando se selecciona -- Todos --
-    } else {
-      onFilterChange({ combustible: value }); // Aplicar el filtro seleccionado
-    }
+  // Función para aplicar filtros inmediatamente
+  const applyFiltersImmediately = (newFilters, newSelectedMarca = selectedMarca, newSelectedModelo = selectedModelo, newSelectedGeneracion = selectedGeneracion, newSelectedMotorizacion = selectedMotorizacion) => {
+    // Crear objeto de filtros limpio (sin valores vacíos)
+    const cleanFilters = {};
+    Object.keys(newFilters).forEach(key => {
+      const value = newFilters[key];
+      if (value !== '' && value !== null && value !== undefined) {
+        cleanFilters[key] = value;
+      }
+    });
+
+    // Agregar filtros de selección encadenada
+    if (newSelectedMarca) cleanFilters.id_marca = newSelectedMarca;
+    if (newSelectedModelo) cleanFilters.id_modelo = newSelectedModelo;
+    if (newSelectedGeneracion) cleanFilters.id_generacion = newSelectedGeneracion;
+    if (newSelectedMotorizacion) cleanFilters.id_motorizacion = newSelectedMotorizacion;
+    
+    // Aplicar filtros inmediatamente
+    onFilterChange(cleanFilters);
   };
 
-  const handlePegatinaChange = (e) => {
-    const value = e.target.value;
-    if (value === '') {
-      onFilterChange({}); // Limpiar todos los filtros cuando se selecciona -- Todos --
-    } else {
-      onFilterChange({ pegatina_ambiental: value }); // Aplicar el filtro seleccionado
-    }
-  };
-
-  // Manejador genérico para cambios en inputs y selects de filtros
-  const handleInputChange = (e) => {
+  // Manejador genérico para cambios en inputs de rango (NO se aplican inmediatamente)
+  const handleRangeInputChange = (e) => {
     const { name, value } = e.target;
-    const fieldMap = {
-      yearMin: 'anioMin',
-      yearMax: 'anioMax',
-      powerMin: 'potMin',
-      powerMax: 'potMax',
-      priceMin: 'precioMin',
-      priceMax: 'precioMax',
-      weightMin: 'pesoMin',
-      weightMax: 'pesoMax'
-    };
-    const backendName = fieldMap[name] || name;
     
     const newFilters = { ...filters };
-    if (value === '') {
-      delete newFilters[backendName];
+    if (value === '' || value === null || value === undefined) {
+      delete newFilters[name];
     } else {
-      newFilters[backendName] = value;
+      newFilters[name] = value;
     }
     setFilters(newFilters);
+    // NO aplicar inmediatamente para filtros de rango
+  };
+
+  // Manejador genérico para filtros categóricos (SE APLICAN INMEDIATAMENTE)
+  const handleCategoricalFilterChange = (e) => {
+    const { name, value } = e.target;
+    
+    const newFilters = { ...filters };
+    if (value === '' || value === null || value === undefined) {
+      delete newFilters[name];
+    } else {
+      newFilters[name] = value;
+    }
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente para filtros categóricos
+    applyFiltersImmediately(newFilters);
+  };
+
+  // Manejador para búsqueda por texto (SE APLICA INMEDIATAMENTE)
+  const handleSearchTextChange = (e) => {
+    const { name, value } = e.target;
+    
+    const newFilters = { ...filters };
+    if (value === '' || value === null || value === undefined) {
+      delete newFilters[name];
+    } else {
+      newFilters[name] = value;
+    }
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente
+    applyFiltersImmediately(newFilters);
   };
 
   // Manejador para cambios en los selects de ordenación
   const handleSortSelectChange = (e) => {
     const { name, value } = e.target;
-     const newSort = { ...sort, [name]: value };
+    const newSort = { ...sort, [name]: value };
     setSort(newSort);
-     // Aplicar la ordenación inmediatamente al cambiar el select
-     onSortChange(newSort.sortBy, newSort.sortOrder);
+    // Aplicar la ordenación inmediatamente al cambiar el select
+    onSortChange(newSort.sortBy, newSort.sortOrder);
   };
 
-  // Manejador para el botón "Aplicar Filtros"
+  // Manejador para el botón "Aplicar Filtros" (solo para rangos)
   const handleApplyFilters = (e) => {
     e.preventDefault(); // Prevenir recarga de página si estuviera en un form real
     
-    // Forzar actualización inmediata de los filtros
-    const cleanFilters = {};
-    onFilterChange(cleanFilters);
+    // Aplicar todos los filtros incluyendo los rangos
+    applyFiltersImmediately(filters);
   };
 
-   // Manejador para el botón "Limpiar Todo"
-   const handleResetFilters = () => {
-    // Resetear todos los estados locales
-       const defaultSort = { sortBy: 'marca', sortOrder: 'ASC' };
+  // Manejador para el botón "Limpiar Todo" - RESETEO COMPLETO
+  const handleResetFilters = () => {
+    console.log('🧹 Iniciando reseteo completo de filtros');
     
-    // Limpiar filtros y ordenación
-    setFilters({});
+    // Resetear TODOS los estados locales completamente a valores vacíos
+    const emptyFilters = {
+      searchText: '',
+      combustible: '',
+      tipo: '',
+      pegatina_ambiental: '',
+      traccion: '',
+      caja_cambios: '',
+      anioMin: '',
+      anioMax: '',
+      potMin: '',
+      potMax: '',
+      precioMin: '',
+      precioMax: '',
+      pesoMin: '',
+      pesoMax: ''
+    };
+    const defaultSort = { sortBy: 'm.nombre', sortOrder: 'ASC' };
+    
+    // Paso 1: Limpiar estados inmediatamente
+    setFilters(emptyFilters);
     setSort(defaultSort);
-    
-    // Limpiar selecciones encadenadas
     setSelectedMarca('');
     setSelectedModelo('');
     setSelectedGeneracion('');
     setSelectedMotorizacion('');
 
-    // Forzar la actualización inmediata de todos los filtros
+    // Paso 2: Forzar re-renderizado visual
+    setResetKey(prev => prev + 1);
+    
+    // Paso 3: Aplicar filtros vacíos INMEDIATAMENTE
+    console.log('🔄 Aplicando filtros vacíos');
     onFilterChange({});
-    handleApplyFilters({ preventDefault: () => {} }); // Forzar aplicación inmediata
-
-    // Actualizar ordenación
+    
+    // Paso 4: Aplicar ordenación por defecto
     onSortChange(defaultSort.sortBy, defaultSort.sortOrder);
-   };
+    
+    // Paso 5: Verificación final tras re-renderizado
+    setTimeout(() => {
+      console.log('✅ Verificación final del reseteo');
+      setFilters({ ...emptyFilters });
+      setSelectedMarca('');
+      setSelectedModelo('');
+      setSelectedGeneracion('');
+      setSelectedMotorizacion('');
+    }, 150);
+  };
 
-  // Manejadores de cambio
+  // Manejadores de cambio para filtros encadenados (SE APLICAN INMEDIATAMENTE)
   const handleMarcaChange = (e) => {
-    setSelectedMarca(e.target.value);
+    const value = e.target.value;
+    setSelectedMarca(value);
     setSelectedModelo('');
     setSelectedGeneracion('');
     setSelectedMotorizacion('');
-    onFilterChange({ id_marca: e.target.value });
+    
+    // Limpiar filtros relacionados
+    const newFilters = { ...filters };
+    delete newFilters.id_marca;
+    delete newFilters.id_modelo;
+    delete newFilters.id_generacion;
+    delete newFilters.id_motorizacion;
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente
+    applyFiltersImmediately(newFilters, value, '', '', '');
   };
+
   const handleModeloChange = (e) => {
-    setSelectedModelo(e.target.value);
+    const value = e.target.value;
+    setSelectedModelo(value);
     setSelectedGeneracion('');
     setSelectedMotorizacion('');
-    onFilterChange({ id_modelo: e.target.value });
+    
+    const newFilters = { ...filters };
+    delete newFilters.id_modelo;
+    delete newFilters.id_generacion;
+    delete newFilters.id_motorizacion;
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente
+    applyFiltersImmediately(newFilters, selectedMarca, value, '', '');
   };
+
   const handleGeneracionChange = (e) => {
-    setSelectedGeneracion(e.target.value);
+    const value = e.target.value;
+    setSelectedGeneracion(value);
     setSelectedMotorizacion('');
-    onFilterChange({ id_generacion: e.target.value });
+    
+    const newFilters = { ...filters };
+    delete newFilters.id_generacion;
+    delete newFilters.id_motorizacion;
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente
+    applyFiltersImmediately(newFilters, selectedMarca, selectedModelo, value, '');
   };
+
   const handleMotorizacionChange = (e) => {
-    setSelectedMotorizacion(e.target.value);
-    onFilterChange({ id_motorizacion: e.target.value });
+    const value = e.target.value;
+    setSelectedMotorizacion(value);
+    
+    const newFilters = { ...filters };
+    delete newFilters.id_motorizacion;
+    setFilters(newFilters);
+    
+    // Aplicar inmediatamente
+    applyFiltersImmediately(newFilters, selectedMarca, selectedModelo, selectedGeneracion, value);
   };
 
   // Opciones disponibles para ordenar (coinciden con allowedSortBy en backend)
   const sortOptions = [
-    { value: 'marca', label: 'Marca' },
-    { value: 'modelo', label: 'Modelo' },
-    { value: 'año', label: 'Año' },
-    { value: 'potencia', label: 'Potencia (CV)' },
-    { value: 'precio_original', label: 'Precio Original' },
-    { value: 'precio_actual_estimado', label: 'Precio Estimado' },
-    { value: 'peso', label: 'Peso (kg)' },
-    { value: 'aceleracion_0_100', label: 'Aceleración (0-100)' },
-    { value: 'velocidad_max', label: 'Velocidad Máx.' },
-    { value: 'emisiones', label: 'Emisiones CO2' },
-    { value: 'fecha_actualizacion', label: 'Actualizado Recientemente' },
-    { value: 'fecha_creacion', label: 'Añadido Recientemente' },
+    { value: 'm.nombre', label: 'Marca' },
+    { value: 'mo.nombre', label: 'Modelo' },
+    { value: 'v.anio', label: 'Año' },
+    { value: 'mt.potencia', label: 'Potencia (CV)' },
+    { value: 'v.precio_original', label: 'Precio Original' },
+    { value: 'v.precio_actual_estimado', label: 'Precio Estimado' },
+    { value: 'v.peso', label: 'Peso (kg)' },
+    { value: 'v.aceleracion_0_100', label: 'Aceleración (0-100)' },
+    { value: 'v.velocidad_max', label: 'Velocidad Máx.' },
+    { value: 'v.emisiones', label: 'Emisiones CO2' },
+    { value: 'v.fecha_actualizacion', label: 'Actualizado Recientemente' },
+    { value: 'v.fecha_creacion', label: 'Añadido Recientemente' },
   ];
 
   return (
@@ -176,35 +311,36 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
       <h4><FaFilter /> Filtrar y Ordenar</h4>
       <form onSubmit={handleApplyFilters}>
         {/* Sección Ordenación */}
-         <div className="filter-group sort-group">
-             <label htmlFor="sortBy">Ordenar por:</label>
-             <div className='sort-controls'>
-                <select name="sortBy" id="sortBy" value={sort.sortBy} onChange={handleSortSelectChange}>
-                    {sortOptions.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                </select>
-                <button
-                    type="button"
-                    onClick={() => handleSortSelectChange({ target: { name: 'sortOrder', value: sort.sortOrder === 'ASC' ? 'DESC' : 'ASC' } })}
-                    className="btn-sort-toggle"
-                    title={`Cambiar a orden ${sort.sortOrder === 'ASC' ? 'Descendente' : 'Ascendente'}`}
-                >
-                    {sort.sortOrder === 'ASC' ? <FaSortAmountDown /> : <FaSortAmountUp />}
-                </button>
-             </div>
-         </div>
+        <div className="filter-group sort-group">
+          <label htmlFor="sortBy">Ordenar por:</label>
+          <div className='sort-controls'>
+            <select name="sortBy" id="sortBy" value={sort.sortBy} onChange={handleSortSelectChange}>
+              {sortOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => handleSortSelectChange({ target: { name: 'sortOrder', value: sort.sortOrder === 'ASC' ? 'DESC' : 'ASC' } })}
+              className="btn-sort-toggle"
+              title={`Cambiar a orden ${sort.sortOrder === 'ASC' ? 'Descendente' : 'Ascendente'}`}
+            >
+              {sort.sortOrder === 'ASC' ? <FaSortAmountDown /> : <FaSortAmountUp />}
+            </button>
+          </div>
+        </div>
 
         {/* Búsqueda por texto */}
         <div className="filter-group">
           <label htmlFor="searchText">Búsqueda por texto</label>
           <input
+            key={`search-${resetKey}`}
             type="text"
             id="searchText"
             name="searchText"
             placeholder="Marca, modelo, versión..."
             value={filters.searchText || ''}
-            onChange={handleInputChange}
+            onChange={handleSearchTextChange}
             className="filter-input"
           />
         </div>
@@ -212,7 +348,14 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         {/* Filtro por Marca (Select) */}
         <div className="filter-group">
           <label htmlFor="marca">Marca</label>
-          <select id="marca" name="marca" value={selectedMarca} onChange={handleMarcaChange} className="filter-select">
+          <select 
+            key={`marca-${resetKey}`}
+            id="marca" 
+            name="marca" 
+            value={selectedMarca} 
+            onChange={handleMarcaChange} 
+            className="filter-select"
+          >
             <option value="">-- Todas --</option>
             {options?.marcas?.map((marca) => (
               <option key={marca.id_marca} value={marca.id_marca}>{marca.nombre}</option>
@@ -224,7 +367,14 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         {selectedMarca && (
           <div className="filter-group">
             <label htmlFor="modelo">Modelo</label>
-            <select id="modelo" name="modelo" value={selectedModelo} onChange={handleModeloChange} className="filter-select">
+            <select 
+              key={`modelo-${resetKey}`}
+              id="modelo" 
+              name="modelo" 
+              value={selectedModelo} 
+              onChange={handleModeloChange} 
+              className="filter-select"
+            >
               <option value="">-- Todos --</option>
               {modelosFiltrados.map((modelo) => (
                 <option key={modelo.id_modelo} value={modelo.id_modelo}>{modelo.nombre}</option>
@@ -237,7 +387,14 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         {selectedModelo && (
           <div className="filter-group">
             <label htmlFor="generacion">Generación</label>
-            <select id="generacion" name="generacion" value={selectedGeneracion} onChange={handleGeneracionChange} className="filter-select">
+            <select 
+              key={`generacion-${resetKey}`}
+              id="generacion" 
+              name="generacion" 
+              value={selectedGeneracion} 
+              onChange={handleGeneracionChange} 
+              className="filter-select"
+            >
               <option value="">-- Todas --</option>
               {generacionesFiltradas.map((gen) => (
                 <option key={gen.id_generacion} value={gen.id_generacion}>{gen.nombre}</option>
@@ -250,7 +407,14 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         {selectedGeneracion && (
           <div className="filter-group">
             <label htmlFor="motorizacion">Motorización</label>
-            <select id="motorizacion" name="motorizacion" value={selectedMotorizacion} onChange={handleMotorizacionChange} className="filter-select">
+            <select 
+              key={`motorizacion-${resetKey}`}
+              id="motorizacion" 
+              name="motorizacion" 
+              value={selectedMotorizacion} 
+              onChange={handleMotorizacionChange} 
+              className="filter-select"
+            >
               <option value="">-- Todas --</option>
               {motorizacionesFiltradas.map((mt) => (
                 <option key={mt.id_motorizacion} value={mt.id_motorizacion}>{mt.nombre} ({mt.codigo_motor})</option>
@@ -260,77 +424,214 @@ const FilterSidebar = ({ options, initialFilters, onFilterChange, onSortChange }
         )}
 
         {/* Filtro por Combustible (Select) */}
-         <div className="filter-group">
-           <label htmlFor="combustible">Combustible</label>
+        <div className="filter-group">
+          <label htmlFor="combustible">Combustible</label>
           <select 
+            key={`combustible-${resetKey}`}
             id="combustible" 
             name="combustible" 
             value={filters.combustible || ''}
-            onChange={handleCombustibleChange} 
+            onChange={handleCategoricalFilterChange} 
             className="filter-select"
           >
-             <option value="">-- Todos --</option>
-             {options?.combustibles?.map((c) => (
-               <option key={c} value={c}>{c}</option>
-             ))}
-           </select>
+            <option value="">-- Todos --</option>
+            {options?.combustibles?.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filtro por Tipo de Vehículo */}
+        <div className="filter-group">
+          <label htmlFor="tipo">Tipo de Vehículo</label>
+          <select 
+            key={`tipo-${resetKey}`}
+            id="tipo" 
+            name="tipo" 
+            value={filters.tipo || ''}
+            onChange={handleCategoricalFilterChange} 
+            className="filter-select"
+          >
+            <option value="">-- Todos --</option>
+            {options?.tipos?.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
         </div>
 
         {/* Filtro por Etiqueta DGT */}
-         <div className="filter-group">
-           <label htmlFor="pegatina_ambiental">Etiqueta DGT</label>
+        <div className="filter-group">
+          <label htmlFor="pegatina_ambiental">Etiqueta DGT</label>
           <select 
+            key={`pegatina-${resetKey}`}
             id="pegatina_ambiental" 
             name="pegatina_ambiental" 
             value={filters.pegatina_ambiental || ''}
-            onChange={handlePegatinaChange} 
+            onChange={handleCategoricalFilterChange} 
             className="filter-select"
           >
-             <option value="">-- Todas --</option>
-             {options?.pegatinas?.map((p) => (
-               <option key={p} value={p}>{p}</option>
-             ))}
-           </select>
+            <option value="">-- Todas --</option>
+            {options?.pegatinas?.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
         </div>
 
-         {/* Filtros de Rango (Año, Potencia, Precio, etc.) */}
-         <div className="filter-group range-filter">
-            <label>Año</label>
-             <div className='range-inputs'>
-            <input type="number" name="anioMin" placeholder="Min" value={filters.anioMin || ''} onChange={handleInputChange} min="1886" max={new Date().getFullYear()+2} className="filter-input range"/>
-                <span>-</span>
-            <input type="number" name="anioMax" placeholder="Max" value={filters.anioMax || ''} onChange={handleInputChange} min="1886" max={new Date().getFullYear()+2} className="filter-input range"/>
-            </div>
-         </div>
-         <div className="filter-group range-filter">
-            <label>Potencia (CV)</label>
-             <div className='range-inputs'>
-                <input type="number" name="potMin" placeholder="Min" value={filters.potMin || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
-                <span>-</span>
-                <input type="number" name="potMax" placeholder="Max" value={filters.potMax || ''} onChange={handleInputChange} min="0" className="filter-input range"/>
-            </div>
-         </div>
-         <div className="filter-group range-filter">
-            <label>Precio Original (€)</label>
-             <div className='range-inputs'>
-                <input type="number" name="precioMin" placeholder="Min" value={filters.precioMin || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
-                <span>-</span>
-                <input type="number" name="precioMax" placeholder="Max" value={filters.precioMax || ''} onChange={handleInputChange} min="0" step="100" className="filter-input range"/>
-            </div>
-         </div>
+        {/* Filtro por Tracción */}
+        <div className="filter-group">
+          <label htmlFor="traccion">Tracción</label>
+          <select 
+            key={`traccion-${resetKey}`}
+            id="traccion" 
+            name="traccion" 
+            value={filters.traccion || ''}
+            onChange={handleCategoricalFilterChange} 
+            className="filter-select"
+          >
+            <option value="">-- Todas --</option>
+            {options?.tracciones?.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filtro por Caja de Cambios */}
+        <div className="filter-group">
+          <label htmlFor="caja_cambios">Caja de Cambios</label>
+          <select 
+            key={`caja-${resetKey}`}
+            id="caja_cambios" 
+            name="caja_cambios" 
+            value={filters.caja_cambios || ''}
+            onChange={handleCategoricalFilterChange} 
+            className="filter-select"
+          >
+            <option value="">-- Todas --</option>
+            {options?.cajas_cambios?.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Filtros de Rango (Año, Potencia, Precio, etc.) */}
+        <div className="filter-group range-filter">
+          <label>Año</label>
+          <div className='range-inputs'>
+            <input 
+              type="number" 
+              name="anioMin" 
+              placeholder="Min" 
+              value={filters.anioMin || ''} 
+              onChange={handleRangeInputChange} 
+              min="1886" 
+              max={new Date().getFullYear()+2} 
+              className="filter-input range"
+            />
+            <span>-</span>
+            <input 
+              type="number" 
+              name="anioMax" 
+              placeholder="Max" 
+              value={filters.anioMax || ''} 
+              onChange={handleRangeInputChange} 
+              min="1886" 
+              max={new Date().getFullYear()+2} 
+              className="filter-input range"
+            />
+          </div>
+        </div>
+        
+        <div className="filter-group range-filter">
+          <label>Potencia (CV)</label>
+          <div className='range-inputs'>
+            <input 
+              type="number" 
+              name="potMin" 
+              placeholder="Min" 
+              value={filters.potMin || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              className="filter-input range"
+            />
+            <span>-</span>
+            <input 
+              type="number" 
+              name="potMax" 
+              placeholder="Max" 
+              value={filters.potMax || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              className="filter-input range"
+            />
+          </div>
+        </div>
+        
+        <div className="filter-group range-filter">
+          <label>Precio Original (€)</label>
+          <div className='range-inputs'>
+            <input 
+              type="number" 
+              name="precioMin" 
+              placeholder="Min" 
+              value={filters.precioMin || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              step="100" 
+              className="filter-input range"
+            />
+            <span>-</span>
+            <input 
+              type="number" 
+              name="precioMax" 
+              placeholder="Max" 
+              value={filters.precioMax || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              step="100" 
+              className="filter-input range"
+            />
+          </div>
+        </div>
+
+        <div className="filter-group range-filter">
+          <label>Peso (kg)</label>
+          <div className='range-inputs'>
+            <input 
+              type="number" 
+              name="pesoMin" 
+              placeholder="Min" 
+              value={filters.pesoMin || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              step="10" 
+              className="filter-input range"
+            />
+            <span>-</span>
+            <input 
+              type="number" 
+              name="pesoMax" 
+              placeholder="Max" 
+              value={filters.pesoMax || ''} 
+              onChange={handleRangeInputChange} 
+              min="0" 
+              step="10" 
+              className="filter-input range"
+            />
+          </div>
+        </div>
 
         {/* Botones de Acción */}
         <div className="filter-actions">
-            <button type="submit" className="btn btn-primary btn-sm apply-filters-btn">
-                <FaFilter /> Aplicar Filtros
-            </button>
+          <button type="submit" className="btn btn-primary btn-sm apply-filters-btn">
+            <FaFilter /> Aplicar Rangos
+          </button>
           <button 
             type="button" 
             onClick={handleResetFilters} 
             className="btn btn-secondary btn-sm reset-filters-btn"
           >
-                <FaUndo /> Limpiar Todo
-            </button>
+            <FaUndo /> Limpiar Todo
+          </button>
         </div>
       </form>
     </div>

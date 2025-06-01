@@ -1,149 +1,223 @@
 /* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Vehicles/FilterSidebar.css */
 
 .filter-sidebar {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 300px;
-    box-sizing: border-box;
+    background: var(--off-white);
+    border-radius: var(--border-radius-lg);
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+    height: fit-content;
+    max-height: calc(100vh - var(--header-height) - 40px);
+    overflow-y: auto;
+    min-width: 280px;
+    max-width: 350px;
 }
 
 .filter-sidebar h4 {
-    margin-top: 0;
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 1.2rem;
-    color: #333;
+    color: var(--racing-grey);
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--cherry-red);
+    padding-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .filter-group {
-    margin-bottom: 15px;
-    width: 100%;
+    margin-bottom: 18px;
 }
 
 .filter-group label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: 600; /* Semi-negrita */
+    font-weight: 500;
+    color: var(--racing-grey);
+    margin-bottom: 6px;
     font-size: 0.9rem;
-    color: #444;
 }
 
-/* Estilo base para inputs y selects */
 .filter-input,
 .filter-select {
     width: 100%;
     padding: 8px 12px;
-    font-size: 0.95rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    transition: border-color 0.2s ease;
+    border: 2px solid var(--light-grey);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    transition: all var(--transition-normal);
+    background-color: white;
     box-sizing: border-box;
 }
 
 .filter-input:focus,
 .filter-select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     outline: none;
+    border-color: var(--cherry-red);
+    box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.1);
 }
 
-/* Estilos específicos para rangos */
-.range-inputs {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    width: 100%;
-}
-
-.range-inputs input {
-    width: calc(50% - 5px);
-    min-width: 0;
-}
-
-.range-filter span {
-    flex-shrink: 0;
-    color: #888;
-    font-weight: bold;
-}
-
-/* Estilos para grupo de ordenación */
+/* Grupo de ordenación */
 .sort-group {
+    border: 1px solid var(--light-grey);
+    border-radius: var(--border-radius-sm);
+    padding: 15px;
+    background-color: #f8f9fa;
     margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
 }
 
 .sort-controls {
     display: flex;
     gap: 8px;
-    width: 100%;
+    align-items: center;
 }
 
 .sort-controls select {
     flex: 1;
-    min-width: 0;
+    margin-bottom: 0;
 }
 
 .btn-sort-toggle {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
+    background: var(--racing-grey);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 8px 10px;
     cursor: pointer;
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1rem;
+    min-width: 40px;
+    height: 40px;
 }
 
-/* Contenedor de botones de acción */
+.btn-sort-toggle:hover {
+    background: var(--cherry-red);
+    transform: scale(1.05);
+}
+
+.btn-sort-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Filtros de rango */
+.range-filter .range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.range-filter .range-inputs input {
+    flex: 1;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    padding: 6px 8px;
+}
+
+.range-filter .range-inputs span {
+    color: var(--racing-grey);
+    font-weight: 500;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Grupos de filtros categóricos */
+.filter-group:nth-child(n+3):nth-child(-n+8) {
+    border-left: 3px solid var(--cherry-red);
+    padding-left: 12px;
+    background: rgba(217, 4, 41, 0.02);
+    border-radius: 4px;
+    margin: 15px -5px;
+    padding: 10px 12px;
+}
+
 .filter-actions {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 25px;
     width: 100%;
+    padding-top: 20px;
+    border-top: 1px solid var(--light-grey);
 }
 
 .btn {
     width: 100%;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
-     display: flex;
-     align-items: center;
-     justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
- }
+    transition: all var(--transition-normal);
+    font-size: 0.95rem;
+}
 
- .apply-filters-btn {
-     font-weight: 600;
- }
+.apply-filters-btn {
+    background: var(--cherry-red);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(217, 4, 41, 0.2);
+}
 
- .reset-filters-btn {
-      background-color: #6c757d; /* Gris para reset */
-      border-color: #6c757d;
- }
+.apply-filters-btn:hover {
+    background: var(--dark-cherry);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(217, 4, 41, 0.3);
+}
 
-  .reset-filters-btn:hover {
-      background-color: #5a6268;
-      border-color: #545b62;
-  }
+.reset-filters-btn {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+.reset-filters-btn:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+/* Estilos de scroll personalizado */
+.filter-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.filter-sidebar::-webkit-scrollbar-thumb {
+    background: var(--cherry-red);
+    border-radius: 3px;
+}
+
+.filter-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-cherry);
+}
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    .filter-sidebar {
+        min-width: 260px;
+        max-width: 300px;
+    }
+}
+
 @media (max-width: 994px) {
     .filter-sidebar {
         margin: 0 auto;
         max-width: 400px;
+        position: static;
+        max-height: none;
+        min-width: unset;
     }
 }
 
@@ -160,16 +234,39 @@
 }
 
 @media (max-width: 576px) {
-    .filter-actions {
-        flex-direction: column;
-    }
-    
     .filter-sidebar {
         padding: 20px;
     }
     
+    .filter-group {
+        margin-bottom: 15px;
+    }
+    
+    .filter-actions {
+        flex-direction: column;
+    }
+    
     .btn {
         width: 100%;
+    }
+    
+    .sort-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .range-filter .range-inputs {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .range-filter .range-inputs span {
+        display: none;
+    }
+
+    .filter-group:nth-child(n+3):nth-child(-n+8) {
+        margin: 10px -3px;
+        padding: 8px 10px;
     }
 }
 

@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'; // useParams para lee
 import apiClient from '../../services/api'; // Nuestro cliente Axios
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
+import BackButton from '../../components/Common/BackButton';
 import AddToFavoritesButton from '../../components/Vehicles/AddToFavoritesButton'; // Botón reutilizable
 import AddToListButton from '../../components/Vehicles/AddToListButton'; // Botón reutilizable (placeholder)
-import { FaArrowLeft, FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt } from 'react-icons/fa'; // Iconos
+import { FaImage, FaClock, FaInfoCircle, FaRulerCombined, FaCogs, FaBolt as FaElectric, FaGasPump as FaFuel, FaTachometerAlt, FaCalendarAlt } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns'; // Para formatear fechas
 import { es } from 'date-fns/locale'; // Para formato español
 import './VehicleDetailPage.css'; // Estilos específicos
@@ -104,18 +105,14 @@ const VehicleDetailPage = () => {
   if (error) return (
       <div className="page-container">
           <ErrorMessage message={error} />
-          <button onClick={() => navigate('/vehicles')} className="btn btn-secondary mt-2">
-              <FaArrowLeft /> Volver al catálogo
-          </button>
+          <BackButton onClick={() => navigate('/vehicles')} text="Volver al catálogo" />
       </div>
   );
   // Si no está cargando, no hay error, pero no hay datos de vehículo
   if (!vehicle) return (
       <div className="page-container">
           <p>No se encontraron datos para este vehículo.</p>
-          <button onClick={() => navigate('/vehicles')} className="btn btn-secondary mt-2">
-              <FaArrowLeft /> Volver al catálogo
-          </button>
+          <BackButton onClick={() => navigate('/vehicles')} text="Volver al catálogo" />
       </div>
   );
 
@@ -175,9 +172,7 @@ const VehicleDetailPage = () => {
   return (
     <div className="container vehicle-detail-page" style={{paddingTop: '20px'}}>
       {/* Enlace para volver */}
-      <button onClick={() => navigate(-1)} className="back-link"> {/* navigate(-1) vuelve a la página anterior */}
-          <FaArrowLeft /> Volver
-      </button>
+      <BackButton onClick={() => navigate(-1)} />
 
       {/* Cabecera con título y botones de acción */}
       <div className="detail-header">
@@ -191,7 +186,7 @@ const VehicleDetailPage = () => {
              disabled={maxed && !selected}
              title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
            >
-             <img src="/img/iconos/icono_comparativo.png" alt="Añadir a comparativa" />
+             <img src="/img/iconos/icono_comparativo.png" alt="" aria-hidden="true" focusable="false" />
            </button>
         </div>
       </div>

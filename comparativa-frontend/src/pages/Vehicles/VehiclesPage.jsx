@@ -71,32 +71,61 @@ const VehiclesPage = () => {
 
   // --- Manejadores de Eventos ---
   const handleFilterChange = useCallback((newFilters) => {
-    // Si newFilters está vacío, limpiar todos los parámetros excepto la página
+    // Obtener los parámetros actuales de la URL
+    const currentParams = Object.fromEntries(searchParams.entries());
+    
+    // Si newFilters está completamente vacío, limpiar TODOS los filtros
     if (Object.keys(newFilters).length === 0) {
-      setSearchParams({ page: '1' }, { replace: true });
+      console.log('🔄 RESETEO COMPLETO: Limpiando todos los filtros');
+      
+      // Reseteo completo: solo mantener ordenación por defecto y página 1
+      const cleanParams = {
+        sortBy: 'm.nombre',
+        sortOrder: 'ASC',
+        page: '1'
+      };
+      
+      // Forzar actualización inmediata
+      setSearchParams(cleanParams, { replace: true });
+      
+      // Doble verificación: limpiar completamente tras un pequeño delay
+      setTimeout(() => {
+        setSearchParams({
+          sortBy: 'm.nombre',
+          sortOrder: 'ASC', 
+          page: '1'
+        }, { replace: true });
+      }, 50);
+      
       return;
     }
 
-    // Obtener los parámetros actuales de la URL
-    const currentParams = Object.fromEntries(searchParams.entries());
-    // Combinar filtros actuales y nuevos. IMPORTANTE: Resetear la página a 1 al aplicar nuevos filtros.
-    const updatedParams = { ...currentParams, ...newFilters, page: '1' };
+    // Para filtros no vacíos, combinar con la ordenación actual
+    const updatedParams = { 
+      ...newFilters, 
+      page: '1' // Siempre resetear a página 1 al filtrar
+    };
+    
+    // Preservar ordenación si existe
+    if (currentParams.sortBy) updatedParams.sortBy = currentParams.sortBy;
+    if (currentParams.sortOrder) updatedParams.sortOrder = currentParams.sortOrder;
 
     // Limpiar parámetros que estén vacíos
-     for (const key in updatedParams) {
-        if (updatedParams[key] === '' || updatedParams[key] === null || updatedParams[key] === undefined) {
-            delete updatedParams[key]; // Eliminar el parámetro si está vacío
-        }
-     }
+    for (const key in updatedParams) {
+      if (updatedParams[key] === '' || updatedParams[key] === null || updatedParams[key] === undefined) {
+        delete updatedParams[key]; // Eliminar el parámetro si está vacío
+      }
+    }
+    
     // Actualizar los searchParams en la URL, lo que disparará el useEffect de fetchVehicles
     setSearchParams(updatedParams, { replace: true }); // replace: true evita entradas duplicadas en el historial
   }, [searchParams, setSearchParams]);
 
-   const handleSortChange = useCallback((sortBy, sortOrder) => {
-       const currentParams = Object.fromEntries(searchParams.entries());
-       // Actualizar solo sortBy y sortOrder, resetear página a 1
-       setSearchParams({ ...currentParams, sortBy, sortOrder, page: '1' }, { replace: true });
-   }, [searchParams, setSearchParams]);
+  const handleSortChange = useCallback((sortBy, sortOrder) => {
+    const currentParams = Object.fromEntries(searchParams.entries());
+    // Actualizar solo sortBy y sortOrder, resetear página a 1
+    setSearchParams({ ...currentParams, sortBy, sortOrder, page: '1' }, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const handlePageChange = useCallback((newPage) => {
     // Mantener los filtros/ordenación actuales y solo cambiar la página

@@ -15,6 +15,7 @@ const Layout = ({ children }) => {
   const navRef = useRef(null);
   const buttonRef = useRef(null);
   const compareIconRef = useRef(null);
+  const prevCompareLength = useRef(compareList.length);
 
   const handleLogout = () => {
     logout();
@@ -67,16 +68,20 @@ const Layout = ({ children }) => {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    // Animación de aparición para el icono de comparativa
-    if (compareList.length === 1 && compareIconRef.current) {
+    if (
+      compareList.length > prevCompareLength.current &&
+      compareIconRef.current
+    ) {
       compareIconRef.current.classList.add('compare-appear');
       const timer = setTimeout(() => {
         if (compareIconRef.current) {
           compareIconRef.current.classList.remove('compare-appear');
         }
       }, 900);
+      prevCompareLength.current = compareList.length;
       return () => clearTimeout(timer);
     }
+    prevCompareLength.current = compareList.length;
   }, [compareList.length]);
 
   return (
@@ -99,10 +104,15 @@ const Layout = ({ children }) => {
               >
                 <button 
                   className="compare-header-icon" 
-                  onClick={() => { navigate('/compare'); setShowComparePopover(false); }}
+                  onClick={() => { 
+                    navigate('/compare', { 
+                      state: { vehicleIds: compareList.map(v => v.id_vehiculo) } 
+                    }); 
+                    setShowComparePopover(false); 
+                  }}
                   title="Ir a la página de comparación"
                 >
-                  <img src="/img/iconos/icono_comparativo.png" alt="Comparar vehículos" className="compare-main-icon" />
+                  <img src="/img/iconos/icono_comparativo.png" alt="" aria-hidden="true" focusable="false" className="compare-main-icon" />
                   <span className="compare-badge">{compareList.length}</span>
                 </button>
                 {showComparePopover && (
@@ -132,7 +142,15 @@ const Layout = ({ children }) => {
                           <button className="compare-popover-btn clear" onClick={clearCompare}>
                             Vaciar Lista
                           </button>
-                          <button className="compare-popover-btn go-to-compare" onClick={() => { navigate('/compare'); setShowComparePopover(false); }}>
+                          <button 
+                            className="compare-popover-btn go-to-compare" 
+                            onClick={() => { 
+                              navigate('/compare', { 
+                                state: { vehicleIds: compareList.map(v => v.id_vehiculo) } 
+                              }); 
+                              setShowComparePopover(false); 
+                            }}
+                          >
                             Comparar
                           </button>
                         </div>
@@ -167,18 +185,17 @@ const Layout = ({ children }) => {
             className={`main-nav ${isMenuOpen ? 'open' : ''}`}
             aria-hidden={!isMenuOpen}
           >
-            <div className="nav-links">
-              <Link to="/vehicles" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                <FaCar /> Catálogo
-              </Link>
-              <Link to="/compare" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                <FaExchangeAlt /> Comparar
-              </Link>
-              
-              {isAuthenticated ? (
-                <div className="user-menu">
-                  <span className="user-greeting">Hola, {user.nombre}</span>
-                  <div className="user-links">
+            <div className="nav-content">
+              <div className="nav-links">
+                <Link to="/vehicles" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                  <FaCar /> Catálogo
+                </Link>
+                <Link to="/compare" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                  <FaExchangeAlt /> Comparar
+                </Link>
+                
+                {isAuthenticated ? (
+                  <div className="nav-user-links">
                     <Link to="/profile" className="nav-link" onClick={() => setIsMenuOpen(false)}>
                       <FaUser /> Mi Perfil
                     </Link>
@@ -193,19 +210,34 @@ const Layout = ({ children }) => {
                         <FaUser /> Panel Admin
                       </Link>
                     )}
-                    <button onClick={handleLogout} className="nav-link logout-button">
-                      <FaSignOutAlt /> Cerrar Sesión
-                    </button>
                   </div>
-                </div>
-              ) : (
-                <div className="auth-links">
-                  <Link to="/login" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                    <FaSignInAlt /> Iniciar Sesión
-                  </Link>
-                  <Link to="/register" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                    <FaUserPlus /> Registrarse
-                  </Link>
+                ) : (
+                  <div className="auth-links">
+                    <Link to="/login" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                      <FaSignInAlt /> Iniciar Sesión
+                    </Link>
+                    <Link to="/register" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                      <FaUserPlus /> Registrarse
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Información del usuario en la parte inferior */}
+              {isAuthenticated && (
+                <div className="nav-user-section">
+                  <div className="user-info">
+                    <div className="user-avatar">
+                      <FaUser />
+                    </div>
+                    <div className="user-details">
+                      <span className="user-name">{user.nombre}</span>
+                      <span className="user-email">{user.email}</span>
+                    </div>
+                  </div>
+                  <button onClick={handleLogout} className="logout-button" title="Cerrar sesión">
+                    <FaSignOutAlt />
+                  </button>
                 </div>
               )}
             </div>

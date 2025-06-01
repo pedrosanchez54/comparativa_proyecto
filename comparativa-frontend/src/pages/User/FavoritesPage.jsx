@@ -6,15 +6,12 @@ import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import VehicleCard from '../../components/Vehicles/VehicleCard';
-import { useCompare } from '../../contexts/CompareContext';
-import CompareCarsIcon from '../../components/Common/CompareCarsIcon';
 import './FavoritesPage.css';
 
 const FavoritesPage = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { compareList, isInCompare, addVehicle, removeVehicle } = useCompare();
 
   // Cargar favoritos al montar el componente
   useEffect(() => {
@@ -23,13 +20,16 @@ const FavoritesPage = () => {
 
   const loadFavorites = async () => {
     try {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
+      
       const response = await apiClient.get('/users/favorites');
-      setFavorites(response.data);
+      const favoritesData = response.data.data || [];
+      setFavorites(Array.isArray(favoritesData) ? favoritesData : []);
     } catch (error) {
       console.error('Error al cargar favoritos:', error);
       setError('No se pudieron cargar tus vehículos favoritos. Por favor, inténtalo de nuevo más tarde.');
+      setFavorites([]); // Asegurar que favorites sea siempre un array
     } finally {
       setLoading(false);
     }
@@ -38,10 +38,16 @@ const FavoritesPage = () => {
   const handleRemoveFavorite = async (vehicleId) => {
     try {
       await apiClient.delete(`/users/favorites/${vehicleId}`);
-      setFavorites(prev => prev.filter(fav => fav.id_vehiculo !== vehicleId));
+      setFavorites(prev => {
+        if (Array.isArray(prev)) {
+          return prev.filter(fav => fav.id_vehiculo !== vehicleId);
+        }
+        return [];
+      });
       toast.success('Vehículo eliminado de favoritos');
     } catch (error) {
       toast.error('Error al eliminar de favoritos');
+      console.error('Error eliminando favorito:', error);
     }
   };
 
@@ -69,7 +75,7 @@ const FavoritesPage = () => {
         </div>
       ) : (
         <div className="favorites-grid">
-          {favorites.map(vehicle => (
+          {Array.isArray(favorites) && favorites.map(vehicle => (
             <div key={vehicle.id_vehiculo} className="favorite-item">
               <VehicleCard vehicle={vehicle} />
               <button
@@ -78,14 +84,6 @@ const FavoritesPage = () => {
                 title="Eliminar de favoritos"
               >
                 <FaTrash />
-              </button>
-              <button
-                className={`compare-btn${isInCompare(vehicle.id_vehiculo) ? ' selected' : ''}`}
-                onClick={() => isInCompare(vehicle.id_vehiculo) ? removeVehicle(vehicle.id_vehiculo) : addVehicle(vehicle)}
-                disabled={compareList.length >= 6 && !isInCompare(vehicle.id_vehiculo)}
-                title={isInCompare(vehicle.id_vehiculo) ? 'Quitar de comparativa' : compareList.length >= 6 ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
-              >
-                <CompareCarsIcon selected={isInCompare(vehicle.id_vehiculo)} />
               </button>
             </div>
           ))}

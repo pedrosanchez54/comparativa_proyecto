@@ -97,7 +97,12 @@ const VehicleCard = ({ vehicle }) => {
           disabled={maxed && !selected}
           title={selected ? 'Quitar de comparativa' : maxed ? 'Máximo 6 vehículos' : 'Añadir a comparativa'}
         >
-          <img src="/img/iconos/icono_comparativo.png" alt="Añadir a comparativa" />
+          <img 
+            src="/img/iconos/icono_comparativo.png" 
+            alt="" 
+            aria-hidden="true" 
+            focusable="false" 
+          />
         </button>
       </div>
     </div>

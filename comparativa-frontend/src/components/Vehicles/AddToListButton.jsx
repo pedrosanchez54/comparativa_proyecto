@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaList, FaPlus, FaCheck } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,8 +19,8 @@ const AddToListButton = ({ vehicleId }) => {
   const [loading, setLoading] = useState(false);
   const [newListName, setNewListName] = useState('');
   const { isAuthenticated } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Cargar las listas del usuario y verificar en cuáles está el vehículo
   useEffect(() => {
@@ -28,36 +29,43 @@ const AddToListButton = ({ vehicleId }) => {
 
       try {
         setLoading(true);
-        const [listsResponse, vehicleListsResponse] = await Promise.all([
-          apiClient.get('/users/lists'),
-          apiClient.get(`/vehicles/${vehicleId}/lists`)
-        ]);
-
-        const userLists = listsResponse.data;
-        const vehicleLists = vehicleListsResponse.data;
-
-        setLists(userLists);
-        setSelectedLists(vehicleLists.map(list => list.id));
+        
+        // Cargar todas las listas del usuario
+        const listsResponse = await apiClient.get('/users/lists');
+        const userLists = listsResponse.data.data || [];
+        setLists(Array.isArray(userLists) ? userLists : []);
+        
+        // Verificar en qué listas ya está este vehículo
+        const vehicleListsResponse = await apiClient.get(`/users/lists/vehicle/${vehicleId}`);
+        const vehicleListIds = vehicleListsResponse.data.data || [];
+        setSelectedLists(Array.isArray(vehicleListIds) ? vehicleListIds : []);
+        
       } catch (error) {
         console.error('Error al cargar las listas:', error);
-        toast.error('Error al cargar las listas');
+        if (error.response?.status === 401) {
+          toast.error('Sesión expirada. Por favor, inicia sesión nuevamente');
+          navigate('/login', { state: { from: location } });
+        } else {
+          toast.error('Error al cargar las listas');
+        }
+        setLists([]);
+        setSelectedLists([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadLists();
-  }, [vehicleId, isAuthenticated, showModal]);
+  }, [vehicleId, isAuthenticated, showModal, navigate, location]);
 
-     const handleClick = (e) => {
-    e.preventDefault();
+  const handleClick = (e) => {
     e.stopPropagation();
 
     if (!isAuthenticated) {
       toast.info('Debes iniciar sesión para gestionar tus listas');
-             navigate('/login', { state: { from: location } });
-            return;
-         }
+      navigate('/login', { state: { from: location } });
+      return;
+    }
 
     setShowModal(true);
   };
@@ -65,16 +73,18 @@ const AddToListButton = ({ vehicleId }) => {
   const handleListToggle = async (listId) => {
     try {
       setLoading(true);
+      
       if (selectedLists.includes(listId)) {
         await apiClient.delete(`/users/lists/${listId}/vehicles/${vehicleId}`);
         setSelectedLists(prev => prev.filter(id => id !== listId));
         toast.success('Vehículo eliminado de la lista');
       } else {
-        await apiClient.post(`/users/lists/${listId}/vehicles`, { vehicleId });
+        const response = await apiClient.post(`/users/lists/${listId}/vehicles/${vehicleId}`, {});
         setSelectedLists(prev => [...prev, listId]);
         toast.success('Vehículo añadido a la lista');
       }
     } catch (error) {
+      console.error('Error al actualizar la lista:', error);
       toast.error('Error al actualizar la lista');
     } finally {
       setLoading(false);
@@ -88,22 +98,27 @@ const AddToListButton = ({ vehicleId }) => {
     try {
       setLoading(true);
       const response = await apiClient.post('/users/lists', { 
-        nombre: newListName,
-        vehiculos: [vehicleId]
+        nombre: newListName
       });
       
-      setLists(prev => [...prev, response.data]);
-      setSelectedLists(prev => [...prev, response.data.id]);
+      const newList = response.data.data;
+      setLists(prev => Array.isArray(prev) ? [...prev, newList] : [newList]);
+      
+      // Ahora añadir el vehículo a la nueva lista
+      await apiClient.post(`/users/lists/${newList.id}/vehicles/${vehicleId}`, {});
+      setSelectedLists(prev => [...prev, newList.id]);
+      
       setNewListName('');
-      toast.success('Lista creada correctamente');
+      toast.success('Lista creada y vehículo añadido correctamente');
     } catch (error) {
+      console.error('Error al crear la lista:', error);
       toast.error('Error al crear la lista');
     } finally {
       setLoading(false);
     }
   };
 
-    return (
+  return (
     <>
       <button
         onClick={handleClick}
@@ -113,7 +128,7 @@ const AddToListButton = ({ vehicleId }) => {
         <FaList />
       </button>
 
-      {showModal && (
+      {showModal && createPortal(
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
           <div className="list-modal" onClick={e => e.stopPropagation()}>
             <h3>Añadir a lista</h3>
@@ -156,12 +171,13 @@ const AddToListButton = ({ vehicleId }) => {
               onClick={() => setShowModal(false)}
             >
               Cerrar
-        </button>
+            </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
-    );
+  );
 };
 
 export default AddToListButton; 

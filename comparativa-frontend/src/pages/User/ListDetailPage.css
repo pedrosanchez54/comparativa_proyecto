@@ -1,29 +1,12 @@
 .list-detail-page {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .list-detail-header {
   margin-bottom: 2rem;
   position: relative;
-}
-
-.back-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #666;
-  text-decoration: none;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  margin-bottom: 1rem;
-}
-
-.back-button:hover {
-  color: #007bff;
-  background-color: #f8f9fa;
 }
 
 .list-detail-header h1 {

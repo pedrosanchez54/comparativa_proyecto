@@ -130,7 +130,7 @@ const Navbar = () => {
               onMouseLeave={() => setShowPopover(false)}
             >
               <button className="compare-header-icon" onClick={() => navigate('/compare')} title="Ir a la página de comparación">
-                <img src="/img/iconos/icono_comparativo.png" alt="Comparar vehículos" className="compare-main-icon" />
+                <img src="/img/iconos/icono_comparativo.png" alt="" aria-hidden="true" focusable="false" className="compare-main-icon" />
                 <span className="compare-badge">{compareList.length}</span>
               </button>
               {showPopover && (

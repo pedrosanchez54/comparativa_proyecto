@@ -1,21 +1,47 @@
 // Ruta: ~/comparativa_proyecto/comparativa-backend/middleware/authMiddleware.js
 
+const { verifyToken } = require('../utils/jwtUtils');
+
 /**
  * Middleware para verificar si el usuario está autenticado.
- * Comprueba si existe información de usuario en la sesión.
+ * Soporta tanto JWT (desde header Authorization) como sesiones.
  * @param {object} req - Objeto de petición de Express.
  * @param {object} res - Objeto de respuesta de Express.
  * @param {function} next - Función para pasar al siguiente middleware/ruta.
  */
 function isAuthenticated(req, res, next) {
-  // express-session añade req.session.userId si el login fue exitoso y se guardó
-  if (req.session && req.session.userId) {
-    // El usuario está autenticado, permite continuar
-    return next();
-  } else {
-    // El usuario no está autenticado, devuelve error 401 (No Autorizado)
-    return res.status(401).json({ message: 'Acceso no autorizado. Por favor, inicia sesión.' });
+  // Intentar autenticación por JWT primero
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7); // Quitar "Bearer "
+    const payload = verifyToken(token);
+    
+    if (payload) {
+      // Token válido - agregar datos del usuario al request
+      req.user = {
+        id: payload.id,
+        email: payload.email,
+        nombre: payload.nombre,
+        rol: payload.rol
+      };
+      return next();
+    }
   }
+  
+  // Si no hay JWT válido, intentar autenticación por sesión
+  if (req.session && req.session.userId) {
+    // El usuario está autenticado por sesión, permite continuar
+    req.user = {
+      id: req.session.userId,
+      email: req.session.userEmail,
+      nombre: req.session.userName,
+      rol: req.session.userRole
+    };
+    return next();
+  }
+  
+  // Ningún método de autenticación válido
+  return res.status(401).json({ message: 'Acceso no autorizado. Por favor, inicia sesión.' });
 }
 
 /**
@@ -26,8 +52,8 @@ function isAuthenticated(req, res, next) {
  * @param {function} next - Función para pasar al siguiente middleware/ruta.
  */
 function isAdmin(req, res, next) {
-  // Asume que al hacer login guardamos el rol en req.session.userRole
-  if (req.session && req.session.userRole === 'admin') {
+  // Usar req.user establecido por isAuthenticated
+  if (req.user && req.user.rol === 'admin') {
     // El usuario es admin, permite continuar
     return next();
   } else {
