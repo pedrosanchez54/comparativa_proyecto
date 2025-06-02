@@ -74,7 +74,7 @@ const HomePage = () => {
               <>
                 <h2 className="welcome-message">¡Hola {user?.nombre?.split(' ')[0]}! 👋</h2>
                 <p className="cta-description-blanca">
-                  ¡Qué bueno verte de vuelta! Explora nuestras funciones personalizadas.
+                  ¡Qué alegría verte de nuevo! Explora nuestras funciones personalizadas.
                 </p>
                 <div className="cta-buttons">
                   <Link to="/favorites" className="btn btn-primary">

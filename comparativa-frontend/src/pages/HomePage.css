@@ -281,11 +281,16 @@
 
 /* Estilo especial para el saludo personalizado */
 .cta-section h2.welcome-message {
-  background: linear-gradient(135deg, var(--cherry-red) 0%, #ff6b6b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  color: var(--cherry-red);
+  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.95), 0 0 16px rgba(0,0,0,0.8);
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  filter: none;
 }
 
 /* Responsive */

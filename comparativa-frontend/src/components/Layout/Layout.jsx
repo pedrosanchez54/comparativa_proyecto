@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCompare } from '../../contexts/CompareContext';
-import { FaUser, FaHeart, FaList, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaCar, FaExchangeAlt } from 'react-icons/fa';
+import { FaUser, FaHeart, FaList, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaCar, FaExchangeAlt, FaPowerOff } from 'react-icons/fa';
 import './Layout.css';
 
 const Layout = ({ children }) => {
