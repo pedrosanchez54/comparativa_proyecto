@@ -310,8 +310,8 @@
   gap: 1rem;
 }
 
-.save-button,
-.cancel-button {
+.edit-actions .save-button,
+.edit-actions .cancel-button {
   flex: 1;
   padding: 0.8rem;
   border: none;
@@ -325,32 +325,32 @@
   font-size: 1rem;
 }
 
-.save-button {
+.edit-actions .save-button {
   background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
   color: white;
   box-shadow: 0 3px 12px rgba(39, 174, 96, 0.3);
 }
 
-.save-button:hover:not(:disabled) {
+.edit-actions .save-button:hover:not(:disabled) {
   background: linear-gradient(135deg, #229954 0%, #196f3d 100%);
   transform: translateY(-2px);
   box-shadow: 0 5px 16px rgba(39, 174, 96, 0.4);
 }
 
-.save-button:disabled {
+.edit-actions .save-button:disabled {
   background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   cursor: not-allowed;
   transform: none;
   box-shadow: 0 2px 8px rgba(149, 165, 166, 0.2);
 }
 
-.cancel-button {
+.edit-actions .cancel-button {
   background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   color: white;
   box-shadow: 0 3px 12px rgba(149, 165, 166, 0.3);
 }
 
-.cancel-button:hover {
+.edit-actions .cancel-button:hover {
   background: linear-gradient(135deg, #7f8c8d 0%, #566573 100%);
   transform: translateY(-2px);
   box-shadow: 0 5px 16px rgba(149, 165, 166, 0.4);

@@ -10,10 +10,33 @@ const updateProfile = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { nombre, email } = req.body;
+    const { nombre, email, currentPassword } = req.body;
     const userId = req.user.id; // Viene del middleware de autenticación
 
     try {
+        // Verificar contraseña actual por seguridad
+        if (!currentPassword) {
+            return res.status(400).json({ message: 'La contraseña actual es requerida para confirmar los cambios.' });
+        }
+
+        // Obtener contraseña actual del usuario
+        const [userData] = await pool.query(
+            'SELECT contraseña FROM Usuarios WHERE id_usuario = ?',
+            [userId]
+        );
+
+        if (userData.length === 0) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        // Verificar contraseña actual
+        const { verifyPassword } = require('../utils/hashUtils');
+        const isValidPassword = await verifyPassword(userData[0].contraseña, currentPassword);
+
+        if (!isValidPassword) {
+            return res.status(401).json({ message: 'La contraseña actual es incorrecta.' });
+        }
+
         // Verificar si el email ya existe (si se está cambiando)
         if (email) {
             const [existingUser] = await pool.query(

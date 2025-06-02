@@ -376,7 +376,7 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.logout-button {
+.nav-user-section .logout-button {
   width: 100%;
   height: 48px;
   border-radius: var(--border-radius-md);
@@ -387,14 +387,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: all 0.3s ease;
+  cursor: pointer;
   overflow: visible;
   position: relative;
   z-index: 1;
 }
 
-.logout-button svg {
+.nav-user-section .logout-button svg {
   color: #EDF2F4 !important;
   font-size: 1.4rem !important;
   width: 1.4rem !important;
@@ -406,15 +406,14 @@
   stroke: #EDF2F4 !important;
 }
 
-.logout-button:hover {
+.nav-user-section .logout-button:hover {
   background: rgba(217, 4, 41, 0.8);
   border-color: var(--cherry-red);
-  color: var(--off-white);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(217, 4, 41, 0.4);
 }
 
-.logout-button:hover svg {
+.nav-user-section .logout-button:hover svg {
   color: #ffffff !important;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
   fill: #ffffff !important;

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'; // useParams pa
 import apiClient from '../../services/api';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
-import { FaSave, FaTimes, FaCar, FaBolt, FaRulerCombined, FaCogs, FaLeaf, FaTachometerAlt } from 'react-icons/fa'; // Iconos
+import { FaSave, FaTimes, FaCar, FaBolt, FaRulerCombined, FaCogs, FaLeaf, FaTachometerAlt, FaImages, FaTrash, FaPlus, FaStopwatch, FaInfoCircle } from 'react-icons/fa'; // Iconos
 import { format, parseISO } from 'date-fns';
 import { toast } from 'react-toastify';
 import BackButton from '../../components/Common/BackButton';
@@ -18,16 +18,53 @@ const gearboxes = ['Manual', 'Automática Convertidor Par', 'Automática CVT', '
 
 // --- Estado Inicial del Formulario ---
 const initialFormData = {
-    marca: '', modelo: '', version: '', año: new Date().getFullYear(), tipo: '',
-    combustible: '', pegatina_ambiental: 'Sin etiqueta', potencia: '', par_motor: '',
-    velocidad_max: '', aceleracion_0_100: '', distancia_frenado_100_0: '',
-    consumo_urbano: '', consumo_extraurbano: '', consumo_mixto: '', emisiones: '',
-    autonomia_electrica: '', capacidad_bateria: '', tiempo_carga_ac: '',
-    potencia_carga_dc: '', tiempo_carga_dc_10_80: '', peso: '', num_puertas: '',
-    num_plazas: '', vol_maletero: '', vol_maletero_max: '', dimension_largo: '',
-    dimension_ancho: '', dimension_alto: '', distancia_entre_ejes: '', traccion: '',
-    caja_cambios: '', num_marchas: '', precio_original: '', precio_actual_estimado: '',
-    fecha_lanzamiento: '',
+  // Información básica
+  anio: '',
+  tipo: '',
+  version: '',
+  pegatina_ambiental: 'Sin etiqueta',
+  combustible: '', // Campo que viene de la tabla Motorizacion
+  
+  // Rendimiento
+  potencia: '',
+  par_motor: '',
+  velocidad_max: '',
+  aceleracion_0_100: '',
+  distancia_frenado_100_0: '',
+  
+  // Consumo y emisiones
+  consumo_urbano: '',
+  consumo_extraurbano: '',
+  consumo_mixto: '',
+  emisiones: '',
+  
+  // Eléctrico
+  autonomia_electrica: '',
+  capacidad_bateria: '',
+  tiempo_carga_ac: '',
+  potencia_carga_dc: '',
+  tiempo_carga_dc_10_80: '',
+  
+  // Dimensiones
+  peso: '',
+  num_puertas: '',
+  num_plazas: '',
+  vol_maletero: '',
+  vol_maletero_max: '',
+  dimension_largo: '',
+  dimension_ancho: '',
+  dimension_alto: '',
+  distancia_entre_ejes: '',
+  
+  // Transmisión
+  traccion: '',
+  caja_cambios: '',
+  num_marchas: '',
+  
+  // Precios y fechas
+  precio_original: '',
+  precio_actual_estimado: '',
+  fecha_lanzamiento: ''
 };
 
 // --- Componente del Formulario ---
@@ -50,6 +87,12 @@ const AdminVehicleFormPage = () => {
   const [selectedGeneracion, setSelectedGeneracion] = useState('');
   const [selectedMotorizacion, setSelectedMotorizacion] = useState('');
 
+  // Estados para imágenes y tiempos
+  const [vehicleImages, setVehicleImages] = useState([]);
+  const [vehicleTimes, setVehicleTimes] = useState([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+  const [loadingTimes, setLoadingTimes] = useState(false);
+
   // --- Carga de Datos (si estamos editando) ---
   const fetchVehicleData = useCallback(async () => {
     if (!isEditing) return; // No hacer nada si es un vehículo nuevo
@@ -57,6 +100,7 @@ const AdminVehicleFormPage = () => {
     setLoading(true);
     setError(null);
     try {
+      // Cargar datos principales del vehículo
       const response = await apiClient.get(`/vehicles/${id}`);
       const fetchedData = response.data.data;
 
@@ -64,13 +108,21 @@ const AdminVehicleFormPage = () => {
       // 1. Formatear fecha_lanzamiento a YYYY-MM-DD para input type="date"
       if (fetchedData.fecha_lanzamiento) {
             try {
-                fetchedData.fecha_lanzamiento = format(parseISO(fetchedData.fecha_lanzamiento), 'yyyy-MM-dd');
+                const fechaLanzamiento = format(parseISO(fetchedData.fecha_lanzamiento), 'yyyy-MM-dd');
+                fetchedData.fecha_lanzamiento = fechaLanzamiento;
+                
+                // Sincronizar el año con la fecha de lanzamiento si no hay año o si es inconsistente
+                const yearFromDate = new Date(fechaLanzamiento).getFullYear();
+                if (!fetchedData.anio || Math.abs(fetchedData.anio - yearFromDate) > 1) {
+                  fetchedData.anio = yearFromDate;
+                }
             } catch {
                  fetchedData.fecha_lanzamiento = ''; // Poner vacío si la fecha es inválida
             }
       } else {
           fetchedData.fecha_lanzamiento = '';
       }
+      
       // 2. Convertir valores NULL de la BD a strings vacíos para los inputs controlados
         const processedData = { ...initialFormData }; // Empezar con la estructura inicial
         for (const key in fetchedData) {
@@ -81,11 +133,49 @@ const AdminVehicleFormPage = () => {
 
       setVehicleData(processedData); // Actualizar el estado del formulario
 
+      // Cargar datos relacionados en paralelo
+      await Promise.all([
+        fetchVehicleImages(),
+        fetchVehicleTimes()
+      ]);
+
     } catch (err) {
       setError(`Error al cargar los datos del vehículo (ID: ${id}). Es posible que no exista.`);
       console.error("Error fetching vehicle data for edit:", err.response?.data || err.message);
     } finally {
       setLoading(false);
+    }
+  }, [id, isEditing]);
+
+  // Función para cargar imágenes del vehículo
+  const fetchVehicleImages = useCallback(async () => {
+    if (!isEditing) return;
+    
+    setLoadingImages(true);
+    try {
+      const response = await apiClient.get(`/images/vehicle/${id}`);
+      setVehicleImages(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching vehicle images:", err.response?.data || err.message);
+      setVehicleImages([]);
+    } finally {
+      setLoadingImages(false);
+    }
+  }, [id, isEditing]);
+
+  // Función para cargar tiempos de circuito del vehículo
+  const fetchVehicleTimes = useCallback(async () => {
+    if (!isEditing) return;
+    
+    setLoadingTimes(true);
+    try {
+      const response = await apiClient.get(`/times/vehicle/${id}`);
+      setVehicleTimes(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching vehicle times:", err.response?.data || err.message);
+      setVehicleTimes([]);
+    } finally {
+      setLoadingTimes(false);
     }
   }, [id, isEditing]);
 
@@ -103,6 +193,35 @@ const AdminVehicleFormPage = () => {
       setMotorizaciones(res.data.motorizaciones);
     });
   }, []);
+
+  // Efecto para establecer los valores de los selects cuando se cargan los datos del vehículo
+  useEffect(() => {
+    if (isEditing && vehicleData.id_motorizacion && motorizaciones.length > 0) {
+      // Encontrar la motorización correspondiente
+      const motorizacion = motorizaciones.find(m => m.id_motorizacion === parseInt(vehicleData.id_motorizacion));
+      if (motorizacion) {
+        setSelectedMotorizacion(motorizacion.id_motorizacion.toString());
+        
+        // Encontrar la generación correspondiente
+        const generacion = generaciones.find(g => g.id_generacion === motorizacion.id_generacion);
+        if (generacion) {
+          setSelectedGeneracion(generacion.id_generacion.toString());
+          
+          // Encontrar el modelo correspondiente
+          const modelo = modelos.find(mo => mo.id_modelo === generacion.id_modelo);
+          if (modelo) {
+            setSelectedModelo(modelo.id_modelo.toString());
+            
+            // Encontrar la marca correspondiente
+            const marca = marcas.find(ma => ma.id_marca === modelo.id_marca);
+            if (marca) {
+              setSelectedMarca(marca.id_marca.toString());
+            }
+          }
+        }
+      }
+    }
+  }, [vehicleData.id_motorizacion, motorizaciones, generaciones, modelos, marcas, isEditing]);
 
   // Filtrar modelos, generaciones y motorizaciones según selección
   const modelosFiltrados = modelos.filter(m => m.id_marca === parseInt(selectedMarca));
@@ -134,7 +253,23 @@ const AdminVehicleFormPage = () => {
   // Manejador genérico para cambios en los inputs/selects
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setVehicleData(prev => ({ ...prev, [name]: value }));
+    setVehicleData(prev => {
+      const newData = { ...prev, [name]: value };
+      
+      // Sincronizar año con fecha de lanzamiento
+      if (name === 'fecha_lanzamiento' && value) {
+        // Si se cambia la fecha, extraer el año automáticamente
+        const year = new Date(value).getFullYear();
+        newData.anio = year.toString();
+      } else if (name === 'anio' && value) {
+        // Si se cambia el año manualmente y no hay fecha específica, crear una fecha genérica
+        if (!newData.fecha_lanzamiento) {
+          newData.fecha_lanzamiento = `${value}-01-01`;
+        }
+      }
+      
+      return newData;
+    });
   };
 
   // Manejador para enviar el formulario (Crear o Actualizar)
@@ -147,18 +282,51 @@ const AdminVehicleFormPage = () => {
     // Convertir strings vacíos de campos numéricos/fecha a NULL
     const dataToSend = {
       id_motorizacion: selectedMotorizacion,
-      anio: vehicleData.año,
+      anio: vehicleData.anio,
       tipo: vehicleData.tipo,
-      version: vehicleData.version,
+      version: vehicleData.version || null,
       pegatina_ambiental: vehicleData.pegatina_ambiental,
-      velocidad_max: vehicleData.velocidad_max,
-      aceleracion_0_100: vehicleData.aceleracion_0_100,
-      consumo_mixto: vehicleData.consumo_mixto,
-      emisiones: vehicleData.emisiones,
-      peso: vehicleData.peso,
-      precio_original: vehicleData.precio_original,
-      precio_actual_estimado: vehicleData.precio_actual_estimado,
-      // ...otros campos de la tabla Vehiculo
+      
+      // Rendimiento
+      potencia: vehicleData.potencia || null,
+      par_motor: vehicleData.par_motor || null,
+      velocidad_max: vehicleData.velocidad_max || null,
+      aceleracion_0_100: vehicleData.aceleracion_0_100 || null,
+      distancia_frenado_100_0: vehicleData.distancia_frenado_100_0 || null,
+      
+      // Consumo y emisiones
+      consumo_urbano: vehicleData.consumo_urbano || null,
+      consumo_extraurbano: vehicleData.consumo_extraurbano || null,
+      consumo_mixto: vehicleData.consumo_mixto || null,
+      emisiones: vehicleData.emisiones || null,
+      
+      // Eléctrico
+      autonomia_electrica: vehicleData.autonomia_electrica || null,
+      capacidad_bateria: vehicleData.capacidad_bateria || null,
+      tiempo_carga_ac: vehicleData.tiempo_carga_ac || null,
+      potencia_carga_dc: vehicleData.potencia_carga_dc || null,
+      tiempo_carga_dc_10_80: vehicleData.tiempo_carga_dc_10_80 || null,
+      
+      // Dimensiones
+      peso: vehicleData.peso || null,
+      num_puertas: vehicleData.num_puertas || null,
+      num_plazas: vehicleData.num_plazas || null,
+      vol_maletero: vehicleData.vol_maletero || null,
+      vol_maletero_max: vehicleData.vol_maletero_max || null,
+      dimension_largo: vehicleData.dimension_largo || null,
+      dimension_ancho: vehicleData.dimension_ancho || null,
+      dimension_alto: vehicleData.dimension_alto || null,
+      distancia_entre_ejes: vehicleData.distancia_entre_ejes || null,
+      
+      // Transmisión
+      traccion: vehicleData.traccion || null,
+      caja_cambios: vehicleData.caja_cambios || null,
+      num_marchas: vehicleData.num_marchas || null,
+      
+      // Precios y fechas
+      precio_original: vehicleData.precio_original || null,
+      precio_actual_estimado: vehicleData.precio_actual_estimado || null,
+      fecha_lanzamiento: vehicleData.fecha_lanzamiento || null
     };
 
     try {
@@ -191,6 +359,119 @@ const AdminVehicleFormPage = () => {
     }
   };
 
+  // --- Funciones para gestión de imágenes ---
+  const handleAddImage = async () => {
+    const ruta = document.getElementById('new_image_ruta').value.trim();
+    const descripcion = document.getElementById('new_image_desc').value.trim();
+    const orden = parseInt(document.getElementById('new_image_orden').value) || 0;
+
+    if (!ruta) {
+      toast.error('La ruta de la imagen es obligatoria');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await apiClient.post(`/images/vehicle/${id}`, {
+        ruta_local: ruta,
+        descripcion: descripcion || null,
+        orden: orden
+      });
+      
+      toast.success('Imagen añadida correctamente');
+      
+      // Limpiar formulario
+      document.getElementById('new_image_ruta').value = '';
+      document.getElementById('new_image_desc').value = '';
+      document.getElementById('new_image_orden').value = '0';
+      
+      // Recargar imágenes
+      await fetchVehicleImages();
+    } catch (err) {
+      toast.error('Error al añadir la imagen');
+      console.error('Error adding image:', err.response?.data || err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteImage = async (idImagen) => {
+    if (!window.confirm('¿Estás seguro de eliminar esta imagen?')) return;
+
+    try {
+      setSaving(true);
+      await apiClient.delete(`/images/${idImagen}`);
+      toast.success('Imagen eliminada correctamente');
+      await fetchVehicleImages();
+    } catch (err) {
+      toast.error('Error al eliminar la imagen');
+      console.error('Error deleting image:', err.response?.data || err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // --- Funciones para gestión de tiempos ---
+  const handleAddTime = async () => {
+    const circuito = document.getElementById('new_time_circuito').value.trim();
+    const tiempo_vuelta = document.getElementById('new_time_vuelta').value.trim();
+    const condiciones = document.getElementById('new_time_condiciones').value || null;
+    const fecha_record = document.getElementById('new_time_fecha').value || null;
+    const piloto = document.getElementById('new_time_piloto').value.trim() || null;
+    const neumaticos = document.getElementById('new_time_neumaticos').value.trim() || null;
+
+    if (!circuito || !tiempo_vuelta) {
+      toast.error('El circuito y el tiempo de vuelta son obligatorios');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await apiClient.post(`/times/vehicle/${id}`, {
+        circuito,
+        tiempo_vuelta,
+        condiciones,
+        fecha_record,
+        piloto,
+        neumaticos
+      });
+      
+      toast.success('Tiempo añadido correctamente');
+      
+      // Limpiar formulario
+      document.getElementById('new_time_circuito').value = '';
+      document.getElementById('new_time_vuelta').value = '';
+      document.getElementById('new_time_condiciones').value = '';
+      document.getElementById('new_time_fecha').value = '';
+      document.getElementById('new_time_piloto').value = '';
+      document.getElementById('new_time_neumaticos').value = '';
+      
+      // Recargar tiempos
+      await fetchVehicleTimes();
+    } catch (err) {
+      toast.error('Error al añadir el tiempo');
+      console.error('Error adding time:', err.response?.data || err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteTime = async (idTiempo) => {
+    if (!window.confirm('¿Estás seguro de eliminar este tiempo?')) return;
+
+    try {
+      setSaving(true);
+      await apiClient.delete(`/times/${idTiempo}`);
+      toast.success('Tiempo eliminado correctamente');
+      await fetchVehicleTimes();
+    } catch (err) {
+      toast.error('Error al eliminar el tiempo');
+      console.error('Error deleting time:', err.response?.data || err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // --- Renderizado ---
   if (loading) return <LoadingSpinner message="Cargando datos del formulario..." />;
   // No mostrar error global aquí, se muestra dentro del formulario
@@ -211,7 +492,7 @@ const AdminVehicleFormPage = () => {
          <section className='form-section'>
             <h2 className='form-section-title'><FaCar /> Información General</h2>
             <div className="form-grid">
-                {/* Campos: Marca(*), Modelo(*), Version, Año(*), Tipo(*), Combustible(*), Etiqueta, Precio Orig, Precio Est, Fecha Lanz. */}
+                {/* Campos: Marca(*), Modelo(*), Version, Año(*), Tipo(*), Combustible(Solo lectura - viene de la motorización), Etiqueta, Precio Orig, Precio Est, Fecha Lanz. */}
                 {/* Ejemplo de campo obligatorio (Marca) */}
                 <div className="form-group">
                     <label htmlFor="marca">Marca (*)</label>
@@ -252,10 +533,10 @@ const AdminVehicleFormPage = () => {
                     <label htmlFor="version">Versión</label>
                     <input type="text" id="version" name="version" value={vehicleData.version || ''} onChange={handleInputChange} maxLength="100" disabled={saving}/>
                 </div>
-                 {/* Año (*) */}
+                 {/* Año de Lanzamiento (*) */}
                 <div className="form-group">
-                     <label htmlFor="año">Año (*)</label>
-                     <input type="number" id="año" name="año" value={vehicleData.año || ''} onChange={handleInputChange} required min="1886" max={new Date().getFullYear() + 2} step="1" disabled={saving}/>
+                     <label htmlFor="anio">Año de Lanzamiento (*)</label>
+                     <input type="number" id="anio" name="anio" value={vehicleData.anio || ''} onChange={handleInputChange} required min="1886" max={new Date().getFullYear() + 2} step="1" disabled={saving} title="Se sincroniza automáticamente con la fecha de lanzamiento"/>
                 </div>
                   {/* Tipo (*) */}
                  <div className="form-group">
@@ -265,13 +546,20 @@ const AdminVehicleFormPage = () => {
                          {vehicleTypes.map(t => <option key={t} value={t}>{t}</option>)}
                      </select>
                  </div>
-                 {/* Combustible (*) */}
+                 {/* Combustible (Solo lectura - viene de la motorización) */}
                  <div className="form-group">
                      <label htmlFor="combustible">Combustible (*)</label>
-                     <select id="combustible" name="combustible" value={vehicleData.combustible || ''} onChange={handleInputChange} required disabled={saving}>
-                         <option value="">-- Selecciona --</option>
-                         {fuelTypes.map(f => <option key={f} value={f}>{f}</option>)}
-                     </select>
+                     <input 
+                       type="text" 
+                       id="combustible" 
+                       name="combustible" 
+                       value={vehicleData.combustible || ''} 
+                       readOnly 
+                       disabled 
+                       className="form-control-plaintext"
+                       title="El combustible se define en la motorización seleccionada"
+                     />
+                     <small className="form-text text-muted">ℹ️ Se define automáticamente por la motorización</small>
                  </div>
                   {/* Etiqueta DGT */}
                   <div className="form-group">
@@ -290,10 +578,11 @@ const AdminVehicleFormPage = () => {
                        <label htmlFor="precio_actual_estimado">Precio Actual Estimado (€)</label>
                        <input type="number" step="0.01" id="precio_actual_estimado" name="precio_actual_estimado" value={vehicleData.precio_actual_estimado || ''} onChange={handleInputChange} min="0" disabled={saving}/>
                    </div>
-                    {/* Fecha Lanzamiento */}
+                    {/* Fecha de Lanzamiento Específica */}
                    <div className="form-group">
-                        <label htmlFor="fecha_lanzamiento">Fecha Lanzamiento</label>
-                        <input type="date" id="fecha_lanzamiento" name="fecha_lanzamiento" value={vehicleData.fecha_lanzamiento || ''} onChange={handleInputChange} disabled={saving} />
+                        <label htmlFor="fecha_lanzamiento">Fecha de Lanzamiento Específica</label>
+                        <input type="date" id="fecha_lanzamiento" name="fecha_lanzamiento" value={vehicleData.fecha_lanzamiento || ''} onChange={handleInputChange} disabled={saving} title="Opcional: Si se especifica, el año se actualizará automáticamente" />
+                        <small className="form-text text-muted">💡 El año y la fecha se sincronizan automáticamente</small>
                    </div>
             </div>
          </section>
@@ -451,6 +740,221 @@ const AdminVehicleFormPage = () => {
                </div>
           </section>
 
+         {/* --- Sección Imágenes (solo en modo edición) --- */}
+         {isEditing && (
+           <section className='form-section'>
+             <h2 className='form-section-title'><FaImages /> Imágenes del Vehículo</h2>
+             {loadingImages ? (
+               <p>Cargando imágenes...</p>
+             ) : (
+               <div className="images-management">
+                 {vehicleImages.length > 0 ? (
+                   <div className="images-grid">
+                     {vehicleImages.map(img => (
+                       <div key={img.id_imagen} className="image-item">
+                         <img 
+                           src={`http://localhost:4000/api/images/vehicles/${img.ruta_local}`} 
+                           alt={img.descripcion || 'Imagen del vehículo'}
+                           className="vehicle-image-thumb"
+                         />
+                         <div className="image-info">
+                           <p><strong>Descripción:</strong> {img.descripcion || 'Sin descripción'}</p>
+                           <p><strong>Orden:</strong> {img.orden}</p>
+                           <button 
+                             type="button" 
+                             className="btn btn-danger btn-sm"
+                             onClick={() => handleDeleteImage(img.id_imagen)}
+                             disabled={saving}
+                           >
+                             <FaTrash /> Eliminar
+                           </button>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 ) : (
+                   <p className="text-muted">No hay imágenes registradas para este vehículo.</p>
+                 )}
+                 
+                 <div className="add-image-section">
+                   <h4>Añadir Nueva Imagen</h4>
+                   <div className="form-grid">
+                     <div className="form-group">
+                       <label htmlFor="new_image_ruta">Ruta de Imagen</label>
+                       <input 
+                         type="text" 
+                         id="new_image_ruta" 
+                         placeholder="ej: golf_mk2_lateral.jpg"
+                         className="form-control"
+                       />
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_image_desc">Descripción</label>
+                       <input 
+                         type="text" 
+                         id="new_image_desc" 
+                         placeholder="ej: Vista lateral"
+                         className="form-control"
+                       />
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_image_orden">Orden</label>
+                       <input 
+                         type="number" 
+                         id="new_image_orden" 
+                         min="0" 
+                         max="99"
+                         defaultValue="0"
+                         className="form-control"
+                       />
+                     </div>
+                   </div>
+                   <button 
+                     type="button" 
+                     className="btn btn-success"
+                     onClick={handleAddImage}
+                     disabled={saving}
+                   >
+                     <FaPlus /> Añadir Imagen
+                   </button>
+                 </div>
+               </div>
+             )}
+           </section>
+         )}
+
+         {/* --- Sección Tiempos de Circuito (solo en modo edición) --- */}
+         {isEditing && (
+           <section className='form-section'>
+             <h2 className='form-section-title'><FaStopwatch /> Tiempos de Circuito</h2>
+             {loadingTimes ? (
+               <p>Cargando tiempos...</p>
+             ) : (
+               <div className="times-management">
+                 {vehicleTimes.length > 0 ? (
+                   <div className="times-table">
+                     <table className="table table-striped">
+                       <thead>
+                         <tr>
+                           <th>Circuito</th>
+                           <th>Tiempo</th>
+                           <th>Condiciones</th>
+                           <th>Fecha Record</th>
+                           <th>Piloto</th>
+                           <th>Neumáticos</th>
+                           <th>Acciones</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         {vehicleTimes.map(time => (
+                           <tr key={time.id_tiempo}>
+                             <td>{time.circuito}</td>
+                             <td><strong>{time.tiempo_vuelta}</strong></td>
+                             <td>{time.condiciones || '-'}</td>
+                             <td>{time.fecha_record ? format(parseISO(time.fecha_record), 'dd/MM/yyyy') : '-'}</td>
+                             <td>{time.piloto || 'Desconocido'}</td>
+                             <td>{time.neumaticos || '-'}</td>
+                             <td>
+                               <button 
+                                 type="button" 
+                                 className="btn btn-danger btn-sm"
+                                 onClick={() => handleDeleteTime(time.id_tiempo)}
+                                 disabled={saving}
+                               >
+                                 <FaTrash />
+                               </button>
+                             </td>
+                           </tr>
+                         ))}
+                       </tbody>
+                     </table>
+                   </div>
+                 ) : (
+                   <p className="text-muted">No hay tiempos de circuito registrados para este vehículo.</p>
+                 )}
+                 
+                 <div className="add-time-section">
+                   <h4>Añadir Nuevo Tiempo</h4>
+                   <p className="form-help-text">
+                     <FaInfoCircle /> Esta sección es opcional. Puedes agregar tiempos de circuito para comparar el rendimiento del vehículo.
+                   </p>
+                   <div className="form-grid">
+                     <div className="form-group">
+                       <label htmlFor="new_time_circuito">Circuito</label>
+                       <input 
+                         type="text" 
+                         id="new_time_circuito" 
+                         placeholder="ej: Nürburgring Nordschleife"
+                         className="form-control"
+                       />
+                       <small className="form-text text-muted">Nombre del circuito donde se registró el tiempo</small>
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_time_vuelta">Tiempo Vuelta</label>
+                       <input 
+                         type="text" 
+                         id="new_time_vuelta" 
+                         placeholder="ej: 00:07:45.123"
+                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,3})?"
+                         className="form-control"
+                       />
+                       <small className="form-text text-muted">Formato: MM:SS.millisegundos</small>
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_time_condiciones">Condiciones</label>
+                       <select id="new_time_condiciones" className="form-control">
+                         <option value="">-- Selecciona --</option>
+                         <option value="Seco">Seco</option>
+                         <option value="Mojado">Mojado</option>
+                         <option value="Húmedo">Húmedo</option>
+                         <option value="Mixto">Mixto</option>
+                         <option value="Nieve/Hielo">Nieve/Hielo</option>
+                       </select>
+                       <small className="form-text text-muted">Condiciones climáticas durante el registro</small>
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_time_fecha">Fecha Record</label>
+                       <input 
+                         type="date" 
+                         id="new_time_fecha" 
+                         className="form-control"
+                       />
+                       <small className="form-text text-muted">Fecha en que se estableció el tiempo</small>
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_time_piloto">Piloto</label>
+                       <input 
+                         type="text" 
+                         id="new_time_piloto" 
+                         placeholder="ej: Sport Auto"
+                         className="form-control"
+                       />
+                       <small className="form-text text-muted">Piloto o revista que realizó la prueba</small>
+                     </div>
+                     <div className="form-group">
+                       <label htmlFor="new_time_neumaticos">Neumáticos</label>
+                       <input 
+                         type="text" 
+                         id="new_time_neumaticos" 
+                         placeholder="ej: Michelin Pilot Sport Cup 2"
+                         className="form-control"
+                       />
+                       <small className="form-text text-muted">Tipo de neumáticos utilizados en la prueba</small>
+                     </div>
+                   </div>
+                   <button 
+                     type="button" 
+                     className="btn btn-success"
+                     onClick={handleAddTime}
+                     disabled={saving}
+                   >
+                     <FaPlus /> Añadir Tiempo
+                   </button>
+                 </div>
+               </div>
+             )}
+           </section>
+         )}
 
          {/* --- Botones de Acción del Formulario --- */}
          <div className="form-actions">

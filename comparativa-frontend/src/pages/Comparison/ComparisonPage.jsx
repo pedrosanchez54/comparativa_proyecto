@@ -5,7 +5,7 @@ import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import BackButton from '../../components/Common/BackButton';
 import ScrollToTopCar from '../../components/Common/ScrollToTopCar';
-import { FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar } from 'react-icons/fa';
+import { FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar, FaLeaf } from 'react-icons/fa';
 import './ComparisonPage.css';
 
 // Paleta de colores moderna para los vehículos
@@ -358,22 +358,6 @@ const SmartSummary = ({ vehicles }) => {
       insight: (winner) => `Con ${winner.potencia} CV, es el más potente del grupo.`
     },
     { 
-      title: 'Más Eficiente', 
-      property: 'consumo_mixto', 
-      unit: ' L/100km', 
-      higherIsBetter: false,
-      icon: <FaGasPump />,
-      insight: (winner) => `Su consumo de ${winner.consumo_mixto} L/100km lo hace el más eficiente.`
-    },
-    { 
-      title: 'Menos Emisiones', 
-      property: 'emisiones', 
-      unit: ' g/km', 
-      higherIsBetter: false,
-      icon: <FaBolt />,
-      insight: (winner) => `Emite solo ${winner.emisiones} g/km de CO2, siendo el más limpio.`
-    },
-    { 
       title: 'Más Rápido (0-100)', 
       property: 'aceleracion_0_100', 
       unit: ' s', 
@@ -390,12 +374,20 @@ const SmartSummary = ({ vehicles }) => {
       insight: (winner) => `Alcanza ${winner.velocidad_max} km/h de velocidad máxima.`
     },
     { 
-      title: 'Más Espacioso', 
-      property: 'vol_maletero', 
-      unit: ' L', 
-      higherIsBetter: true,
-      icon: <FaRuler />,
-      insight: (winner) => `Su maletero de ${winner.vol_maletero}L es el más amplio.`
+      title: 'Mejor Relación Peso/Potencia', 
+      property: 'ratio_peso_potencia', 
+      unit: ' kg/CV', 
+      higherIsBetter: false,
+      icon: <FaTachometerAlt />,
+      insight: (winner) => `Con ${winner.ratio_peso_potencia.toFixed(1)} kg/CV, tiene la mejor relación peso/potencia.`
+    },
+    { 
+      title: 'Más Eficiente', 
+      property: 'consumo_mixto', 
+      unit: ' L/100km', 
+      higherIsBetter: false,
+      icon: <FaGasPump />,
+      insight: (winner) => `Su consumo de ${winner.consumo_mixto} L/100km lo hace el más eficiente.`
     },
     { 
       title: 'Mejor Autonomía', 
@@ -403,17 +395,33 @@ const SmartSummary = ({ vehicles }) => {
       unit: ' km', 
       higherIsBetter: true,
       icon: <FaGasPump />,
-      insight: (winner) => `Puede recorrer hasta ${winner.autonomia_calculada} km con una carga/depósito.`
+      insight: (winner) => `Recorre hasta ${winner.autonomia_calculada} km con una carga.`
     },
     { 
-      title: 'Mejor Relación Peso/Potencia', 
-      property: 'ratio_peso_potencia', 
-      unit: ' kg/CV', 
+      title: 'Menos Emisiones', 
+      property: 'emisiones', 
+      unit: ' g/km', 
       higherIsBetter: false,
-      icon: <FaTachometerAlt />,
-      insight: (winner) => `Con ${winner.ratio_peso_potencia.toFixed(1)} kg/CV, tiene la mejor relación peso/potencia.`
+      icon: <FaLeaf />,
+      insight: (winner) => `Emite solo ${winner.emisiones} g/km de CO₂, siendo el más limpio.`
+    },
+    { 
+      title: 'Más Espacioso', 
+      property: 'vol_maletero', 
+      unit: ' L', 
+      higherIsBetter: true,
+      icon: <FaRuler />,
+      insight: (winner) => `Su maletero de ${winner.vol_maletero}L es el más amplio.`
     }
   ];
+
+  // Función para renderizar texto con negritas
+  const renderInsightWithBold = (text) => {
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, index) => 
+      index % 2 === 1 ? <strong key={index}>{part}</strong> : part
+    );
+  };
 
   return (
     <div className="smart-summary">
@@ -433,7 +441,6 @@ const SmartSummary = ({ vehicles }) => {
                 <div className="winner-color" style={{ backgroundColor: VEHICLE_COLORS[vehicleIndex] }}></div>
                 <div className="winner-info">
                   <strong>{winner.marca} {winner.modelo}</strong>
-                  <span>{winner[category.property]}{category.unit}</span>
                   {category.insight && (
                     <div className="winner-insight">
                       {category.insight(winner)}

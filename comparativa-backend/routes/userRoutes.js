@@ -23,8 +23,10 @@ const updateProfileValidation = [
         .notEmpty()
         .withMessage('El email es requerido.')
         .isEmail()
-        .withMessage('Debe ser un formato de email válido.')
-        .normalizeEmail()
+        .withMessage('Debe ser un formato de email válido.'),
+    body('currentPassword')
+        .notEmpty()
+        .withMessage('La contraseña actual es requerida para confirmar los cambios.')
 ];
 
 const changePasswordValidation = [

@@ -5,6 +5,8 @@ import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
+import ConfirmModal from '../../components/Common/ConfirmModal';
+import useConfirmModal from '../../hooks/useConfirmModal';
 import './MyListsPage.css';
 
 const MyListsPage = () => {
@@ -14,6 +16,16 @@ const MyListsPage = () => {
   const [newListName, setNewListName] = useState('');
   const [editingListId, setEditingListId] = useState(null);
   const [editingName, setEditingName] = useState('');
+  
+  // Hook del modal de confirmación
+  const {
+    isOpen: isConfirmOpen,
+    modalConfig,
+    loading: confirmLoading,
+    openConfirmModal,
+    closeConfirmModal,
+    confirm
+  } = useConfirmModal();
 
   // Cargar listas al montar el componente
   useEffect(() => {
@@ -55,16 +67,19 @@ const MyListsPage = () => {
     }
   };
 
-  const handleDeleteList = async (listId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar esta lista?')) return;
-
-    try {
-      await apiClient.delete(`/users/lists/${listId}`);
-      setLists(prev => Array.isArray(prev) ? prev.filter(list => list.id !== listId) : []);
-      toast.success('Lista eliminada correctamente');
-    } catch (error) {
-      toast.error('Error al eliminar la lista');
-    }
+  const handleDeleteList = async (listId, listName) => {
+    openConfirmModal({
+      title: "Eliminar Lista",
+      message: `¿Estás seguro de que quieres eliminar la lista "${listName}"? Esta acción no se puede deshacer.`,
+      confirmText: "Eliminar",
+      cancelText: "Cancelar",
+      type: "danger",
+      onConfirm: () => confirm(async () => {
+        await apiClient.delete(`/users/lists/${listId}`);
+        setLists(prev => Array.isArray(prev) ? prev.filter(list => list.id !== listId) : []);
+        toast.success('Lista eliminada correctamente');
+      })
+    });
   };
 
   const startEditing = (list) => {
@@ -170,7 +185,7 @@ const MyListsPage = () => {
                       <FaPen />
                     </button>
                     <button
-                      onClick={() => handleDeleteList(list.id)}
+                      onClick={() => handleDeleteList(list.id, list.nombre)}
                       className="delete-button"
                       title="Eliminar lista"
                     >
@@ -183,6 +198,19 @@ const MyListsPage = () => {
           ))}
         </div>
       )}
+
+      {/* Modal de confirmación */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={closeConfirmModal}
+        onConfirm={modalConfig.onConfirm}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
+        cancelText={modalConfig.cancelText}
+        type={modalConfig.type}
+        loading={confirmLoading}
+      />
     </div>
   );
 };

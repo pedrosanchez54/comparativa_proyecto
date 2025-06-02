@@ -83,6 +83,12 @@ export function AuthProvider({ children }) {
     toast.info('Has cerrado sesión.');
   };
 
+  // Función para actualizar datos del usuario localmente
+  const setUserData = (userData) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(userData));
+    setUser(userData);
+  };
+
   // Función para actualizar datos del usuario
   const updateUserData = async (userData) => {
     try {
@@ -149,6 +155,7 @@ export function AuthProvider({ children }) {
       register,
       login,
       logout,
+      setUserData,
       updateUserData,
       changePassword,
       requestPasswordReset,

@@ -1481,8 +1481,13 @@
   font-size: 0.85rem;
   color: #6c757d;
   font-style: italic;
-  margin-top: 5px;
+  margin-top: 6px;
   line-height: 1.3;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  display: block;
 }
 
 /* Estilos para análisis de precios */
@@ -1587,4 +1592,416 @@
     padding: 10px;
     font-size: 0.85rem;
   }
+}
+
+/* Estilos para Smart Summary - Resumen Inteligente */
+.smart-summary {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin: 30px 0;
+}
+
+.smart-summary h3 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Grid de tarjetas ganadoras - Todas en una línea */
+.winners-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.winner-card {
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.winner-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3498db, #9b59b6, #e74c3c, #f39c12);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.winner-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.winner-card:hover::before {
+  opacity: 1;
+}
+
+.winner-icon {
+  font-size: 2.6rem;
+  color: var(--cherry-red, #D90429);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.winner-card:hover .winner-icon {
+  transform: scale(1.1);
+}
+
+.winner-card h4 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.winner-vehicle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.winner-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-bottom: 4px;
+}
+
+.winner-info {
+  text-align: center;
+}
+
+.winner-info strong {
+  display: block;
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-bottom: 4px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.winner-info span {
+  font-size: 1.1rem;
+  color: var(--cherry-red, #D90429);
+  font-weight: 600;
+}
+
+/* Responsive para Smart Summary */
+@media (max-width: 1458px) {
+  .winners-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+  }
+  
+  .winner-card {
+    min-height: 200px;
+    padding: 22px 16px;
+  }
+  
+  .winner-card h4 {
+    font-size: 1.2rem;
+    height: 46px;
+  }
+  
+  .winner-icon {
+    font-size: 2.8rem;
+  }
+  
+  .winner-info strong {
+    font-size: 1.1rem;
+  }
+  
+  .winner-info span {
+    font-size: 1.2rem;
+  }
+
+  .winner-insight {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 1200px) {
+  .winners-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+  }
+  
+  .winner-card {
+    min-height: 200px;
+    padding: 22px 16px;
+  }
+  
+  .winner-card h4 {
+    font-size: 1.2rem;
+    height: 46px;
+  }
+  
+  .winner-icon {
+    font-size: 2.8rem;
+  }
+  
+  .winner-info strong {
+    font-size: 1.1rem;
+  }
+  
+  .winner-info span {
+    font-size: 1.2rem;
+  }
+
+  .winner-insight {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 768px) {
+  .smart-summary {
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .smart-summary h3 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  
+  .winners-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .winner-card {
+    padding: 16px 12px;
+    min-height: 170px;
+  }
+  
+  .winner-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .winner-card h4 {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    height: 36px;
+  }
+  
+  .winner-color {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .winner-info strong {
+    font-size: 0.85rem;
+  }
+  
+  .winner-info span {
+    font-size: 0.95rem;
+  }
+  
+  .winner-insight {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+  
+  .summary-insights {
+    padding: 20px;
+  }
+  
+  .summary-insights h4 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .insight-item {
+    padding: 10px;
+    gap: 10px;
+  }
+}
+
+/* Nueva media query para evitar que se salga el texto en pantallas medianas */
+@media (max-width: 670px) {
+  .winners-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .winner-card {
+    padding: 18px 14px;
+    min-height: 180px;
+  }
+  
+  .winner-icon {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .winner-card h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    height: 40px;
+  }
+  
+  .winner-color {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .winner-info strong {
+    font-size: 0.9rem;
+  }
+  
+  .winner-info span {
+    font-size: 1rem;
+  }
+  
+  .winner-insight {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 480px) {
+  .smart-summary {
+    padding: 15px;
+  }
+  
+  .smart-summary h3 {
+    font-size: 1.4rem;
+  }
+  
+  .winners-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .winner-card {
+    padding: 14px 10px;
+    min-height: 160px;
+  }
+  
+  .winner-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .winner-card h4 {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    height: 34px;
+  }
+  
+  .winner-color {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .winner-info strong {
+    font-size: 0.8rem;
+  }
+  
+  .winner-info span {
+    font-size: 0.9rem;
+  }
+  
+  .winner-insight {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+  
+  .summary-insights {
+    padding: 15px;
+  }
+  
+  .insight-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .insight-item span {
+    font-size: 0.9rem;
+  }
+}
+
+/* Insights de la comparación */
+.summary-insights {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 25px;
+  border-left: 5px solid var(--cherry-red, #D90429);
+}
+
+.summary-insights h4 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.insight-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.insight-icon {
+  color: var(--cherry-red, #D90429);
+  font-size: 1.1rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.insight-item span {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
 } 

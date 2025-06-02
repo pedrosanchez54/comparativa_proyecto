@@ -101,14 +101,14 @@
 }
 
 /* Diseño mejorado de grupos de formulario */
-.form-group {
+.auth-form .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
   position: relative;
 }
 
-.form-group label {
+.auth-form .form-group label {
   color: #374151;
   font-weight: 600;
   font-size: 0.95rem;
@@ -120,7 +120,7 @@
 }
 
 /* Campos de entrada modernos y grandes */
-.form-group input {
+.auth-form .form-group input {
   width: 100%;
   height: 56px;
   padding: 16px 18px;
@@ -137,13 +137,13 @@
   box-sizing: border-box;
 }
 
-.form-group input::placeholder {
+.auth-form .form-group input::placeholder {
   color: #9ca3af;
   font-weight: 400;
   font-size: 0.95rem;
 }
 
-.form-group input:focus {
+.auth-form .form-group input:focus {
   outline: none;
   border-color: var(--cherry-red, #D90429);
   box-shadow: 
@@ -153,14 +153,14 @@
   transform: translateY(-1px);
 }
 
-.form-group input:hover:not(:focus) {
+.auth-form .form-group input:hover:not(:focus) {
   border-color: #d1d5db;
   box-shadow: 
     0 4px 6px -1px rgba(0,0,0,0.1),
     0 2px 4px -1px rgba(0,0,0,0.06);
 }
 
-.form-group input:disabled {
+.auth-form .form-group input:disabled {
   background-color: #f9fafb;
   border-color: #e5e7eb;
   color: #9ca3af;
@@ -169,12 +169,12 @@
 }
 
 /* Estados de validación */
-.form-group input:invalid:not(:placeholder-shown) {
+.auth-form .form-group input:invalid:not(:placeholder-shown) {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
-.form-group input:valid:not(:placeholder-shown) {
+.auth-form .form-group input:valid:not(:placeholder-shown) {
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
@@ -356,11 +356,11 @@
     margin-bottom: 20px;
   }
   
-  .form-group {
+  .auth-form .form-group {
     margin-bottom: 18px;
   }
   
-  .form-group input {
+  .auth-form .form-group input {
     height: 52px;
     padding: 14px 16px;
     font-size: 0.95rem;
@@ -388,7 +388,7 @@
     gap: 8px;
   }
   
-  .form-group input {
+  .auth-form .form-group input {
     height: 48px;
     padding: 12px 14px;
     border-radius: 10px;
