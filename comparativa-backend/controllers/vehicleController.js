@@ -238,7 +238,7 @@ exports.getVehicles = async (req, res, next) => {
             precio_original: v.precio_original ? parseFloat(v.precio_original) : null,
             precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             fecha_lanzamiento: v.fecha_lanzamiento,
-            imagen_principal: v.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${v.imagen_principal}` : null,
+            imagen_principal: v.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${v.imagen_principal}` : null,
             fecha_creacion: v.fecha_creacion,
             fecha_actualizacion: v.fecha_actualizacion
         }));
@@ -291,9 +291,31 @@ exports.getVehicleById = async (req, res, next) => {
             return res.status(404).json({ message: 'Vehículo no encontrado.' });
         }
         
-        // Formatear la imagen principal
+        // Obtener datos del vehículo
         const vehicle = vehicles[0];
-        vehicle.imagen_principal = vehicle.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${vehicle.imagen_principal}` : null;
+        
+        // Formatear la imagen principal
+        vehicle.imagen_principal = vehicle.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${vehicle.imagen_principal}` : null;
+        
+        // Obtener todas las imágenes del vehículo
+        const [images] = await pool.query(
+            'SELECT id_imagen, ruta_local, descripcion, orden FROM Imagenes WHERE id_vehiculo = ? ORDER BY orden',
+            [id]
+        );
+        
+        // Formatear URLs completas de las imágenes
+        vehicle.imagenes = images.map(img => ({
+            ...img,
+            ruta_local: `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${img.ruta_local}`
+        }));
+        
+        // Obtener tiempos de circuito del vehículo
+        const [times] = await pool.query(
+            'SELECT id_tiempo, circuito, tiempo_vuelta, condiciones, fecha_record, piloto, neumaticos, fuente_url FROM Tiempos_Circuito WHERE id_vehiculo = ? ORDER BY circuito ASC, tiempo_vuelta ASC',
+            [id]
+        );
+        
+        vehicle.tiempos_circuito = times;
         
         res.json({ 
             success: true,
@@ -318,10 +340,15 @@ exports.updateVehicle = async (req, res, next) => {
     // Construir objeto con los datos permitidos
      const vehicleData = {};
     const allowedFields = [
-        'id_motorizacion', 'anio', 'version', 'pegatina_ambiental',
-        'velocidad_max', 'aceleracion_0_100', 'consumo_mixto',
-        'emisiones', 'num_puertas', 'num_plazas', 'traccion',
-        'caja_cambios', 'precio_original'
+        'anio', 'version', 'tipo', 'pegatina_ambiental',
+        'velocidad_max', 'aceleracion_0_100', 'distancia_frenado_100_0',
+        'consumo_urbano', 'consumo_extraurbano', 'consumo_mixto',
+        'emisiones', 'autonomia_electrica', 'capacidad_bateria',
+        'tiempo_carga_ac', 'potencia_carga_dc', 'tiempo_carga_dc_10_80',
+        'peso', 'num_puertas', 'num_plazas', 'vol_maletero', 'vol_maletero_max',
+        'dimension_largo', 'dimension_ancho', 'dimension_alto', 'distancia_entre_ejes',
+        'traccion', 'caja_cambios', 'num_marchas',
+        'precio_original', 'precio_actual_estimado', 'fecha_lanzamiento'
     ];
 
      for (const field of allowedFields) {
@@ -518,7 +545,7 @@ exports.getVehiclesForComparison = async (req, res, next) => {
             precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             
             // Imagen
-            imagen_principal: v.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${v.imagen_principal}` : null,
+            imagen_principal: v.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${v.imagen_principal}` : null,
             fecha_creacion: v.fecha_creacion,
             fecha_actualizacion: v.fecha_actualizacion
         }));

@@ -11,13 +11,14 @@ const registerValidation = [
 
   body('email')
     .trim()
-    .notEmpty().withMessage('El email es requerido.')
-    .isEmail().withMessage('Debe ser un formato de email válido.') // Verifica formato email
+    .notEmpty().withMessage('El correo electrónico es requerido.')
+    .isEmail().withMessage('Debe ser un formato de correo electrónico válido.') // Verifica formato email
     .normalizeEmail(), // Convierte a minúsculas y maneja subdirecciones (ej. '+' en Gmail)
 
   body('contraseña')
     .notEmpty().withMessage('La contraseña es requerida.')
     .isLength({ min: 8 }).withMessage('La contraseña debe tener al menos 8 caracteres.')
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)/).withMessage('La contraseña debe contener al menos una letra y un número.')
     // Opcional: Añadir más reglas de fortaleza (ej. requerir mayúsculas, números, símbolos)
     // .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
     // .withMessage('La contraseña debe contener mayúscula, minúscula, número y símbolo.')
@@ -27,8 +28,8 @@ const registerValidation = [
 const loginValidation = [
   body('email')
     .trim()
-    .notEmpty().withMessage('El email es requerido.')
-    .isEmail().withMessage('Formato de email inválido.')
+    .notEmpty().withMessage('El correo electrónico es requerido.')
+    .isEmail().withMessage('Formato de correo electrónico inválido.')
     .normalizeEmail(),
 
   body('contraseña')
@@ -39,8 +40,8 @@ const loginValidation = [
 const requestPasswordResetValidation = [
   body('email')
     .trim()
-    .notEmpty().withMessage('El email es requerido.')
-    .isEmail().withMessage('Formato de email inválido.')
+    .notEmpty().withMessage('El correo electrónico es requerido.')
+    .isEmail().withMessage('Formato de correo electrónico inválido.')
     .normalizeEmail()
 ];
 

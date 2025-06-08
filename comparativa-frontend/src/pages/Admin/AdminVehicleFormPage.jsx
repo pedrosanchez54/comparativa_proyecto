@@ -11,7 +11,6 @@ import './AdminPages.css'; // Estilos Admin
 
 // --- Definiciones Constantes (ENUMs de la BD) ---
 const vehicleTypes = ['Sedán','SUV','Deportivo','Hatchback','Coupé','Furgoneta','Urbano','Pick-up','Monovolumen','Cabrio','Familiar','Otro'];
-const fuelTypes = ['Gasolina','Diésel','Híbrido','Híbrido Enchufable','Eléctrico','GLP','GNC','Hidrógeno','Otro'];
 const dgtLabels = ['0','ECO','B','C','Sin etiqueta'];
 const tractions = ['Delantera', 'Trasera', 'Total', 'Total Desconectable'];
 const gearboxes = ['Manual', 'Automática Convertidor Par', 'Automática CVT', 'Automática Doble Embrague', 'Directa Eléctrico', 'Otra'];
@@ -93,6 +92,122 @@ const AdminVehicleFormPage = () => {
   const [loadingImages, setLoadingImages] = useState(false);
   const [loadingTimes, setLoadingTimes] = useState(false);
 
+  // Función helper para formatear tiempo de circuito (de 00:MM:SS.ms a MM:SS.ms)
+  const formatCircuitTime = (timeString) => {
+    if (!timeString) return timeString;
+    
+    // Si el tiempo tiene el formato 00:MM:SS.ms, convertir a MM:SS.ms
+    const timeMatch = timeString.match(/^00:(\d{2}:\d{2}\.\d{1,3})$/);
+    if (timeMatch) {
+      return timeMatch[1]; // Devolver solo MM:SS.ms
+    }
+    
+    // Si ya está en formato MM:SS.ms o cualquier otro formato, devolverlo tal como está
+    return timeString;
+  };
+
+  // Lista de circuitos conocidos para autocompletado
+  const circuitosConocidos = [
+    'Nürburgring Nordschleife',
+    'Circuit de la Sarthe (Le Mans)',
+    'Silverstone Grand Prix Circuit',
+    'Spa-Francorchamps',
+    'Monza',
+    'Suzuka Circuit',
+    'Circuit de Monaco',
+    'Brands Hatch',
+    'Laguna Seca',
+    'Road America',
+    'Watkins Glen',
+    'Sepang International Circuit',
+    'Hockenheimring',
+    'Red Bull Ring',
+    'Mugello',
+    'Imola',
+    'Portimão',
+    'Barcelona-Catalunya',
+    'Hungaroring',
+    'Circuit Zandvoort',
+    'Donington Park',
+    'Oulton Park',
+    'Goodwood',
+    'Mount Panorama (Bathurst)',
+    'Fuji Speedway',
+    'Twin Ring Motegi',
+    'Daytona International Speedway',
+    'Road Atlanta',
+    'Virginia International Raceway',
+    'Lime Rock Park',
+    'Sonoma Raceway',
+    'Circuit Paul Ricard',
+    'Magny-Cours',
+    'Estoril',
+    'Jerez',
+    'Valencia',
+    'Jarama',
+    'Ascari Race Resort'
+  ];
+
+  // Lista de neumáticos deportivos conocidos para autocompletado
+  const neumaticosConocidos = [
+    'Michelin Pilot Sport 4S',
+    'Michelin Pilot Sport Cup 2',
+    'Michelin Pilot Sport Cup 2 R',
+    'Michelin Pilot Super Sport',
+    'Pirelli P Zero',
+    'Pirelli P Zero Corsa',
+    'Pirelli P Zero Trofeo R',
+    'Continental ContiSportContact 6',
+    'Continental ContiForceContact',
+    'Bridgestone Potenza RE-71R',
+    'Bridgestone Potenza S007A',
+    'Bridgestone Potenza RE050A',
+    'Yokohama Advan A052',
+    'Yokohama Advan Neova AD08R',
+    'Toyo Proxes R888R',
+    'Toyo Proxes Sport',
+    'Hankook Ventus RS-4',
+    'Dunlop Sport Maxx Race 2',
+    'Nitto NT05',
+    'Federal 595 RS-RR',
+    'Falken Azenis RT615K+',
+    'GT Radial Champiro SX2',
+    'Kumho Ecsta V720',
+    'BFGoodrich g-Force Rival S 1.5'
+  ];
+
+  // Función para cargar imágenes del vehículo
+  const fetchVehicleImages = useCallback(async () => {
+    if (!isEditing) return;
+    
+    setLoadingImages(true);
+    try {
+      const response = await apiClient.get(`/images/vehicle/${id}`);
+      setVehicleImages(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching vehicle images:", err.response?.data || err.message);
+      setVehicleImages([]);
+    } finally {
+      setLoadingImages(false);
+    }
+  }, [id, isEditing]);
+
+  // Función para cargar tiempos de circuito del vehículo
+  const fetchVehicleTimes = useCallback(async () => {
+    if (!isEditing) return;
+    
+    setLoadingTimes(true);
+    try {
+      const response = await apiClient.get(`/times/vehicle/${id}`);
+      setVehicleTimes(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching vehicle times:", err.response?.data || err.message);
+      setVehicleTimes([]);
+    } finally {
+      setLoadingTimes(false);
+    }
+  }, [id, isEditing]);
+
   // --- Carga de Datos (si estamos editando) ---
   const fetchVehicleData = useCallback(async () => {
     if (!isEditing) return; // No hacer nada si es un vehículo nuevo
@@ -131,13 +246,14 @@ const AdminVehicleFormPage = () => {
             }
         }
 
-      setVehicleData(processedData); // Actualizar el estado del formulario
+        // Mapear campos específicos del backend que no están en initialFormData
+        processedData.marca_nombre = fetchedData.marca_nombre || '';
+        processedData.modelo_nombre = fetchedData.modelo_nombre || '';
+        processedData.generacion_nombre = fetchedData.generacion_nombre || '';
+        processedData.motorizacion_nombre = fetchedData.motorizacion_nombre || '';
+        processedData.combustible = fetchedData.combustible || '';
 
-      // Cargar datos relacionados en paralelo
-      await Promise.all([
-        fetchVehicleImages(),
-        fetchVehicleTimes()
-      ]);
+      setVehicleData(processedData); // Actualizar el estado del formulario
 
     } catch (err) {
       setError(`Error al cargar los datos del vehículo (ID: ${id}). Es posible que no exista.`);
@@ -147,42 +263,14 @@ const AdminVehicleFormPage = () => {
     }
   }, [id, isEditing]);
 
-  // Función para cargar imágenes del vehículo
-  const fetchVehicleImages = useCallback(async () => {
-    if (!isEditing) return;
-    
-    setLoadingImages(true);
-    try {
-      const response = await apiClient.get(`/images/vehicle/${id}`);
-      setVehicleImages(response.data.data || []);
-    } catch (err) {
-      console.error("Error fetching vehicle images:", err.response?.data || err.message);
-      setVehicleImages([]);
-    } finally {
-      setLoadingImages(false);
-    }
-  }, [id, isEditing]);
-
-  // Función para cargar tiempos de circuito del vehículo
-  const fetchVehicleTimes = useCallback(async () => {
-    if (!isEditing) return;
-    
-    setLoadingTimes(true);
-    try {
-      const response = await apiClient.get(`/times/vehicle/${id}`);
-      setVehicleTimes(response.data.data || []);
-    } catch (err) {
-      console.error("Error fetching vehicle times:", err.response?.data || err.message);
-      setVehicleTimes([]);
-    } finally {
-      setLoadingTimes(false);
-    }
-  }, [id, isEditing]);
-
   // useEffect para cargar datos cuando el componente se monta (solo en modo edición)
   useEffect(() => {
-    fetchVehicleData();
-  }, [fetchVehicleData]);
+    if (isEditing) {
+      fetchVehicleData();
+      fetchVehicleImages();
+      fetchVehicleTimes();
+    }
+  }, [id, isEditing, fetchVehicleData, fetchVehicleImages, fetchVehicleTimes]);
 
   // Cargar opciones desde la API
   useEffect(() => {
@@ -197,31 +285,13 @@ const AdminVehicleFormPage = () => {
   // Efecto para establecer los valores de los selects cuando se cargan los datos del vehículo
   useEffect(() => {
     if (isEditing && vehicleData.id_motorizacion && motorizaciones.length > 0) {
-      // Encontrar la motorización correspondiente
-      const motorizacion = motorizaciones.find(m => m.id_motorizacion === parseInt(vehicleData.id_motorizacion));
-      if (motorizacion) {
-        setSelectedMotorizacion(motorizacion.id_motorizacion.toString());
-        
-        // Encontrar la generación correspondiente
-        const generacion = generaciones.find(g => g.id_generacion === motorizacion.id_generacion);
-        if (generacion) {
-          setSelectedGeneracion(generacion.id_generacion.toString());
-          
-          // Encontrar el modelo correspondiente
-          const modelo = modelos.find(mo => mo.id_modelo === generacion.id_modelo);
-          if (modelo) {
-            setSelectedModelo(modelo.id_modelo.toString());
-            
-            // Encontrar la marca correspondiente
-            const marca = marcas.find(ma => ma.id_marca === modelo.id_marca);
-            if (marca) {
-              setSelectedMarca(marca.id_marca.toString());
-            }
-          }
-        }
-      }
+      // En modo edición, establecer los valores directamente desde los datos del vehículo
+      setSelectedMotorizacion(vehicleData.id_motorizacion?.toString() || '');
+      
+      // Los nombres ya vienen en vehicleData, no necesitamos buscarlos
+      // vehicleData contiene: marca_nombre, modelo_nombre, generacion_nombre, motorizacion_nombre
     }
-  }, [vehicleData.id_motorizacion, motorizaciones, generaciones, modelos, marcas, isEditing]);
+  }, [vehicleData.id_motorizacion, motorizaciones, isEditing]);
 
   // Filtrar modelos, generaciones y motorizaciones según selección
   const modelosFiltrados = modelos.filter(m => m.id_marca === parseInt(selectedMarca));
@@ -281,15 +351,15 @@ const AdminVehicleFormPage = () => {
     // Preparar datos para enviar a la API:
     // Convertir strings vacíos de campos numéricos/fecha a NULL
     const dataToSend = {
-      id_motorizacion: selectedMotorizacion,
+      // En modo creación incluir id_motorizacion, en edición NO
+      ...(isEditing ? {} : { id_motorizacion: selectedMotorizacion }),
+      
       anio: vehicleData.anio,
       tipo: vehicleData.tipo,
       version: vehicleData.version || null,
       pegatina_ambiental: vehicleData.pegatina_ambiental,
       
       // Rendimiento
-      potencia: vehicleData.potencia || null,
-      par_motor: vehicleData.par_motor || null,
       velocidad_max: vehicleData.velocidad_max || null,
       aceleracion_0_100: vehicleData.aceleracion_0_100 || null,
       distancia_frenado_100_0: vehicleData.distancia_frenado_100_0 || null,
@@ -414,27 +484,47 @@ const AdminVehicleFormPage = () => {
   // --- Funciones para gestión de tiempos ---
   const handleAddTime = async () => {
     const circuito = document.getElementById('new_time_circuito').value.trim();
-    const tiempo_vuelta = document.getElementById('new_time_vuelta').value.trim();
+    const tiempo_vuelta_input = document.getElementById('new_time_vuelta').value.trim();
     const condiciones = document.getElementById('new_time_condiciones').value || null;
     const fecha_record = document.getElementById('new_time_fecha').value || null;
     const piloto = document.getElementById('new_time_piloto').value.trim() || null;
     const neumaticos = document.getElementById('new_time_neumaticos').value.trim() || null;
 
-    if (!circuito || !tiempo_vuelta) {
+    // Validaciones del frontend
+    if (!circuito || !tiempo_vuelta_input) {
       toast.error('El circuito y el tiempo de vuelta son obligatorios');
       return;
     }
 
+    // Validar formato del tiempo (MM:SS.ms - ej: 09:14.930)
+    const timeRegex = /^\d{2}:\d{2}\.\d{1,3}$/;
+    if (!timeRegex.test(tiempo_vuelta_input)) {
+      toast.error('Formato de tiempo inválido. Use MM:SS.ms (ej: 09:14.930)');
+      return;
+    }
+
+    // Validar longitud del circuito
+    if (circuito.length < 3 || circuito.length > 100) {
+      toast.error('El nombre del circuito debe tener entre 3 y 100 caracteres');
+      return;
+    }
+
+    // Convertir MM:SS.ms a 00:MM:SS.ms para compatibilidad con MySQL TIME
+    // Ejemplo: "09:14.930" -> "00:09:14.930"
+    const tiempo_vuelta = `00:${tiempo_vuelta_input}`;
+
     try {
       setSaving(true);
-      await apiClient.post(`/times/vehicle/${id}`, {
+      const timeData = {
         circuito,
         tiempo_vuelta,
         condiciones,
         fecha_record,
         piloto,
         neumaticos
-      });
+      };
+
+      await apiClient.post(`/times/vehicle/${id}`, timeData);
       
       toast.success('Tiempo añadido correctamente');
       
@@ -449,7 +539,14 @@ const AdminVehicleFormPage = () => {
       // Recargar tiempos
       await fetchVehicleTimes();
     } catch (err) {
-      toast.error('Error al añadir el tiempo');
+      let errorMsg = 'Error al añadir el tiempo';
+      if (err.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+        // Mostrar errores específicos de validación del backend
+        errorMsg += ': ' + err.response.data.errors.map(e => e.msg || e.message).join(', ');
+      } else if (err.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      }
+      toast.error(errorMsg);
       console.error('Error adding time:', err.response?.data || err.message);
     } finally {
       setSaving(false);
@@ -493,41 +590,106 @@ const AdminVehicleFormPage = () => {
             <h2 className='form-section-title'><FaCar /> Información General</h2>
             <div className="form-grid">
                 {/* Campos: Marca(*), Modelo(*), Version, Año(*), Tipo(*), Combustible(Solo lectura - viene de la motorización), Etiqueta, Precio Orig, Precio Est, Fecha Lanz. */}
-                {/* Ejemplo de campo obligatorio (Marca) */}
-                <div className="form-group">
-                    <label htmlFor="marca">Marca (*)</label>
-                    <select id="marca" name="marca" value={selectedMarca} onChange={handleMarcaChange} required disabled={saving}>
-                        <option value="">-- Selecciona --</option>
-                        {marcas.map(m => <option key={m.id_marca} value={m.id_marca}>{m.nombre}</option>)}
-                    </select>
-                </div>
-                {selectedMarca && (
-                    <div className="form-group">
-                        <label htmlFor="modelo">Modelo (*)</label>
-                        <select id="modelo" name="modelo" value={selectedModelo} onChange={handleModeloChange} required disabled={saving}>
-                            <option value="">-- Selecciona --</option>
-                            {modelosFiltrados.map(mo => <option key={mo.id_modelo} value={mo.id_modelo}>{mo.nombre}</option>)}
-                        </select>
-                    </div>
+                
+                {isEditing ? (
+                    // MODO EDICIÓN: Campos de solo lectura
+                    <>
+                        <div className="form-group">
+                            <label htmlFor="marca_readonly">Marca</label>
+                            <input 
+                                type="text" 
+                                id="marca_readonly" 
+                                value={vehicleData.marca_nombre || ''} 
+                                readOnly 
+                                disabled 
+                                className="form-control-plaintext"
+                                title="Campo de solo lectura - Para cambiar la marca debes crear un nuevo vehículo"
+                            />
+                            <small className="form-text text-muted">📍 Campo de solo lectura en modo edición</small>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="modelo_readonly">Modelo</label>
+                            <input 
+                                type="text" 
+                                id="modelo_readonly" 
+                                value={vehicleData.modelo_nombre || ''} 
+                                readOnly 
+                                disabled 
+                                className="form-control-plaintext"
+                                title="Campo de solo lectura - Para cambiar el modelo debes crear un nuevo vehículo"
+                            />
+                            <small className="form-text text-muted">📍 Campo de solo lectura en modo edición</small>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="generacion_readonly">Generación</label>
+                            <input 
+                                type="text" 
+                                id="generacion_readonly" 
+                                value={vehicleData.generacion_nombre || ''} 
+                                readOnly 
+                                disabled 
+                                className="form-control-plaintext"
+                                title="Campo de solo lectura - Para cambiar la generación debes crear un nuevo vehículo"
+                            />
+                            <small className="form-text text-muted">📍 Campo de solo lectura en modo edición</small>
+                        </div>
+                        
+                        <div className="form-group">
+                            <label htmlFor="motorizacion_readonly">Motorización</label>
+                            <input 
+                                type="text" 
+                                id="motorizacion_readonly" 
+                                value={vehicleData.motorizacion_nombre || ''} 
+                                readOnly 
+                                disabled 
+                                className="form-control-plaintext"
+                                title="Campo de solo lectura - Para cambiar la motorización debes crear un nuevo vehículo"
+                            />
+                            <small className="form-text text-muted">📍 Campo de solo lectura en modo edición</small>
+                        </div>
+                    </>
+                ) : (
+                    // MODO CREACIÓN: Selectores jerárquicos
+                    <>
+                        <div className="form-group">
+                            <label htmlFor="marca">Marca (*)</label>
+                            <select id="marca" name="marca" value={selectedMarca} onChange={handleMarcaChange} required disabled={saving}>
+                                <option value="">-- Selecciona --</option>
+                                {marcas.map(m => <option key={m.id_marca} value={m.id_marca}>{m.nombre}</option>)}
+                            </select>
+                        </div>
+                        {selectedMarca && (
+                            <div className="form-group">
+                                <label htmlFor="modelo">Modelo (*)</label>
+                                <select id="modelo" name="modelo" value={selectedModelo} onChange={handleModeloChange} required disabled={saving}>
+                                    <option value="">-- Selecciona --</option>
+                                    {modelosFiltrados.map(mo => <option key={mo.id_modelo} value={mo.id_modelo}>{mo.nombre}</option>)}
+                                </select>
+                            </div>
+                        )}
+                        {selectedModelo && (
+                            <div className="form-group">
+                                <label htmlFor="generacion">Generación</label>
+                                <select id="generacion" name="generacion" value={selectedGeneracion} onChange={handleGeneracionChange} disabled={saving}>
+                                    <option value="">-- Selecciona --</option>
+                                    {generacionesFiltradas.map(g => <option key={g.id_generacion} value={g.id_generacion}>{g.nombre}</option>)}
+                                </select>
+                            </div>
+                        )}
+                        {selectedGeneracion && (
+                            <div className="form-group">
+                                <label htmlFor="motorizacion">Motorización (*)</label>
+                                <select id="motorizacion" name="motorizacion" value={selectedMotorizacion} onChange={handleMotorizacionChange} required disabled={saving}>
+                                    <option value="">-- Selecciona --</option>
+                                    {motorizacionesFiltradas.map(mt => <option key={mt.id_motorizacion} value={mt.id_motorizacion}>{mt.nombre} ({mt.codigo_motor})</option>)}
+                                </select>
+                            </div>
+                        )}
+                    </>
                 )}
-                {selectedModelo && (
-                    <div className="form-group">
-                        <label htmlFor="generacion">Generación</label>
-                        <select id="generacion" name="generacion" value={selectedGeneracion} onChange={handleGeneracionChange} disabled={saving}>
-                            <option value="">-- Selecciona --</option>
-                            {generacionesFiltradas.map(g => <option key={g.id_generacion} value={g.id_generacion}>{g.nombre}</option>)}
-                        </select>
-                    </div>
-                )}
-                {selectedGeneracion && (
-                    <div className="form-group">
-                        <label htmlFor="motorizacion">Motorización (*)</label>
-                        <select id="motorizacion" name="motorizacion" value={selectedMotorizacion} onChange={handleMotorizacionChange} required disabled={saving}>
-                            <option value="">-- Selecciona --</option>
-                            {motorizacionesFiltradas.map(mt => <option key={mt.id_motorizacion} value={mt.id_motorizacion}>{mt.nombre} ({mt.codigo_motor})</option>)}
-                        </select>
-                    </div>
-                )}
+                
                  {/* Version */}
                 <div className="form-group">
                     <label htmlFor="version">Versión</label>
@@ -753,7 +915,7 @@ const AdminVehicleFormPage = () => {
                      {vehicleImages.map(img => (
                        <div key={img.id_imagen} className="image-item">
                          <img 
-                           src={`http://localhost:4000/api/images/vehicles/${img.ruta_local}`} 
+                           src={`${process.env.REACT_APP_API_URL.replace('/api', '')}/api/images/vehicles/${img.ruta_local}`} 
                            alt={img.descripcion || 'Imagen del vehículo'}
                            className="vehicle-image-thumb"
                          />
@@ -849,7 +1011,7 @@ const AdminVehicleFormPage = () => {
                          {vehicleTimes.map(time => (
                            <tr key={time.id_tiempo}>
                              <td>{time.circuito}</td>
-                             <td><strong>{time.tiempo_vuelta}</strong></td>
+                             <td><strong>{formatCircuitTime(time.tiempo_vuelta)}</strong></td>
                              <td>{time.condiciones || '-'}</td>
                              <td>{time.fecha_record ? format(parseISO(time.fecha_record), 'dd/MM/yyyy') : '-'}</td>
                              <td>{time.piloto || 'Desconocido'}</td>
@@ -884,21 +1046,36 @@ const AdminVehicleFormPage = () => {
                        <input 
                          type="text" 
                          id="new_time_circuito" 
+                         list="circuitos-list"
                          placeholder="ej: Nürburgring Nordschleife"
                          className="form-control"
+                         autoComplete="off"
                        />
-                       <small className="form-text text-muted">Nombre del circuito donde se registró el tiempo</small>
+                       <datalist id="circuitos-list">
+                         {circuitosConocidos.map((circuito, index) => (
+                           <option key={index} value={circuito} />
+                         ))}
+                       </datalist>
+                       <small className="form-text text-muted">
+                         Escribe o selecciona un circuito conocido de la lista desplegable
+                       </small>
                      </div>
                      <div className="form-group">
-                       <label htmlFor="new_time_vuelta">Tiempo Vuelta</label>
+                       <label htmlFor="new_time_vuelta">Tiempo Vuelta (*)</label>
                        <input 
                          type="text" 
                          id="new_time_vuelta" 
-                         placeholder="ej: 00:07:45.123"
-                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,3})?"
+                         placeholder="09:14.930"
+                         pattern="[0-9]{2}:[0-9]{2}\.[0-9]{1,3}"
                          className="form-control"
+                         title="Formato: MM:SS.ms (Minutos:Segundos.milisegundos)"
+                         maxLength="10"
+                         style={{fontFamily: 'monospace'}}
                        />
-                       <small className="form-text text-muted">Formato: MM:SS.millisegundos</small>
+                       <small className="form-text text-muted">
+                         <strong>Formato obligatorio: MM:SS.ms</strong> (ej: 09:14.930 = 9 minutos, 14.930 segundos)<br/>
+                         <strong>Importante:</strong> Siempre usar 2 dígitos para minutos y segundos
+                       </small>
                      </div>
                      <div className="form-group">
                        <label htmlFor="new_time_condiciones">Condiciones</label>
@@ -936,10 +1113,19 @@ const AdminVehicleFormPage = () => {
                        <input 
                          type="text" 
                          id="new_time_neumaticos" 
+                         list="neumaticos-list"
                          placeholder="ej: Michelin Pilot Sport Cup 2"
                          className="form-control"
+                         autoComplete="off"
                        />
-                       <small className="form-text text-muted">Tipo de neumáticos utilizados en la prueba</small>
+                       <datalist id="neumaticos-list">
+                         {neumaticosConocidos.map((neumatico, index) => (
+                           <option key={index} value={neumatico} />
+                         ))}
+                       </datalist>
+                       <small className="form-text text-muted">
+                         Escribe o selecciona un neumático deportivo conocido de la lista desplegable
+                       </small>
                      </div>
                    </div>
                    <button 

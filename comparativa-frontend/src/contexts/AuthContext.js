@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
   const register = async (nombre, email, password) => {
     try {
       await apiClient.post('/auth/register', { nombre, email, contraseña: password });
-      toast.success('Registro exitoso. Ahora puedes iniciar sesión.');
+      toast.success('Registro completado con éxito. Ahora puedes iniciar sesión.');
       return true;
     } catch (error) {
       const msg = error.response?.data?.message || 'Error en el registro.';
@@ -125,10 +125,10 @@ export function AuthProvider({ children }) {
   const requestPasswordReset = async (email) => {
     try {
       await apiClient.post('/auth/request-reset', { email });
-      toast.success('Se ha enviado un enlace de recuperación a tu correo.');
+      toast.success('Se ha enviado un enlace de recuperación a tu correo electrónico.');
       return true;
     } catch (error) {
-      const msg = error.response?.data?.message || 'Error al solicitar el reseteo de contraseña.';
+      const msg = error.response?.data?.message || 'Error al solicitar el restablecimiento de contraseña.';
       toast.error(msg);
       return false;
     }
@@ -138,7 +138,7 @@ export function AuthProvider({ children }) {
   const resetPassword = async (token, newPassword) => {
     try {
       await apiClient.post('/auth/reset-password', { token, newPassword });
-      toast.success('Contraseña restablecida correctamente. Ya puedes iniciar sesión.');
+      toast.success('Contraseña restablecida con éxito. Ya puedes iniciar sesión.');
       return true;
     } catch (error) {
       const msg = error.response?.data?.message || 'Error al restablecer la contraseña.';

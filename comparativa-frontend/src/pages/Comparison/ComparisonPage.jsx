@@ -5,7 +5,7 @@ import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import BackButton from '../../components/Common/BackButton';
 import ScrollToTopCar from '../../components/Common/ScrollToTopCar';
-import { FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar, FaLeaf } from 'react-icons/fa';
+import { FaGasPump, FaBolt, FaTachometerAlt, FaRuler, FaEuroSign, FaChartBar, FaCarSide, FaTimes, FaTrophy, FaStar, FaLeaf, FaClock } from 'react-icons/fa';
 import './ComparisonPage.css';
 
 // Paleta de colores moderna para los vehículos
@@ -94,6 +94,57 @@ const calculateAutonomy = (vehicle) => {
   }
   
   return null;
+};
+
+// Función para convertir tiempo de formato MM:SS.ms a segundos totales
+const timeToSeconds = (timeString) => {
+  if (!timeString) return null;
+  try {
+    let processedTime = timeString;
+    
+    // Los datos de BD ahora vienen en formato correcto 00:MM:SS.ms, convertir a MM:SS.ms
+    if (timeString.startsWith("00:")) {
+      processedTime = timeString.substring(3); // Remover "00:"
+    }
+    
+    // Formato esperado ahora: MM:SS.ms (ej: 07:25.123)
+    const parts = processedTime.split(':');
+    if (parts.length !== 2) return null;
+    
+    const minutes = parseInt(parts[0]) || 0;
+    const secondsParts = parts[1].split('.');
+    const seconds = parseInt(secondsParts[0]) || 0;
+    const milliseconds = parseInt(secondsParts[1]) || 0;
+    
+    // Convertir todo a segundos
+    return minutes * 60 + seconds + milliseconds / 1000;
+  } catch (e) {
+    return null;
+  }
+};
+
+// Función para formatear diferencias de tiempo
+const formatTimeDifference = (diffInSeconds) => {
+  if (diffInSeconds < 60) {
+    return `+${diffInSeconds.toFixed(1)}s`;
+  } else {
+    const minutes = Math.floor(diffInSeconds / 60);
+    const seconds = (diffInSeconds % 60).toFixed(1);
+    return `+${minutes}:${seconds.padStart(4, '0')}`;
+  }
+};
+
+// Función para formatear tiempo de vuelta a formato legible MM:SS.ms
+const formatLapTime = (timeString) => {
+  if (!timeString) return null;
+  
+  // Los datos de BD ahora vienen en formato correcto 00:MM:SS.ms, convertir a MM:SS.ms
+  if (timeString.startsWith("00:")) {
+    return timeString.substring(3); // Remover "00:" para mostrar MM:SS.ms
+  }
+  
+  // Si ya está en formato MM:SS.ms, devolverlo tal como está  
+  return timeString;
 };
 
 // Estado inicial para slots
@@ -366,7 +417,7 @@ const SmartSummary = ({ vehicles }) => {
       insight: (winner) => `Acelera de 0-100 km/h en ${winner.aceleracion_0_100}s.`
     },
     { 
-      title: 'Mayor Velocidad', 
+      title: 'Mayor Velocidad Punta', 
       property: 'velocidad_max', 
       unit: ' km/h', 
       higherIsBetter: true,
@@ -395,7 +446,7 @@ const SmartSummary = ({ vehicles }) => {
       unit: ' km', 
       higherIsBetter: true,
       icon: <FaGasPump />,
-      insight: (winner) => `Recorre hasta ${winner.autonomia_calculada} km con una carga.`
+      insight: (winner) => `Recorre hasta ${winner.autonomia_calculada} km con una carga/repostaje completo.`
     },
     { 
       title: 'Menos Emisiones', 
@@ -528,7 +579,8 @@ const ComparisonPage = () => {
     consumo: useRef(null),
     dimensiones: useRef(null),
     precio: useRef(null),
-    resumen: useRef(null)
+    resumen: useRef(null),
+    circuitos: useRef(null)
   };
 
   // Cargar opciones de filtro al montar
@@ -563,7 +615,39 @@ const ComparisonPage = () => {
         setError('No se encontraron suficientes datos para los vehículos seleccionados.');
         setVehicles([]);
       } else {
-        const vehiclesWithCalculations = response.data.data.map(v => ({
+        // Obtener tiempos de circuito para cada vehículo
+        const vehiclesWithTimes = await Promise.all(
+          response.data.data.map(async (vehicle) => {
+            try {
+              const timesResponse = await apiClient.get(`/times/vehicle/${vehicle.id_vehiculo}`);
+              const times = timesResponse.data.data || [];
+              
+              // Buscar tiempo de Nürburgring
+              const nurburgringTime = times.find(time => 
+                time.circuito && time.circuito.toLowerCase().includes('nürburgring')
+              );
+              
+              return {
+                ...vehicle,
+                tiempos_circuito: times,
+                tiempo_nurburgring: nurburgringTime?.tiempo_vuelta || null,
+                tiempo_nurburgring_formatted: nurburgringTime ? formatLapTime(nurburgringTime.tiempo_vuelta) : null,
+                tiempo_nurburgring_seconds: nurburgringTime ? timeToSeconds(nurburgringTime.tiempo_vuelta) : null
+              };
+            } catch (err) {
+              // Si falla obtener tiempos, continuar sin ellos
+              return {
+                ...vehicle,
+                tiempos_circuito: [],
+                tiempo_nurburgring: null,
+                tiempo_nurburgring_formatted: null,
+                tiempo_nurburgring_seconds: null
+              };
+            }
+          })
+        );
+        
+        const vehiclesWithCalculations = vehiclesWithTimes.map(v => ({
           ...v,
           autonomia_calculada: calculateAutonomy(v),
           ratio_peso_potencia: (v.peso && v.potencia && v.potencia > 0) ? v.peso / v.potencia : null
@@ -731,7 +815,8 @@ const ComparisonPage = () => {
     { id: 'consumo', name: 'Consumo y Emisiones', icon: FaGasPump },
     { id: 'dimensiones', name: 'Dimensiones', icon: FaRuler },
     { id: 'precio', name: 'Precio', icon: FaEuroSign },
-    { id: 'resumen', name: 'Resumen Inteligente', icon: FaChartBar }
+    { id: 'resumen', name: 'Resumen Inteligente', icon: FaChartBar },
+    { id: 'circuitos', name: 'Tiempos de Circuito', icon: FaClock }
   ];
 
   // Función para hacer scroll a una sección
@@ -977,6 +1062,149 @@ const ComparisonPage = () => {
     </div>
   );
 
+  // Renderizar sección de tiempos de circuito dedicada
+  const renderCircuitTimesSection = () => (
+    <div className="comparison-section" ref={sectionRefs.circuitos} id="circuitos">
+      <h2 className="section-title">Tiempos de Circuito</h2>
+      
+      {/* Verificar si hay tiempos disponibles */}
+      {vehicles.some(v => v.tiempos_circuito && v.tiempos_circuito.length > 0) ? (
+        <div className="circuit-times-comparison">
+          {/* Tabla de tiempos de Nürburgring */}
+          <div className="nurburgring-section">
+            <h3 className="subsection-title">🏁 Nürburgring Nordschleife</h3>
+            {vehicles.filter(v => v.tiempo_nurburgring).length > 0 ? (
+              <div className="nurburgring-times">
+                <div className="times-ranking">
+                  {vehicles
+                    .filter(v => v.tiempo_nurburgring_seconds)
+                    .sort((a, b) => a.tiempo_nurburgring_seconds - b.tiempo_nurburgring_seconds)
+                    .map((vehicle, index) => {
+                      const isWinner = index === 0;
+                      return (
+                        <div key={vehicle.id_vehiculo} className={`time-entry ${isWinner ? 'winner' : ''}`}>
+                          <div className="position-badge">
+                            {index === 0 && <FaTrophy className="trophy-icon" />}
+                            #{index + 1}
+                          </div>
+                          <div className="vehicle-color-indicator" style={{ backgroundColor: VEHICLE_COLORS[vehicles.indexOf(vehicle)] }}></div>
+                          <div className="vehicle-info">
+                            <strong>{vehicle.marca} {vehicle.modelo}</strong>
+                            <span className="vehicle-version">{vehicle.version}</span>
+                          </div>
+                          <div className="lap-time">
+                            <span className="time-display">{vehicle.tiempo_nurburgring_formatted}</span>
+                            {isWinner && <span className="winner-label">¡Más rápido!</span>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                
+                {/* Diferencias de tiempo */}
+                <div className="time-differences">
+                  <h4>📊 Diferencias de tiempo:</h4>
+                  {(() => {
+                    const sortedTimes = vehicles
+                      .filter(v => v.tiempo_nurburgring_seconds)
+                      .sort((a, b) => a.tiempo_nurburgring_seconds - b.tiempo_nurburgring_seconds);
+                    const fastest = sortedTimes[0];
+                    
+                    return sortedTimes.slice(1).map((vehicle, index) => {
+                      const diff = vehicle.tiempo_nurburgring_seconds - fastest.tiempo_nurburgring_seconds;
+                      const diffFormatted = formatTimeDifference(diff);
+                      return (
+                        <div key={vehicle.id_vehiculo} className="time-diff">
+                          <span>{vehicle.marca} {vehicle.modelo}</span>
+                          <span className="diff-value">{diffFormatted}</span>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+            ) : (
+              <p className="no-times-message">No hay tiempos de Nürburgring disponibles para estos vehículos.</p>
+            )}
+          </div>
+          
+          {/* Tabla completa de todos los tiempos */}
+          <div className="all-times-section">
+            <h3 className="subsection-title">📋 Todos los tiempos registrados</h3>
+            <div className="times-table-comparison">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Vehículo</th>
+                    <th>Circuito</th>
+                    <th>Tiempo</th>
+                    <th>Condiciones</th>
+                    <th>Piloto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    // Crear array con todos los tiempos de todos los vehículos
+                    const allTimes = [];
+                    vehicles.forEach((vehicle, vehicleIndex) => {
+                      if (vehicle.tiempos_circuito && vehicle.tiempos_circuito.length > 0) {
+                        vehicle.tiempos_circuito.forEach(time => {
+                          allTimes.push({
+                            ...time,
+                            vehicle,
+                            vehicleIndex,
+                            timeInSeconds: timeToSeconds(time.tiempo_vuelta)
+                          });
+                        });
+                      }
+                    });
+                    
+                    // Ordenar todos los tiempos del más rápido al más lento
+                    allTimes.sort((a, b) => {
+                      // Si ambos tienen tiempo en segundos válido, ordenar por tiempo
+                      if (a.timeInSeconds && b.timeInSeconds) {
+                        return a.timeInSeconds - b.timeInSeconds;
+                      }
+                      // Si solo uno tiene tiempo válido, ponerlo primero
+                      if (a.timeInSeconds && !b.timeInSeconds) return -1;
+                      if (!a.timeInSeconds && b.timeInSeconds) return 1;
+                      // Si ninguno tiene tiempo válido, ordenar alfabéticamente por circuito
+                      return a.circuito.localeCompare(b.circuito);
+                    });
+                    
+                    return allTimes.length > 0 ? allTimes.map((timeEntry, index) => (
+                      <tr key={`${timeEntry.vehicle.id_vehiculo}-${timeEntry.id_tiempo}`}>
+                        <td>
+                          <div className="table-vehicle-name">
+                            <div className="table-color-indicator" style={{ backgroundColor: VEHICLE_COLORS[timeEntry.vehicleIndex] }}></div>
+                            {timeEntry.vehicle.marca} {timeEntry.vehicle.modelo}
+                          </div>
+                        </td>
+                        <td>{timeEntry.circuito}</td>
+                        <td><strong>{formatLapTime(timeEntry.tiempo_vuelta)}</strong></td>
+                        <td>{timeEntry.condiciones || '-'}</td>
+                        <td>{timeEntry.piloto || '-'}</td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan="5" className="text-center">No hay tiempos de circuito registrados para ningún vehículo.</td>
+                      </tr>
+                    );
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="no-circuit-times">
+          <p>⏱️ No hay tiempos de circuito disponibles para los vehículos seleccionados.</p>
+          <p><strong>Nota:</strong> Los tiempos de circuito proporcionan una excelente referencia del rendimiento real de cada vehículo en condiciones de conducción deportiva.</p>
+        </div>
+      )}
+    </div>
+  );
+
   // Renderizar comparación detallada
               return (
     <div className="comparison-page-modern">
@@ -1127,6 +1355,8 @@ const ComparisonPage = () => {
           <h2 className="section-title">Resumen Inteligente</h2>
           <SmartSummary vehicles={vehicles} />
         </div>
+
+        {renderCircuitTimesSection()}
              </div>
              
       {/* Coche animado para volver arriba */}

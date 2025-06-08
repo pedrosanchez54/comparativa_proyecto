@@ -69,13 +69,16 @@ const VehicleDetailPage = () => {
         }
    };
 
-    // Formatea tiempo de vuelta HH:MM:SS.ms (opcionalmente quita HH si es 00)
+    // Formatea tiempo de vuelta de 00:MM:SS.ms a MM:SS.ms
    const formatLapTime = (timeString) => {
         if (!timeString) return '-';
+        
+        // Los datos de BD ahora vienen en formato correcto 00:MM:SS.ms, mostrar MM:SS.ms
         if (timeString.startsWith("00:")) {
             return timeString.substring(3); // Formato MM:SS.ms
         }
-        return timeString; // Formato HH:MM:SS.ms
+        
+        return timeString; // Si ya está en formato MM:SS.ms
    };
 
    // Renderiza una línea de especificación si el valor existe

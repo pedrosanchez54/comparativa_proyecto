@@ -194,24 +194,35 @@ const Layout = ({ children }) => {
                   <FaExchangeAlt /> Comparar
                 </Link>
                 
-                {isAuthenticated ? (
-                  <div className="nav-user-links">
-                    <Link to="/profile" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                      <FaUser /> Mi Perfil
-                    </Link>
-                    <Link to="/favorites" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                      <FaHeart /> Mis Favoritos
-                    </Link>
-                    <Link to="/my-lists" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                      <FaList /> Mis Listas
-                    </Link>
-                    {user.rol === 'admin' && (
-                      <Link to="/admin" className="nav-link" onClick={() => setIsMenuOpen(false)}>
-                        <FaUser /> Panel Admin
+                {isAuthenticated && (
+                  <>
+                    {/* Separador elegante entre secciones públicas y privadas */}
+                    <div className="nav-separator">
+                      <div className="separator-line">
+                        <div className="separator-highlight"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="nav-user-links">
+                      <Link to="/profile" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                        <FaUser /> Mi Perfil
                       </Link>
-                    )}
-                  </div>
-                ) : (
+                      <Link to="/favorites" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                        <FaHeart /> Mis Favoritos
+                      </Link>
+                      <Link to="/my-lists" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                        <FaList /> Mis Listas
+                      </Link>
+                      {user.rol === 'admin' && (
+                        <Link to="/admin" className="nav-link" onClick={() => setIsMenuOpen(false)}>
+                          <FaUser /> Panel Admin
+                        </Link>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {!isAuthenticated && (
                   <div className="auth-links">
                     <Link to="/login" className="nav-link" onClick={() => setIsMenuOpen(false)}>
                       <FaSignInAlt /> Iniciar Sesión

@@ -175,13 +175,13 @@ const ProfilePage = () => {
     }
 
     if (!editForm.email.trim()) {
-      toast.error('El email es requerido');
+      toast.error('El correo electrónico es requerido');
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(editForm.email)) {
-      toast.error('Email inválido');
+      toast.error('Correo electrónico inválido');
       return false;
     }
 

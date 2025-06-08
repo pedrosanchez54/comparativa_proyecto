@@ -64,9 +64,9 @@ const Navbar = () => {
         </ul>
 
         {/* Menú de Usuario/Acciones (Derecha) */}
-        <ul className="nav-menu nav-menu-right">
+        <div className="navbar-user-menu">
+          {/* --- Menú si el usuario ESTÁ con sesión iniciada --- */}
           {isLoggedIn ? (
-            // --- Menú si el usuario ESTÁ logueado ---
             <>
               {/* Enlace al Panel de Admin (solo si el usuario es admin) */}
               {user?.rol === 'admin' && (
@@ -102,7 +102,7 @@ const Navbar = () => {
               </li>
             </>
           ) : (
-            // --- Menú si el usuario NO está logueado ---
+            // --- Menú si el usuario NO está con sesión iniciada ---
             <>
               {/* Enlace a Iniciar Sesión */}
               <li className="nav-item">
@@ -118,7 +118,7 @@ const Navbar = () => {
               </li>
             </>
           )}
-        </ul>
+        </div>
 
         {/* Solo mostrar el icono de comparativa y su popover si hay elementos en la lista */}
         {compareList.length > 0 && (

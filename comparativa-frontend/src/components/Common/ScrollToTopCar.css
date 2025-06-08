@@ -198,31 +198,48 @@
   }
 }
 
-/* Efectos adicionales en hover */
+/* Hover y otros efectos */
 .scroll-to-top-car:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px) scale(1.1);
 }
 
 .scroll-to-top-car:active {
   transform: translateY(0) scale(0.95);
 }
 
-/* SVG del coche */
 .car-svg {
-  display: block;
-  transition: filter 0.3s ease;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .scroll-to-top-car:hover .car-svg {
-  filter: brightness(1.1) drop-shadow(0 0 8px rgba(255, 107, 53, 0.5));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
-/* Responsive */
+/* Responsive - ajustado para no pisar footer */
+@media (max-width: 960px) {
+  .scroll-to-top-car {
+    bottom: 160px; /* Margen suficiente para footer expandido en tablets */
+    right: 25px;
+  }
+}
+
 @media (max-width: 768px) {
   .scroll-to-top-car {
-    bottom: 20px;
+    bottom: 180px; /* Aumentado significativamente para footer en móviles */
     right: 20px;
     transform: translateY(80px);
+  }
+
+  .car-body {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 600px) {
+  .scroll-to-top-car {
+    bottom: 200px; /* Aún más margen para pantallas pequeñas */
+    right: 18px;
   }
   
   .car-body {
@@ -232,11 +249,11 @@
 
 @media (max-width: 480px) {
   .scroll-to-top-car {
-    bottom: 15px;
+    bottom: 220px; /* Máximo margen para pantallas muy pequeñas */
     right: 15px;
   }
-  
+
   .car-body {
-    transform: scale(0.75);
+    transform: scale(0.8);
   }
 } 

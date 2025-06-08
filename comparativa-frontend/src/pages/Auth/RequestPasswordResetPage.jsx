@@ -14,7 +14,7 @@ const RequestPasswordResetPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
     if (!email.trim()) {
-      toast.error('Por favor, ingresa tu email');
+      toast.error('Por favor, introduce tu correo electrónico');
       return;
     }
 
@@ -22,7 +22,7 @@ const RequestPasswordResetPage = () => {
       setLoading(true);
       await apiClient.post('/auth/request-password-reset', { email });
       setSuccess(true);
-      toast.success('Se ha enviado un enlace a tu email para restablecer tu contraseña');
+      toast.success('Se ha enviado un enlace a tu correo electrónico para restablecer tu contraseña');
     } catch (error) {
       toast.error('Error al solicitar el restablecimiento de contraseña');
         } finally {

@@ -4,7 +4,7 @@ const { pool } = require('../config/db');
 const { hashPassword, verifyPassword } = require('../utils/hashUtils');
 const { generateSecureToken } = require('../utils/tokenUtils');
 const { generateToken, verifyToken } = require('../utils/jwtUtils');
-const { sendPasswordResetEmail } = require('../utils/mailerUtils');
+const { sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/mailerUtils');
 const { validationResult } = require('express-validator');
 
 // --- Lógica de Throttling (Prevención de Fuerza Bruta) ---
@@ -41,8 +41,20 @@ exports.register = async (req, res, next) => {
       [nombre, email, hashedPassword]
     );
 
-    // 5. Enviar respuesta exitosa
-    res.status(201).json({ message: 'Usuario registrado correctamente.', userId: result.insertId }); // 201 Created
+    // 5. Enviar email de bienvenida (no bloquear si falla)
+    try {
+      await sendWelcomeEmail(email, nombre);
+      console.log(`✅ Email de bienvenida enviado a ${email}`);
+    } catch (emailError) {
+      console.warn(`⚠️ No se pudo enviar email de bienvenida a ${email}:`, emailError.message);
+      // No fallar el registro por esto
+    }
+
+    // 6. Enviar respuesta exitosa
+    res.status(201).json({ 
+      message: 'Usuario registrado correctamente. ¡Revisa tu email para más información!', 
+      userId: result.insertId 
+    }); // 201 Created
 
   } catch (error) {
     // Si hay un error (ej. BD caída), pasar al manejador de errores
@@ -266,44 +278,61 @@ exports.resetPassword = async (req, res, next) => {
 };
 
 /**
- * Comprueba el estado de la sesión actual y devuelve datos del usuario si está logueado.
+ * Comprueba el estado de la sesión actual y devuelve datos del usuario si está con sesión iniciada.
  */
-exports.checkSession = (req, res) => {
-    // Primero verificar autenticación JWT
+const getSessionStatus = async (req, res) => {
+  try {
+    // Verificar si hay token JWT válido
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
+      const token = authHeader.substring(7);
+      
+      try {
         const payload = verifyToken(token);
         
-        if (payload) {
-            return res.status(200).json({
-                isLoggedIn: true,
-                user: {
-                    id: payload.id,
-                    nombre: payload.nombre,
-                    email: payload.email,
-                    rol: payload.rol
-                }
-            });
+        // Buscar datos del usuario en la BD
+        const [users] = await pool.query(
+          'SELECT id_usuario as id, nombre, email, rol FROM Usuarios WHERE id_usuario = ? LIMIT 1',
+          [payload.id]
+        );
+        
+        if (users.length > 0) {
+          return res.json({
+            isAuthenticated: true,
+            user: {
+              id: users[0].id,
+              nombre: users[0].nombre,
+              email: users[0].email,
+              rol: users[0].rol
+            }
+          });
         }
+      } catch {
+        // Token inválido, continuar para verificar sesión
+      }
     }
     
-    // Si no hay JWT válido, verificar sesión
+    // Verificar sesión
     if (req.session && req.session.userId) {
-        // Usuario logueado por sesión, devuelve sus datos
-        res.status(200).json({
-            isLoggedIn: true,
-            user: {
-                id: req.session.userId,
-                nombre: req.session.userName,
-                email: req.session.userEmail,
-                rol: req.session.userRole
-            }
-        });
-    } else {
-        // Usuario no logueado
-        res.status(200).json({ isLoggedIn: false, user: null });
+      // Usuario con sesión iniciada por sesión, devuelve sus datos
+      return res.json({
+        isAuthenticated: true,
+        user: {
+          id: req.session.userId,
+          nombre: req.session.userName,
+          email: req.session.userEmail,
+          rol: req.session.userRole
+        }
+      });
     }
+    
+    // Usuario sin sesión iniciada
+    res.json({ isAuthenticated: false, user: null });
+    
+  } catch (error) {
+    console.error('Error verificando estado de sesión:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
 };
 
 
@@ -353,3 +382,6 @@ async function resetLoginAttempts(email, userId) {
         console.error("Error reseteando intentos de login en BD:", dbError);
     }
 }
+
+// Exportar la función de verificación de sesión
+exports.checkSession = getSessionStatus;

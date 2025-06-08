@@ -39,8 +39,8 @@ router.get('/validate-reset-token/:token', authController.validateResetToken);
 // Valida la nueva contraseña del body
 router.post('/reset-password/:token', resetPasswordValidation, authController.resetPassword);
 
-// GET /api/auth/session - Verificar si hay una sesión activa y obtener datos del usuario
-// No requiere isAuthenticated aquí directamente, el controlador maneja ambos casos (logueado/no logueado)
+// GET /api/auth/session - Verificar estado de la sesión actual
+// No requiere isAuthenticated aquí directamente, el controlador maneja ambos casos (con sesión iniciada/sin sesión iniciada)
 router.get('/session', authController.checkSession);
 
 module.exports = router;

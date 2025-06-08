@@ -41,7 +41,7 @@ app.use(cors({
     'http://localhost:3001',
     'http://localhost:3002',
     'http://192.168.1.82:3000', // Acceso local desde móvil
-    'http://proyectocomparativa.ddns.net:3000'  // Acceso externo por DDNS (reemplaza por tu dominio DDNS real)
+    'http://TU_DDNS_AQUI:3000'  // Acceso externo por DDNS (reemplaza por tu dominio DDNS real)
   ],
   credentials: true // ¡MUY IMPORTANTE! Permite enviar y recibir cookies de sesión
 }));
@@ -53,7 +53,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "img-src": ["'self'", "data:", "http://proyectocomparativa.ddns.net:4000"],
+      "img-src": ["'self'", "data:", "http://192.168.1.82:4000"],
     },
   },
 }));

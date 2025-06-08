@@ -150,7 +150,7 @@ const getFavorites = async (req, res, next) => {
         // Formatear las imágenes principales
         const formattedFavorites = favorites.map(fav => ({
             ...fav,
-            imagen_principal: fav.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${fav.imagen_principal}` : null
+            imagen_principal: fav.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${fav.imagen_principal}` : null
         }));
         
         res.status(200).json({ message: 'Favoritos obtenidos.', data: formattedFavorites });
@@ -437,7 +437,7 @@ const getListDetails = async (req, res, next) => {
         // Formatear las imágenes principales de los vehículos
         const formattedVehicles = vehicles.map(vehicle => ({
             ...vehicle,
-            imagen_principal: vehicle.imagen_principal ? `http://192.168.1.82:4000/api/images/vehicles/${vehicle.imagen_principal}` : null
+            imagen_principal: vehicle.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${vehicle.imagen_principal}` : null
         }));
 
         const responseData = {

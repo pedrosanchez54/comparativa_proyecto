@@ -2,19 +2,25 @@
 
 const { body, param } = require('express-validator');
 
-// Expresión regular para validar formato HH:MM:SS.ms (ej: 00:07:35.123)
-const timeRegex = /^\d{2}:\d{2}:\d{2}\.\d{3}$/;
+// Expresión regular para validar formato MM:SS.ms (ej: 07:35.123) o 00:MM:SS.ms (ej: 00:07:35.123)
+// Solo minutos:segundos.milisegundos ya que ningún circuito toma más de una hora
+// Acepta tanto MM:SS.ms como 00:MM:SS.ms para compatibilidad con MySQL TIME
+const timeRegex = /^(\d{2}:\d{2}\.\d{1,3}|00:\d{2}:\d{2}\.\d{1,3})$/;
 const allowedConditions = ['Seco','Mojado','Húmedo','Mixto','Nieve/Hielo'];
+
+// Validación específica para el parámetro idVehiculo en rutas de tiempo
+const vehicleIdTimeParamValidation = [
+    param('idVehiculo').isInt().withMessage('ID de vehículo inválido en la URL.')
+];
 
 // Validación para añadir un nuevo tiempo de circuito
 const createTimeValidation = [
-    // El ID del vehículo viene en la URL, se valida en la ruta
     body('circuito')
       .trim()
       .notEmpty().withMessage('El nombre del circuito es requerido.')
       .isLength({ min: 3, max: 100 }).withMessage('Nombre de circuito inválido.'),
     body('tiempo_vuelta')
-      .matches(timeRegex).withMessage('Formato de tiempo de vuelta inválido (HH:MM:SS.ms).'),
+      .matches(timeRegex).withMessage('Formato de tiempo inválido. Use MM:SS.ms (ej: 09:14.930) o 00:MM:SS.ms (ej: 00:09:14.930)'),
     body('condiciones')
       .optional({ nullable: true, checkFalsy: true }) // Permitir vacío o null (usará default 'Seco' de BD)
       .isIn(allowedConditions).withMessage('Condiciones inválidas.'),
@@ -42,5 +48,6 @@ const createTimeValidation = [
 
 module.exports = {
     createTimeValidation,
-    timeIdParamValidation
+    timeIdParamValidation,
+    vehicleIdTimeParamValidation
 };
