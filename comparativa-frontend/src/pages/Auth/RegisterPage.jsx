@@ -10,6 +10,7 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState(''); // Errores de validación del frontend
   const [loading, setLoading] = useState(false);
   const { register } = useAuth(); // Función register del contexto
@@ -30,6 +31,10 @@ const RegisterPage = () => {
     }
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
+      return;
+    }
+    if (!acceptTerms) {
+      setError('Debes aceptar los términos y condiciones para registrarte.');
       return;
     }
 
@@ -109,7 +114,33 @@ const RegisterPage = () => {
                 placeholder="Repite la contraseña"
               />
             </div>
-            <button type="submit" className="auth-button" disabled={loading}>
+            
+            <div className="form-group terms-group">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  required
+                  disabled={loading}
+                />
+                <span className="checkmark"></span>
+                <span className="terms-text">
+                  Acepto los{' '}
+                  <Link to="/terms" target="_blank" rel="noopener noreferrer">
+                    Términos y Condiciones
+                  </Link>
+                  {' '}y la{' '}
+                  <Link to="/privacy" target="_blank" rel="noopener noreferrer">
+                    Política de Privacidad
+                  </Link>
+                  {' '}de Comparativa Vehículos.
+                </span>
+              </label>
+            </div>
+            
+            <button type="submit" className="auth-button" disabled={loading || !acceptTerms}>
               {loading ? 'Registrando...' : 'REGISTRARSE'}
             </button>
           </form>

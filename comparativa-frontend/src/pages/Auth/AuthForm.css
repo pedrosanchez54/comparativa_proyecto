@@ -399,4 +399,139 @@
     border-radius: 10px;
     min-width: 160px;
   }
+}
+
+/* ===== ESTILOS PARA CASILLA DE TÉRMINOS Y CONDICIONES ===== */
+
+.terms-group {
+  margin: 20px 0 !important;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.checkbox-container {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  cursor: pointer;
+  line-height: 1.5;
+  margin: 0 !important;
+  position: relative;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
+  position: absolute;
+  cursor: pointer;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.checkmark::after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkmark {
+  background-color: var(--cherry-red, #D90429);
+  border-color: var(--cherry-red, #D90429);
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkmark::after {
+  display: block;
+}
+
+.checkbox-container input[type="checkbox"]:focus + .checkmark {
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.1);
+  border-color: var(--cherry-red, #D90429);
+}
+
+.checkbox-container:hover .checkmark {
+  border-color: #9ca3af;
+}
+
+.checkbox-container input[type="checkbox"]:disabled + .checkmark {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.checkbox-container input[type="checkbox"]:disabled + .checkmark::after {
+  border-color: #9ca3af;
+}
+
+.terms-text {
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.terms-text a {
+  color: var(--cherry-red, #D90429);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.terms-text a:hover {
+  color: #b91c1c;
+  border-bottom-color: #b91c1c;
+}
+
+.terms-text a:focus {
+  outline: 2px solid rgba(217, 4, 41, 0.3);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Responsive para términos */
+@media (max-width: 480px) {
+  .terms-group {
+    padding: 12px;
+    margin: 15px 0 !important;
+  }
+  
+  .terms-text {
+    font-size: 0.85rem;
+  }
+  
+  .checkmark {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .checkmark::after {
+    width: 4px;
+    height: 8px;
+    transform: translate(-50%, -60%) rotate(45deg);
+  }
 } 

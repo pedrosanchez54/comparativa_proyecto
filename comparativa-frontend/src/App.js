@@ -21,6 +21,11 @@ import MyListsPage from './pages/User/MyListsPage';
 import ListDetailPage from './pages/User/ListDetailPage';
 import FavoritesPage from './pages/User/FavoritesPage';
 import ProfilePage from './pages/User/ProfilePage';
+// Páginas estáticas
+import AboutPage from './pages/Static/AboutPage';
+import ContactPage from './pages/Static/ContactPage';
+import PrivacyPage from './pages/Static/PrivacyPage';
+import TermsPage from './pages/Static/TermsPage';
 import Layout from './components/Layout/Layout';
 
 function App() {
@@ -96,6 +101,12 @@ function App() {
                   <ProfilePage />
                 </ProtectedRoute>
               } />
+
+              {/* Páginas estáticas */}
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
 
           {/* Redirección por defecto */}
           <Route path="*" element={<Navigate to="/" />} />
