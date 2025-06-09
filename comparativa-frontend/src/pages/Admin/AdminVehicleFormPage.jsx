@@ -915,7 +915,7 @@ const AdminVehicleFormPage = () => {
                      {vehicleImages.map(img => (
                        <div key={img.id_imagen} className="image-item">
                          <img 
-                           src={`${process.env.REACT_APP_API_URL.replace('/api', '')}/api/images/vehicles/${img.ruta_local}`} 
+                           src={`${process.env.REACT_APP_IMAGE_BASE_URL}/api/images/vehicles/${img.ruta_local}`} 
                            alt={img.descripcion || 'Imagen del vehículo'}
                            className="vehicle-image-thumb"
                          />

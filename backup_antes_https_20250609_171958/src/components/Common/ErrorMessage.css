@@ -1,0 +1,21 @@
+/* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Common/ErrorMessage.css */
+
+.error-message-box {
+  background-color: #f8d7da; /* Fondo rojo claro */
+  color: #721c24; /* Texto rojo oscuro */
+  border: 1px solid #f5c6cb; /* Borde rojo */
+  border-left-width: 5px; /* Borde izquierdo más grueso para énfasis */
+  border-radius: 4px;
+  padding: 12px 15px; /* Padding interno */
+  margin: 15px 0; /* Margen vertical para separarlo */
+  display: flex;
+  align-items: center; /* Alinear icono y texto verticalmente */
+  font-size: 0.95rem;
+}
+
+.error-icon {
+  color: #721c24; /* Mismo color que el texto */
+  margin-right: 10px; /* Espacio entre icono y texto */
+  font-size: 1.2em; /* Icono ligeramente más grande que el texto */
+  flex-shrink: 0; /* Evita que el icono se encoja */
+} 

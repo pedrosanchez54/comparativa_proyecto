@@ -78,4 +78,53 @@
 .page-item.ellipsis .page-link {
     border-left: 1px solid #dee2e6; /* Asegurar borde izquierdo */
     border-right: 1px solid #dee2e6; /* Asegurar borde derecho */
-} 
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* En pantallas muy pequeñas (< 460px) */
+@media (max-width: 460px) {
+  /* Ocultar el texto de los botones Anterior/Siguiente, solo mostrar iconos */
+  .page-item.prev-btn .btn-text,
+  .page-item.next-btn .btn-text {
+    display: none;
+  }
+  
+  /* Reducir padding de todos los botones para que ocupen menos espacio */
+  .page-link {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  /* Ajustar gap entre icono y texto (aunque el texto esté oculto) */
+  .page-link {
+    gap: 0;
+  }
+  
+  /* Reducir márgenes de la paginación */
+  .pagination-nav {
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+}
+
+/* En pantallas extra pequeñas (< 380px) */
+@media (max-width: 380px) {
+  /* Reducir aún más el padding */
+  .page-link {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+  
+  /* Ocultar algunos números de página intermedios si hay muchos */
+  .pagination {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .pagination::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+}

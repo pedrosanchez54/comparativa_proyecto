@@ -1,0 +1,31 @@
+/* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Layout/Footer.css */
+
+.footer {
+  background-color: #2f3136; /* Un gris oscuro, diferente a la navbar */
+  color: #aab0b8; /* Color de texto gris claro */
+  padding: 20px 0; /* Padding vertical */
+  text-align: center;
+  margin-top: auto; /* Asegura que se quede abajo si el contenido es corto */
+  font-size: 0.9rem;
+  border-top: 1px solid #4f545c; /* Borde superior sutil */
+}
+
+.footer-container {
+  max-width: 1200px; /* Mismo ancho que el contenido principal */
+  margin: 0 auto; /* Centrado */
+  padding: 0 15px; /* Padding lateral */
+}
+
+.footer p {
+  margin: 5px 0; /* Espacio entre párrafos */
+}
+
+.footer a {
+  color: #7289da; /* Un color diferente para enlaces en el footer */
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+} 

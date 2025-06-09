@@ -1,0 +1,81 @@
+/* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Common/Pagination.css */
+
+.pagination-nav {
+  display: flex;
+  justify-content: center; /* Centrar la paginación */
+  margin-top: 30px; /* Espacio superior */
+  margin-bottom: 20px; /* Espacio inferior */
+}
+
+.pagination {
+  display: flex;
+  list-style: none; /* Quitar puntos de lista */
+  padding: 0;
+  margin: 0;
+  border-radius: 4px; /* Bordes redondeados */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Sombra sutil */
+  overflow: hidden; /* Para que el redondeo afecte a los hijos */
+}
+
+.page-item {
+  /* No necesita estilos directos aquí */
+}
+
+.page-link {
+  color: #007bff; /* Color de texto azul */
+  background-color: #fff; /* Fondo blanco */
+  border: 1px solid #dee2e6; /* Borde gris claro */
+  padding: 8px 14px; /* Padding interno */
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espacio para iconos */
+  font-size: 0.95rem;
+  /* Solapar bordes entre elementos */
+  margin-left: -1px;
+}
+.page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 4px; /* Redondear esquina izquierda */
+  border-bottom-left-radius: 4px;
+}
+.page-item:last-child .page-link {
+  border-top-right-radius: 4px; /* Redondear esquina derecha */
+  border-bottom-right-radius: 4px;
+}
+
+/* Estilo Hover */
+.page-link:hover {
+  background-color: #e9ecef; /* Fondo gris claro al pasar el ratón */
+  color: #0056b3; /* Azul más oscuro */
+  z-index: 2; /* Asegurar que se vea por encima al hacer hover */
+}
+
+/* Estilo para el elemento activo (página actual) */
+.page-item.active .page-link {
+  background-color: #007bff; /* Fondo azul */
+  color: white; /* Texto blanco */
+  border-color: #007bff; /* Borde azul */
+  z-index: 3; /* Por encima de los demás */
+  cursor: default; /* No es clickeable */
+}
+
+/* Estilo para elementos deshabilitados (primera/última página, ellipsis) */
+.page-item.disabled .page-link {
+  color: #6c757d; /* Color gris */
+  background-color: #fff; /* Fondo blanco */
+  border-color: #dee2e6; /* Borde gris claro */
+  cursor: not-allowed; /* Cursor no permitido */
+  pointer-events: none; /* Deshabilitar eventos de ratón */
+}
+.page-item.disabled .page-link:hover {
+   background-color: #fff; /* Sin cambio de fondo en hover */
+}
+
+/* Estilo específico para ellipsis (...) */
+.page-item.ellipsis .page-link {
+    border-left: 1px solid #dee2e6; /* Asegurar borde izquierdo */
+    border-right: 1px solid #dee2e6; /* Asegurar borde derecho */
+} 

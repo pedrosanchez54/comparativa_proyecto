@@ -8,7 +8,7 @@
 const axios = require('axios');
 const readline = require('readline');
 
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = 'https://localhost:4000/api';
 
 const rl = readline.createInterface({
   input: process.stdin,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pagination.css'; // Importa los estilos
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'; // Iconos para flechas
 
@@ -10,6 +10,18 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'; // Iconos para flech
  * @param {function} props.onPageChange - Función callback que se llama cuando se selecciona una nueva página, recibe el número de página como argumento.
  */
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Escuchar cambios de tamaño de ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // No mostrar paginación si solo hay una página o ninguna
   if (totalPages <= 1) {
     return null;
@@ -18,7 +30,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   // --- Lógica para generar los números de página a mostrar ---
   const getPageNumbers = () => {
     const pageNumbers = [];
-    const maxPagesToShow = 5; // Máximo de botones numéricos visibles (ej. 1 ... 4 5 6 ... 10)
+    // Adaptar número de páginas según el ancho de pantalla
+    const maxPagesToShow = windowWidth <= 460 ? 3 : (windowWidth <= 768 ? 4 : 5);
     const halfPages = Math.floor(maxPagesToShow / 2);
 
     let startPage = Math.max(1, currentPage - halfPages);
@@ -64,14 +77,15 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     <nav className="pagination-nav" aria-label="Paginación">
       <ul className="pagination">
         {/* Botón "Anterior" */}
-        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+        <li className={`page-item prev-btn ${currentPage === 1 ? 'disabled' : ''}`}>
           <button
             className="page-link"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
             aria-label="Página anterior" // Accesibilidad
           >
-            <FaAngleLeft aria-hidden="true" /> Anterior
+            <FaAngleLeft aria-hidden="true" />
+            <span className="btn-text">Anterior</span>
           </button>
         </li>
 
@@ -99,14 +113,15 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         ))}
 
         {/* Botón "Siguiente" */}
-        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+        <li className={`page-item next-btn ${currentPage === totalPages ? 'disabled' : ''}`}>
           <button
             className="page-link"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             aria-label="Página siguiente" // Accesibilidad
           >
-            Siguiente <FaAngleRight aria-hidden="true" />
+            <span className="btn-text">Siguiente</span>
+            <FaAngleRight aria-hidden="true" />
           </button>
         </li>
       </ul>

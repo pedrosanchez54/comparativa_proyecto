@@ -1,0 +1,290 @@
+/* Ruta: ~/comparativa_proyecto/comparativa-frontend/src/components/Layout/Navbar.css */
+
+.navbar {
+  background: linear-gradient(90deg, rgb(35, 37, 38) 0%, rgb(22, 23, 24) 100%); /* Gradiente oscuro */
+  height: 65px; /* Ligeramente más alta */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  position: sticky; /* Se queda fija arriba */
+  top: 0;
+  z-index: 999; /* Asegura que esté por encima de otros elementos */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+  width: 100%; /* Ocupa todo el ancho */
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between; /* Espacio entre logo/links izquierdos y links derechos */
+  align-items: center;
+  height: 100%;
+  max-width: 1300px; /* Un poco más ancho para pantallas grandes */
+  width: 100%;
+  padding: 0 25px; /* Padding lateral */
+}
+
+.navbar-logo {
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1.7rem; /* Logo más grande */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre icono y texto */
+  transition: color 0.2s ease;
+}
+
+.navbar-logo:hover {
+    color: #00aaff; /* Color azul brillante al pasar el ratón */
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu-right {
+    margin-left: auto; /* Empuja este menú a la derecha, asegurando espacio */
+}
+
+.nav-item {
+  height: 100%; /* Ocupa toda la altura de la navbar */
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  color: #f5f5f5; /* Color de texto ligeramente más claro */
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 1.1rem; /* Más padding horizontal */
+  height: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  gap: 6px; /* Espacio para iconos */
+  transition: all 0.3s ease-out;
+  border-bottom: 3px solid transparent; /* Borde inferior transparente para efecto hover */
+}
+
+/* Estilo Hover y Activo */
+.nav-links:hover {
+  color: #ffffff;
+  border-bottom-color: #00aaff; /* Borde azul al pasar el ratón */
+}
+
+.nav-links.active {
+  color: #ffffff;
+  border-bottom-color: #007bff; /* Borde azul más oscuro para el activo */
+  font-weight: bold;
+}
+
+/* Estilo específico para botones dentro de la navbar */
+.nav-links.button {
+  padding: 8px 18px; /* Padding específico para botones */
+  border-radius: 4px;
+  background-color: #007bff; /* Fondo azul para botones */
+  color: white;
+  margin-left: 10px; /* Espacio antes del botón */
+  height: auto; /* Altura automática para botones */
+  border-bottom: none; /* Sin borde inferior para botones */
+}
+
+.nav-links.button:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+  color: white;
+  border-bottom: none;
+}
+
+/* Responsive (Ejemplo básico - requiere más trabajo para menú hamburguesa) */
+@media screen and (max-width: 960px) {
+  .navbar-container {
+      padding: 0 15px;
+  }
+  .nav-links {
+      padding: 0.5rem 0.8rem; /* Menos padding en pantallas pequeñas */
+  }
+  /* Aquí normalmente ocultarías .nav-menu y mostrarías un icono de hamburguesa */
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-logo {
+        font-size: 1.4rem;
+    }
+    /* Ocultar texto y dejar solo iconos en pantallas muy pequeñas */
+    .nav-links span {
+        /* display: none; */ /* Descomentar si quieres solo iconos */
+    }
+     .nav-links {
+        padding: 0.5rem 0.5rem;
+     }
+     .nav-links.button {
+         padding: 6px 12px;
+         font-size: 0.9rem;
+     }
+} 
+
+.compare-header-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 18px;
+}
+.compare-header-icon {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  display: flex;
+  align-items: center;
+  font-size: 1.7rem;
+  transition: transform 0.2s;
+}
+.compare-header-icon .compare-icon-cars {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Estilo para el nuevo icono principal de comparación en la navbar */
+.compare-main-icon {
+  width: 28px; /* Ajusta según sea necesario */
+  height: 28px; /* Ajusta según sea necesario */
+  filter: brightness(0) invert(1); /* Convertir a blanco */
+  transition: transform 0.2s ease;
+}
+
+.compare-header-icon:hover .compare-main-icon {
+  transform: scale(1.1);
+}
+
+
+.compare-appear {
+  animation: compare-pop 0.9s cubic-bezier(.36,1.56,.64,1) both;
+}
+@keyframes compare-pop {
+  0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  30% { opacity: 1; transform: scale(1.2) rotate(7deg); }
+  50% { transform: scale(1.4) rotate(-7deg); }
+  70% { transform: scale(1.2) rotate(7deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+
+.compare-popover ul {
+  list-style: none;
+  margin: 0 0 15px 0; /* Espacio antes de los botones de acción */
+  padding: 0;
+  max-height: 240px; /* Altura máxima antes de scroll */
+  overflow-y: auto;
+}
+
+.compare-popover li {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.compare-popover li:last-child {
+  border-bottom: none;
+}
+
+.compare-popover-vehicle-img {
+  width: 40px;
+  height: 30px; /* Proporción más de coche */
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 10px;
+  background-color: #f0f0f0; /* Fondo para imágenes que no cargan */
+}
+
+.compare-popover-vehicle-name {
+  flex-grow: 1;
+  font-size: 0.9rem;
+  color: #444;
+  margin-right: 10px;
+}
+
+.compare-popover-remove-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.compare-popover-remove-btn:hover {
+  color: var(--cherry-red);
+}
+
+.compare-popover-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #eee; /* Separador para los botones */
+}
+
+.compare-popover-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.compare-popover-btn.clear {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.compare-popover-btn.clear:hover {
+  background-color: #e0e0e0;
+}
+
+.compare-popover-btn.go-to-compare {
+  background-color: var(--cherry-red);
+  color: white;
+}
+
+.compare-popover-btn.go-to-compare:hover {
+  background-color: var(--dark-cherry);
+}
+
+.compare-popover-empty {
+  text-align: center;
+  padding: 10px 0;
+  color: #777;
+  font-style: italic;
+}
+
+.clear-compare-btn {
+  width: 100%;
+  background: var(--cherry-red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 0;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.clear-compare-btn:hover {
+  background: var(--dark-cherry);
+} 

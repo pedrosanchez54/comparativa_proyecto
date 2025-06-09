@@ -1,0 +1,332 @@
+/* Estilos comunes para las páginas de usuario (Favoritos, Listas, Perfil) */
+
+.user-page .page-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Grid para Favoritos y Vehículos en Listas */
+.user-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Grid responsivo */
+  gap: 25px; /* Espacio entre tarjetas */
+  margin-bottom: 30px;
+}
+
+/* --- Estilos para la selección de tarjetas (Favoritos y Detalle Lista) --- */
+.selectable-card-container {
+    position: relative; /* Necesario para posicionar el checkbox */
+    transition: transform 0.1s ease-in-out; /* Pequeña animación al seleccionar */
+}
+
+/* Checkbox posicionado en la esquina superior izquierda */
+.vehicle-select-checkbox {
+    position: absolute;
+    top: 12px; /* Ajustar posición */
+    left: 12px;
+    width: 28px; /* Tamaño del checkbox */
+    height: 28px;
+    z-index: 2; /* Por encima de la tarjeta */
+    cursor: pointer;
+    accent-color: #007bff; /* Color del check (navegadores modernos) */
+    /* Estilos para hacerlo más visible */
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.vehicle-select-checkbox:checked {
+    background-color: #007bff;
+    border-color: #0056b3;
+}
+/* Estilo visual cuando está seleccionado */
+.vehicle-select-checkbox:checked + .card-select-label {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3); /* Resplandor azul */
+}
+.vehicle-select-checkbox:checked ~ .remove-from-list-btn {
+    /* Opcional: Ocultar botón de borrar si está seleccionado para comparar */
+    /* opacity: 0.5;
+    pointer-events: none; */
+}
+
+/* Label que envuelve la tarjeta */
+.card-select-label {
+    display: block;
+    cursor: default; /* El cursor principal está en el checkbox */
+    border: 3px solid transparent; /* Borde invisible que aparecerá al seleccionar */
+    /* Ajustar border-radius para incluir el borde */
+    /* Si tu .card tiene border-radius: 6px, necesitarás 6px + 3px = 9px aprox */
+    border-radius: 9px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin: -3px; /* Compensar el espacio añadido por el borde */
+}
+.card-select-label > .card {
+    margin-bottom: 0 !important; /* Evitar doble margen si .card tiene margen */
+}
+
+
+/* --- Acciones de Comparación (Favoritos y Detalle Lista) --- */
+.compare-actions.card { /* Aplicar estilo de tarjeta */
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Para pantallas pequeñas */
+    gap: 15px;
+}
+ .compare-actions p {
+     margin: 0;
+     color: #555;
+     font-weight: 500;
+ }
+ .compare-actions .btn {
+     display: inline-flex; /* Alinear icono y texto */
+     align-items: center;
+     gap: 8px;
+     flex-shrink: 0; /* Evitar que el botón se encoja */
+ }
+
+
+/* --- Estilos para la página de listas (MyListsPage) --- */
+.lists-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Tarjetas de lista un poco más anchas */
+    gap: 25px;
+}
+.list-card {
+    background-color: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 20px 25px; /* Más padding */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empuja info/acciones abajo */
+    min-height: 220px; /* Altura mínima para consistencia */
+}
+.list-card:hover {
+     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+     border-color: #c8d0d8;
+}
+
+.list-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #0056b3; /* Azul más oscuro */
+    font-size: 1.3rem;
+    /* Limitar nombre de lista */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+ .list-card .list-description { /* Clase específica para descripción */
+     color: #666;
+     font-size: 0.95rem;
+     margin-bottom: 15px;
+     flex-grow: 1; /* Ocupa espacio disponible */
+     line-height: 1.5;
+     /* Limitar descripción a X líneas */
+      display: -webkit-box;
+      -webkit-line-clamp: 3; /* Máximo 3 líneas */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-height: 4.5em; /* Altura aprox para 3 líneas */
+ }
+ /* Información inferior (contador, visibilidad, fecha) */
+ .list-card .list-info {
+     font-size: 0.85rem;
+     color: #888;
+     border-top: 1px solid #eee;
+     padding-top: 12px;
+     margin-top: 15px;
+     display: flex;
+     justify-content: space-between;
+     flex-wrap: wrap; /* Para pantallas pequeñas */
+     gap: 5px 15px; /* Espacio vertical y horizontal */
+ }
+  .list-card .list-info span {
+      display: inline-flex; /* Alinear iconos si los hay */
+      align-items: center;
+      gap: 5px;
+  }
+
+/* Acciones para cada tarjeta de lista */
+.list-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+}
+ .list-actions .btn {
+    flex-grow: 1; /* Botones ocupan espacio equitativamente */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+ }
+
+
+/* Formulario para crear nueva lista */
+ .create-list-form {
+     padding: 25px;
+     margin-bottom: 30px;
+ }
+ .create-list-form h3 {
+     margin-top: 0;
+     margin-bottom: 20px;
+     display: flex;
+     align-items: center;
+     gap: 10px;
+ }
+ .create-list-form .form-check { /* Estilo para checkbox si se usa */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+ }
+ .create-list-form .form-check-input {
+     width: auto; /* Tamaño natural del checkbox */
+     margin: 0;
+ }
+ .create-list-form .form-check-label {
+     margin-bottom: 0; /* Quitar margen inferior */
+     font-weight: normal;
+ }
+
+
+/* --- Estilos específicos para ListDetailPage --- */
+.list-description {
+    text-align: center;
+    color: #555;
+    margin-bottom: 30px;
+    font-style: italic;
+    font-size: 1.05rem;
+    max-width: 800px; /* Limitar ancho de descripción */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Contenedor de tarjeta en detalle de lista */
+.list-item-card {
+     position: relative; /* Para posicionar botón de eliminar */
+}
+
+/* Botón para quitar vehículo de la lista */
+.remove-from-list-btn {
+    position: absolute;
+    top: 12px; /* Coincidir con checkbox */
+    right: 12px;
+    background-color: rgba(220, 53, 69, 0.75); /* Rojo semi-transparente */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Círculo */
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem; /* Tamaño icono */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3; /* Encima del checkbox y label */
+    opacity: 0.6; /* Ligeramente transparente por defecto */
+    transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+.remove-from-list-btn:hover {
+     opacity: 1;
+     background-color: #dc3545; /* Rojo sólido */
+     transform: scale(1.1);
+}
+
+
+/* --- Estilos ProfilePage --- */
+.profile-card {
+    max-width: 650px; /* Ancho máximo de la tarjeta de perfil */
+    margin: 20px auto; /* Centrar tarjeta */
+    padding: 35px 40px; /* Más padding */
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+.profile-header svg { /* Icono de usuario */
+    color: #007bff;
+}
+.profile-header h2 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 1.8rem;
+    color: #333;
+}
+.profile-header p {
+    color: #6c757d;
+    margin: 0;
+    font-weight: 500;
+}
+
+
+.profile-info p {
+    font-size: 1.1rem;
+    margin-bottom: 18px; /* Más espacio entre líneas */
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Más espacio icono-texto */
+    line-height: 1.6;
+    color: #444;
+}
+ .profile-info p svg {
+    color: #007bff; /* Iconos en azul */
+    flex-shrink: 0;
+    width: 1.1em; /* Ajustar tamaño icono */
+    height: 1.1em;
+    opacity: 0.8;
+ }
+
+ .profile-info p strong {
+    color: #333; /* Texto de etiqueta más oscuro */
+    font-weight: 600;
+ }
+ .profile-info p span {
+     /* Estilo para el valor si es necesario */
+ }
+
+ /* Estilos para sección de acciones (si se añade) */
+ .profile-actions {
+     margin-top: 30px;
+     padding-top: 20px;
+     border-top: 1px solid #eee;
+     display: flex;
+     gap: 15px;
+     justify-content: center; /* O flex-start/flex-end */
+ }
+
+
+ /* --- Responsive User Pages --- */
+  @media (max-width: 768px) {
+      .user-items-grid {
+         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+         gap: 15px;
+     }
+      .lists-container {
+         grid-template-columns: 1fr; /* Una columna para listas */
+         gap: 20px;
+     }
+     .compare-actions {
+         flex-direction: column; /* Apilar texto y botón */
+         align-items: stretch; /* Botón ocupa todo el ancho */
+     }
+      .compare-actions p {
+         text-align: center;
+     }
+      .profile-card {
+         padding: 25px 20px;
+      }
+      .profile-info p {
+          font-size: 1rem;
+      }
+  } 

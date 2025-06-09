@@ -1,0 +1,203 @@
+.list-detail-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.list-detail-header {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.list-detail-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.list-detail-header h1 svg {
+  color: #007bff;
+}
+
+.list-detail-header p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.compare-section {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.compare-section p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.compare-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.compare-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.compare-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.vehicle-item {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.vehicle-item:hover {
+  transform: translateY(-5px);
+}
+
+.vehicle-select {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-select input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.vehicle-select input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+.vehicle-select label {
+  color: #333;
+  font-size: 0.9rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.remove-vehicle-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #dc3545;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.remove-vehicle-button:hover {
+  background: #dc3545;
+  color: white;
+  transform: scale(1.1);
+}
+
+.empty-list {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.empty-list p {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-list .btn {
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .list-detail-page {
+    padding: 1rem;
+  }
+
+  .list-detail-header h1 {
+    font-size: 2rem;
+  }
+
+  .compare-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .compare-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .vehicles-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .vehicle-select {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .remove-vehicle-button {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .list-detail-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .vehicle-select label {
+    display: none;
+  }
+} 

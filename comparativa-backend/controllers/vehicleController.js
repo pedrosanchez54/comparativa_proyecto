@@ -238,7 +238,7 @@ exports.getVehicles = async (req, res, next) => {
             precio_original: v.precio_original ? parseFloat(v.precio_original) : null,
             precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             fecha_lanzamiento: v.fecha_lanzamiento,
-            imagen_principal: v.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${v.imagen_principal}` : null,
+            imagen_principal: v.imagen_principal ? `${process.env.IMAGE_BASE_URL}/api/images/vehicles/${v.imagen_principal}` : null,
             fecha_creacion: v.fecha_creacion,
             fecha_actualizacion: v.fecha_actualizacion
         }));
@@ -295,7 +295,7 @@ exports.getVehicleById = async (req, res, next) => {
         const vehicle = vehicles[0];
         
         // Formatear la imagen principal
-        vehicle.imagen_principal = vehicle.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${vehicle.imagen_principal}` : null;
+        vehicle.imagen_principal = vehicle.imagen_principal ? `${process.env.IMAGE_BASE_URL}/api/images/vehicles/${vehicle.imagen_principal}` : null;
         
         // Obtener todas las imágenes del vehículo
         const [images] = await pool.query(
@@ -306,7 +306,7 @@ exports.getVehicleById = async (req, res, next) => {
         // Formatear URLs completas de las imágenes
         vehicle.imagenes = images.map(img => ({
             ...img,
-            ruta_local: `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${img.ruta_local}`
+            ruta_local: `${process.env.IMAGE_BASE_URL}/api/images/vehicles/${img.ruta_local}`
         }));
         
         // Obtener tiempos de circuito del vehículo
@@ -545,7 +545,7 @@ exports.getVehiclesForComparison = async (req, res, next) => {
             precio_actual_estimado: v.precio_actual_estimado ? parseFloat(v.precio_actual_estimado) : null,
             
             // Imagen
-            imagen_principal: v.imagen_principal ? `http://proyectocomparativa.ddns.net:4000/api/images/vehicles/${v.imagen_principal}` : null,
+            imagen_principal: v.imagen_principal ? `${process.env.IMAGE_BASE_URL}/api/images/vehicles/${v.imagen_principal}` : null,
             fecha_creacion: v.fecha_creacion,
             fecha_actualizacion: v.fecha_actualizacion
         }));
