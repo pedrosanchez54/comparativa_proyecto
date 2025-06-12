@@ -101,20 +101,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Función para obtener fecha estimada de registro si no está disponible
-  const getEstimatedRegistrationDate = (userId) => {
-    // Fecha base aproximada del proyecto + días basados en ID
-    const baseDate = new Date('2024-01-01');
-    const daysSinceBase = userId * 2; // Estimar basándose en el ID
-    const estimatedDate = new Date(baseDate);
-    estimatedDate.setDate(baseDate.getDate() + daysSinceBase);
-    return estimatedDate.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   const handleLogout = () => {
     openConfirmModal({
       title: "Cerrar Sesión",
@@ -287,7 +273,7 @@ const ProfilePage = () => {
               </div>
               <div className="info-item">
                 <FaCalendarAlt />
-                <span>Miembro desde {user.fecha_registro ? formatRegistrationDate(user.fecha_registro) : getEstimatedRegistrationDate(user.id)}</span>
+                <span>Miembro desde {user.fecha_registro ? formatRegistrationDate(user.fecha_registro) : 'No disponible'}</span>
               </div>
             </div>
           </div>

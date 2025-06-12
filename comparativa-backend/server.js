@@ -8,6 +8,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
+const rateLimit = require('express-rate-limit');
 // const KnexSessionStore = require('connect-session-knex')(session); // Descomentar si usas Knex para sesiones en BD
 // const knex = require('knex')(require('./knexfile')); // Descomentar y configurar si usas Knex
 
@@ -75,13 +76,15 @@ app.use('/api/images/vehicles', express.static(path.join(__dirname, '../comparat
 // 5. Configuración de Sesiones (express-session)
 // Crea y gestiona las sesiones de usuario usando cookies
 // const store = new KnexSessionStore({ knex }); // Descomentar y configurar si quieres sesiones persistentes en BD
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
   secret: process.env.SESSION_SECRET, // Clave secreta para firmar la cookie (¡DEBE SER SECRETA Y LARGA!)
   // store: store, // Descomentar si usas un store persistente
   resave: false, // No volver a guardar la sesión si no ha cambiado
   saveUninitialized: false, // No crear sesión hasta que el usuario inicie sesión o se guarde algo
   cookie: {
-    secure: true, // true: Solo enviar cookie sobre HTTPS (esencial en producción)
+    secure: isProduction, // true en producción (HTTPS), false en desarrollo (HTTP)
     httpOnly: true, // true: La cookie no es accesible desde JavaScript en el navegador (previene ataques XSS)
     maxAge: parseInt(process.env.SESSION_LIFETIME || 86400000), // Tiempo de vida de la cookie en ms (1 día por defecto)
     sameSite: 'lax' // 'lax' (recomendado) o 'strict'. Ayuda a prevenir ataques CSRF.
@@ -91,10 +94,34 @@ app.use(session({
   name: process.env.SESSION_COOKIE_NAME || 'comparativa_app_sid' // Nombre personalizado para la cookie de sesión
 }));
 
+// 6. Limitadores de tasa para prevenir ataques de fuerza bruta
+// Limitador estricto para rutas de autenticación
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10, // 10 intentos máximos por ventana de tiempo
+  standardHeaders: true, // Devolver info en cabeceras X-RateLimit-*
+  legacyHeaders: false, // Desactivar cabeceras X-RateLimit-* antiguas
+  message: { message: 'Demasiados intentos de acceso. Por favor, inténtalo de nuevo más tarde.' }
+});
+
+// Limitador general para todas las rutas de la API
+const apiLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 500, // 500 solicitudes por IP cada 5 minutos
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Has alcanzado el límite de solicitudes. Por favor, inténtalo de nuevo más tarde.' }
+});
 
 // --- Montaje de Rutas ---
 // Define un prefijo común para todas las rutas de la API (ej. /api/...)
 const apiPrefix = '/api';
+
+// Aplicar limitadores a las rutas
+app.use(`${apiPrefix}/auth/login`, authLimiter); // Limitar intentos de login
+app.use(`${apiPrefix}/auth/register`, authLimiter); // Limitar registros
+app.use(`${apiPrefix}/auth/request-reset`, authLimiter); // Limitar solicitudes de reset
+app.use(apiPrefix, apiLimiter); // Limitar todas las rutas de la API
 
 // Asocia cada conjunto de rutas con su prefijo
 app.use(`${apiPrefix}/auth`, authRoutes);

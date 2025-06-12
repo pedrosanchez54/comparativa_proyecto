@@ -30,6 +30,7 @@ const VehicleDetailPage = () => {
     setError(null);
     try {
       // Llamada a la API para obtener los detalles del vehículo por ID
+      // Usamos formato RESTful: /vehicles/:id
       const response = await apiClient.get(`/vehicles/${id_vehiculo}`);
       setVehicle(response.data.data); // Guardar los datos en el estado
     } catch (err) {

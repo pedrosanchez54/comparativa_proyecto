@@ -268,7 +268,14 @@ exports.getVehicles = async (req, res, next) => {
  * Obtiene un vehículo específico por su ID.
  */
 exports.getVehicleById = async (req, res, next) => {
-    const { id } = req.params;
+    // Si el ID no está en los parámetros de ruta, intentar obtenerlo de los query params
+    let id = req.params.id;
+    
+    // Comprobar si el ID es válido y convertirlo a número
+    id = parseInt(id);
+    if (isNaN(id) || id <= 0) {
+        return res.status(400).json({ message: 'ID de vehículo no válido.' });
+    }
 
     const sql = `SELECT 
         v.*, 

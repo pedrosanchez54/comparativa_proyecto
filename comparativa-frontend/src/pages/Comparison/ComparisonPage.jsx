@@ -746,15 +746,24 @@ const ComparisonPage = () => {
   // Buscar vehículo basado en los filtros seleccionados
   const findVehicleId = async (slot) => {
     try {
-      const params = new URLSearchParams();
-      if (slot.motorizacion) params.append('id_motorizacion', slot.motorizacion);
-      if (slot.version) params.append('version', slot.version);
-      if (slot.anio) params.append('anio', slot.anio);
-      params.append('limit', '1');
-      
-      const response = await apiClient.get(`/vehicles?${params.toString()}`);
-      if (response.data?.data?.vehicles?.length > 0) {
-        return response.data.data.vehicles[0].id_vehiculo;
+      // Si tenemos el ID de motorización, usamos el endpoint RESTful o el by-id
+      if (slot.motorizacion) {
+        // Podemos usar el endpoint by-id para consulta por id_motorizacion
+        const response = await apiClient.get(`/vehicles/by-id?id_motorizacion=${slot.motorizacion}`);
+        if (response.data?.data) {
+          return response.data.data.id_vehiculo;
+        }
+      } else {
+        // Si no tenemos id_motorizacion, usamos la búsqueda por filtros
+        const params = new URLSearchParams();
+        if (slot.version) params.append('version', slot.version);
+        if (slot.anio) params.append('anio', slot.anio);
+        params.append('limit', '1');
+        
+        const response = await apiClient.get(`/vehicles?${params.toString()}`);
+        if (response.data?.data?.vehicles?.length > 0) {
+          return response.data.data.vehicles[0].id_vehiculo;
+        }
       }
       return null;
     } catch (err) {

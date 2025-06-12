@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramas de Red - Plataforma de Comparativa de Vehículos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Diagramas de Red y Despliegue</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Volver a Diagramas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Arquitectura de Red</h2>
+            <div class="diagram-container" style="zoom:1.3;max-width:900px;margin:auto;">
+                <pre class="mermaid">
+                    graph TD
+                        subgraph Cliente
+                            A["Navegador Web"]
+                        end
+                        subgraph Internet
+                            B["DDNS\nproyectocomparativa.ddns.net"]
+                        end
+                        subgraph Frontend
+                            C["React App\nPuerto 3000"]
+                        end
+                        subgraph Backend
+                            D["Node.js/Express\nPuerto 4000"]
+                            E[("MySQL")]
+                        end
+                        A -->|"HTTPS"| B
+                        B -->|"HTTPS"| C
+                        C -->|"HTTPS API"| D
+                        D --> E
+                </pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Diagrama de Despliegue</h2>
+            <div class="diagram-container" style="zoom:1.3;max-width:900px;margin:auto;">
+                <pre class="mermaid">
+                    graph TD
+                        subgraph Cliente
+                            A["Navegador Web"]
+                        end
+                        subgraph Frontend
+                            B["React App\nPuerto 3000"]
+                        end
+                        subgraph Backend
+                            C["Node.js/Express\nPuerto 4000"]
+                            D[("MySQL\nBase de Datos")]
+                        end
+                        A -->|"HTTPS"| B
+                        B -->|"HTTPS API"| C
+                        C --> D
+                </pre>
+            </div>
+        </section>
+
+        <section id="seguridad">
+            <h2>Arquitectura de Seguridad</h2>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TB
+                        subgraph Cliente
+                            Browser[Navegador Web]
+                        end
+
+                        subgraph Seguridad
+                            SSL[SSL/TLS]
+                            JWT[JWT Auth]
+                            CORS[CORS]
+                            Helmet[Helmet]
+                        end
+
+                        subgraph Servidor
+                            subgraph Frontend
+                                React[React App<br/>Puerto 3000]
+                            end
+
+                            subgraph Backend
+                                Node[Node.js/Express<br/>Puerto 4000]
+                                MySQL[(MySQL)]
+                            end
+                        end
+
+                        Browser -->|HTTPS| SSL
+                        SSL --> React
+                        React -->|JWT| JWT
+                        JWT --> Node
+                        Node -->|CORS| CORS
+                        Node -->|Helmet| Helmet
+                        Node --> MySQL
+
+                        classDef client fill:#4CAF50,stroke:#388E3C,color:white
+                        classDef security fill:#F44336,stroke:#D32F2F,color:white
+                        classDef frontend fill:#FF9800,stroke:#F57C00,color:white
+                        classDef backend fill:#9C27B0,stroke:#7B1FA2,color:white
+                        classDef database fill:#607D8B,stroke:#455A64,color:white
+
+                        class Browser client
+                        class SSL, JWT, CORS, Helmet security
+                        class React frontend
+                        class Node backend
+                        class MySQL database
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 

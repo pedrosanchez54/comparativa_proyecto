@@ -29,10 +29,29 @@ function generateToken(user) {
  * @returns {Object|null} Payload del token si es válido, null si no es válido
  */
 function verifyToken(token) {
+  if (!token || token.trim() === '') {
+    console.warn('Se intentó verificar un token vacío o nulo');
+    return null;
+  }
+  
   try {
-    return jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    // Verificación adicional de que el token tiene los campos esperados
+    if (!decoded.id || !decoded.email) {
+      console.warn('Token JWT válido pero falta información de usuario');
+      return null;
+    }
+    
+    return decoded;
   } catch (error) {
-    console.error('Error verificando token JWT:', error.message);
+    if (error.name === 'TokenExpiredError') {
+      console.warn('Token JWT expirado:', error.message);
+    } else if (error.name === 'JsonWebTokenError') {
+      console.warn('Error en verificación de token JWT:', error.message);
+    } else {
+      console.error('Error inesperado verificando token JWT:', error);
+    }
     return null;
   }
 }
@@ -43,6 +62,10 @@ function verifyToken(token) {
  * @returns {Object|null} Payload del token decodificado
  */
 function decodeToken(token) {
+  if (!token || token.trim() === '') {
+    return null;
+  }
+  
   try {
     return jwt.decode(token);
   } catch (error) {

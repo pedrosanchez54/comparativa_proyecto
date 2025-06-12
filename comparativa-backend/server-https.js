@@ -12,6 +12,7 @@ const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 // Importar configuración y middlewares propios
 const { testDbConnection } = require('./config/db');
@@ -75,17 +76,24 @@ app.use(httpLogger);
 app.use('/api/images/vehicles', express.static(path.join(__dirname, '../comparativa-frontend/public/img/vehicles')));
 
 // 5. Sesiones (configuradas para HTTPS)
+const sessionStore = new MySQLStore({
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'comparativa'
+});
+
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'tu_secreto_seguro',
+  store: sessionStore,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, // HTTPS obligatorio
+    secure: true,
     httpOnly: true,
-    maxAge: parseInt(process.env.SESSION_LIFETIME || 86400000),
-    sameSite: 'lax'
-  },
-  name: process.env.SESSION_COOKIE_NAME || 'comparativa_app_sid'
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
 }));
 
 // --- Montaje de Rutas ---

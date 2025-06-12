@@ -43,27 +43,27 @@ const HomePage = () => {
 
         <section className="features-section">
           <div className="features-grid">
-            <div className="feature-card">
+            <Link to="/vehicles" className="feature-card">
               <div className="feature-icon">
                 <FaCar />
               </div>
               <h3>Explora el Catálogo</h3>
               <p>Navega por nuestro extenso catálogo y descubre detalles técnicos de cada vehículo.</p>
-            </div>
-            <div className="feature-card">
+            </Link>
+            <Link to="/compare" className="feature-card">
               <div className="feature-icon">
                 <FaChartBar />
               </div>
               <h3>Compara Modelos</h3>
               <p>Compara diferentes modelos lado a lado para tomar la mejor decisión.</p>
-            </div>
-            <div className="feature-card">
+            </Link>
+            <Link to={isAuthenticated ? "/profile" : "/register"} className="feature-card">
               <div className="feature-icon">
                 <FaUserPlus />
               </div>
               <h3>Crea tu Cuenta</h3>
               <p>Guarda tus favoritos y crea listas personalizadas de comparación.</p>
-            </div>
+            </Link>
           </div>
       </section>
 

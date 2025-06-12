@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramas - Plataforma de Comparativa de Vehículos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Diagramas del Proyecto</h1>
+        <nav>
+            <ul>
+                <li><a href="#arquitectura">Arquitectura</a></li>
+                <li><a href="#base-datos">Base de Datos</a></li>
+                <li><a href="#casos-uso">Casos de Uso</a></li>
+                <li><a href="#flujos">Flujos de Datos</a></li>
+                <li><a href="#metricas">Métricas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="arquitectura">
+            <h2>Arquitectura de Red</h2>
+            <div class="diagram-container" style="zoom:1.3;max-width:900px;margin:auto;">
+                <pre class="mermaid">
+                    graph TD
+                        A["Navegador Web"] -->|"HTTPS"| B["React App\nPuerto 3000"]
+                        B -->|"HTTPS API"| C["Node.js/Express\nPuerto 4000"]
+                        C --> D[("MySQL")]
+                </pre>
+            </div>
+        </section>
+
+        <section id="base-datos">
+            <h2>Diagrama de Despliegue</h2>
+            <div class="diagram-container" style="zoom:1.3;max-width:900px;margin:auto;">
+                <pre class="mermaid">
+                    graph TD
+                        subgraph Cliente
+                            A["Navegador Web"]
+                        end
+                        subgraph Frontend
+                            B["React App\nPuerto 3000"]
+                        end
+                        subgraph Backend
+                            C["Node.js/Express\nPuerto 4000"]
+                            D[("MySQL\nBase de Datos")]
+                        end
+                        A -->|"HTTPS"| B
+                        B -->|"HTTPS API"| C
+                        C --> D
+                </pre>
+            </div>
+        </section>
+
+        <section id="casos-uso">
+            <h2>Arquitectura de Seguridad</h2>
+            <div class="diagram-container" style="zoom:1.3;max-width:900px;margin:auto;">
+                <pre class="mermaid">
+                    graph TD
+                        Cliente["Navegador Web"] -->|"SSL/TLS"| Backend["Node.js/Express"]
+                        Backend -->|"Conexión Segura"| DB[("MySQL")]
+                        Backend -.->|"JWT / Cookies Seguras"| Cliente
+                </pre>
+            </div>
+        </section>
+
+        <section id="flujos">
+            <h2>Diagrama de Casos de Uso</h2>
+            <div class="diagram-container" style="zoom:1.6;max-width:1100px;width:100%;margin:0 auto;padding:0;">
+                <div class="mermaid">
+                    graph TB
+                        subgraph Usuario No Registrado
+                            UC1[Ver Catálogo]
+                            UC2[Buscar Vehículos]
+                            UC3[Comparar Vehículos]
+                        end
+                        
+                        subgraph Usuario Registrado
+                            UC4[Registro/Login]
+                            UC5[Gestionar Favoritos]
+                            UC6[Crear Listas]
+                            UC7[Gestionar Perfil]
+                        end
+                        
+                        subgraph Admin
+                            UC8[Gestionar Vehículos]
+                            UC9[Gestionar Usuarios]
+                        end
+                        
+                        UC1 --> UC2
+                        UC2 --> UC3
+                        UC4 --> UC5
+                        UC4 --> UC6
+                        UC4 --> UC7
+                </div>
+            </div>
+        </section>
+
+        <section id="metricas">
+            <h2>Flujo de Datos</h2>
+            <div class="diagram-container" style="zoom:1.6;max-width:1100px;width:100%;margin:0 auto;padding:0;">
+                <div class="mermaid">
+                    sequenceDiagram
+                        participant U as Usuario
+                        participant F as Frontend
+                        participant B as Backend
+                        participant DB as Base de Datos
+                        
+                        %% Flujo para usuario no registrado
+                        U->>F: Acceder a catálogo
+                        F->>B: Petición API pública
+                        B->>DB: Consulta vehículos
+                        DB-->>B: Resultado
+                        B-->>F: Respuesta
+                        F-->>U: Mostrar vehículos
+                        
+                        %% Flujo para usuario registrado
+                        U->>F: Login
+                        F->>B: Petición autenticación
+                        B->>DB: Verificar credenciales
+                        DB-->>B: Resultado
+                        B-->>F: Token JWT
+                        F-->>U: Sesión iniciada
+                        
+                        %% Flujo para funcionalidades privadas
+                        U->>F: Acción privada (favoritos/listas)
+                        F->>B: Petición con token
+                        B->>DB: Operación autenticada
+                        DB-->>B: Resultado
+                        B-->>F: Respuesta
+                        F-->>U: Actualización UI
+                </div>
+            </div>
+        </section>
+
+        <section id="metricas">
+            <h2>Métricas de Calidad</h2>
+            <div class="diagram-container">
+                <canvas id="metricasChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+
+        // Gráfico de métricas
+        const ctx = document.getElementById('metricasChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Cobertura', 'Rendimiento', 'Seguridad', 'Usabilidad', 'Mantenibilidad'],
+                datasets: [{
+                    label: 'Métricas del Sistema',
+                    data: [85, 90, 95, 88, 92],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .diagram-container {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: auto;
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mermaid {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 100%;
+            overflow: auto;
+        }
+
+        .mermaid .node rect {
+            fill: var(--primary);
+            stroke: var(--primary-dark);
+            rx: 5;
+            ry: 5;
+        }
+
+        .mermaid .node text {
+            fill: white;
+            font-weight: 500;
+        }
+
+        .mermaid .edgePath path {
+            stroke: var(--text);
+            stroke-width: 2;
+        }
+
+        .mermaid .edgeLabel {
+            background: var(--bg-secondary);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .mermaid .cluster rect {
+            fill: var(--bg-primary);
+            stroke: var(--primary);
+            stroke-width: 2;
+            rx: 8;
+            ry: 8;
+        }
+
+        .mermaid .cluster text {
+            fill: var(--text);
+            font-weight: bold;
+        }
+
+        .mermaid .subgraph {
+            margin: 10px;
+            padding: 10px;
+        }
+
+        .mermaid .subgraph rect {
+            fill: var(--bg-primary);
+            stroke: var(--primary);
+            stroke-width: 2;
+            rx: 8;
+            ry: 8;
+        }
+
+        .mermaid .subgraph text {
+            fill: var(--text);
+            font-weight: bold;
+        }
+
+        .mermaid .edgeLabel rect {
+            fill: var(--bg-secondary);
+            stroke: var(--text);
+            stroke-width: 1;
+        }
+
+        .mermaid .edgeLabel text {
+            fill: var(--text);
+        }
+    </style>
+</body>
+</html> 

@@ -29,6 +29,11 @@ const RegisterPage = () => {
         setError('La contraseña debe tener al menos 8 caracteres.');
         return;
     }
+    // Validación para asegurar que la contraseña tiene al menos una letra y un número
+    if (!/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
+        setError('La contraseña debe contener al menos una letra y un número.');
+        return;
+    }
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
       return;
@@ -87,7 +92,7 @@ const RegisterPage = () => {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Contraseña (mín. 8 caracteres)</label>
+              <label htmlFor="password">Contraseña (mín. 8 caracteres, con al menos una letra y un número)</label>
               <input
                 type="password"
                 id="password"

@@ -26,9 +26,12 @@ function isAuthenticated(req, res, next) {
       };
       return next();
     }
+    // Si el token no es válido y se proporcionó, rechazar la solicitud
+    // No continuamos con la verificación de sesión si el token es inválido
+    return res.status(401).json({ message: 'Token de autenticación inválido.' });
   }
   
-  // Si no hay JWT válido, intentar autenticación por sesión
+  // Si no hay token JWT, intentar autenticación por sesión
   if (req.session && req.session.userId) {
     // El usuario está autenticado por sesión, permite continuar
     req.user = {

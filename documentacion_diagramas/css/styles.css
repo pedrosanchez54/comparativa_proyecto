@@ -1,0 +1,231 @@
+/* ==========================================================================
+   Base, Variables y Reseteo Global
+   ========================================================================== */
+
+   :root {
+    --primary-color: #0d47a1; /* Azul oscuro para elementos principales */
+    --secondary-color: #1976d2; /* Azul más claro para hover y enlaces */
+    --background-light: #f6f7fb; /* Fondo principal muy claro */
+    --background-card: #ffffff; /* Fondo para secciones y tarjetas */
+    --text-primary: #212121; /* Texto principal oscuro */
+    --text-secondary: #5f6368; /* Texto secundario/gris */
+    --border-color: #e0e0e0; /* Color para bordes sutiles */
+    
+    --header-bg: #222831; /* Fondo oscuro para el header */
+    --header-text: #ffffff;
+
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px; /* Base para unidades relativas (rem) */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--background-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   Layout Principal (Header, Main, Section)
+   ========================================================================== */
+
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    width: 100%;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+}
+
+header h1 {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+header nav a {
+    color: var(--header-text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+header nav a:hover {
+    color: var(--secondary-color);
+}
+
+main {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    flex-grow: 1; /* Permite que el main crezca y ocupe el espacio disponible */
+}
+
+section {
+    background: var(--background-card);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+section h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   Contenedor de Diagramas (La clave de la mejora)
+   ========================================================================== */
+
+.diagram-container {
+    width: 100%;
+    min-height: 500px; /* Altura mínima para evitar colapsos al cargar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fbfdff; /* Un fondo ligeramente distinto para el diagrama */
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    overflow-x: auto; /* IMPORTANTE: Permite scroll horizontal si el diagrama es muy ancho */
+}
+
+/* Estilos para los elementos generados (Mermaid SVG y Chart.js Canvas) */
+.diagram-container .mermaid,
+.diagram-container canvas {
+    max-width: 100%; /* El diagrama nunca será más ancho que su contenedor */
+    height: auto;   /* El alto se ajusta automáticamente para mantener la proporción */
+    display: block;
+    margin: 0 auto;
+}
+
+/* Específicamente para Mermaid, nos aseguramos que el SVG se comporte bien */
+.diagram-container .mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* ==========================================================================
+   Tipografía y otros elementos
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Responsividad (Media Queries)
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    section {
+        padding: 2rem;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    html {
+        font-size: 15px; /* Reducimos ligeramente la base de la fuente */
+    }
+
+    header {
+        padding: 1rem 1.5rem;
+    }
+
+    header nav ul {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    main {
+        padding: 2rem 1rem;
+    }
+
+    section {
+        padding: 1.5rem;
+    }
+    
+    .diagram-container {
+        padding: 1rem;
+        min-height: 300px; /* Reducimos altura mínima en móviles */
+    }
+}
+
+/* ==========================================================================
+   Estilos de Impresión
+   ========================================================================== */
+@media print {
+    body {
+        background: var(--background-card);
+        color: black;
+    }
+
+    header, nav {
+        display: none;
+    }
+
+    main {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    section {
+        box-shadow: none;
+        border: 1px solid var(--border-color);
+        break-inside: avoid; /* Evita que una sección se parta entre dos páginas */
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+}

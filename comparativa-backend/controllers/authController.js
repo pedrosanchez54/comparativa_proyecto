@@ -20,20 +20,25 @@ exports.register = async (req, res, next) => {
   // 1. Validar datos de entrada
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    // Registrar error de validación para seguridad (sin incluir datos sensibles)
+    console.warn(`⚠️ Error de validación en registro: ${req.ip}`);
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { nombre, email, contraseña } = req.body;
+  const { nombre, email, contraseña, is_pre_hashed } = req.body;
 
   try {
     // 2. Verificar si el email ya existe
     const [existingUser] = await pool.query('SELECT id_usuario FROM Usuarios WHERE email = ? LIMIT 1', [email]);
     if (existingUser.length > 0) {
+      // Registrar intento de registro con email duplicado (para seguridad)
+      console.warn(`⚠️ Intento de registro con email existente: ${email.substring(0, 3)}...`);
       return res.status(409).json({ message: 'El correo electrónico ya está registrado.' }); // 409 Conflict
     }
 
     // 3. Hashear la contraseña
-    const hashedPassword = await hashPassword(contraseña);
+    // Si ya viene pre-hasheada desde el cliente, aplicamos un segundo hash
+    const hashedPassword = await hashPassword(contraseña, is_pre_hashed);
 
     // 4. Insertar usuario en la BD (rol por defecto es 'user')
     const [result] = await pool.query(
@@ -57,6 +62,8 @@ exports.register = async (req, res, next) => {
     }); // 201 Created
 
   } catch (error) {
+    // Registrar error sin exponer detalles sensibles
+    console.error(`❌ Error en registro: ${error.message}`);
     // Si hay un error (ej. BD caída), pasar al manejador de errores
     next(error);
   }
@@ -72,7 +79,7 @@ exports.login = async (req, res, next) => {
      return res.status(400).json({ errors: errors.array() });
   }
 
-  const { email, contraseña } = req.body;
+  const { email, contraseña, is_pre_hashed } = req.body;
 
   // 2. Comprobar Throttling (Bloqueo por intentos fallidos)
   const now = Date.now();
@@ -84,7 +91,7 @@ exports.login = async (req, res, next) => {
   try {
     // 3. Buscar usuario por email
     const [rows] = await pool.query(
-        'SELECT id_usuario, nombre, email, contraseña, rol, intentos_login, bloqueado_hasta FROM Usuarios WHERE email = ? LIMIT 1',
+        'SELECT id_usuario, nombre, email, contraseña, rol, intentos_login, bloqueado_hasta, fecha_registro FROM Usuarios WHERE email = ? LIMIT 1',
         [email]
     );
 
@@ -104,8 +111,8 @@ exports.login = async (req, res, next) => {
          return res.status(429).json({ message: `Cuenta bloqueada. Inténtalo de nuevo en ${remainingTime} minutos.` });
      }
 
-    // 6. Verificar la contraseña
-    const isValidPassword = await verifyPassword(user.contraseña, contraseña);
+    // 6. Verificar la contraseña, considerando si viene pre-hasheada
+    const isValidPassword = await verifyPassword(user.contraseña, contraseña, is_pre_hashed);
 
     if (!isValidPassword) {
         const attempts = await handleFailedLoginAttempt(email, user.id_usuario, user.intentos_login);
@@ -140,11 +147,13 @@ exports.login = async (req, res, next) => {
         id: user.id_usuario,
         nombre: user.nombre,
         email: user.email,
-        rol: user.rol
+        rol: user.rol,
+        fecha_registro: user.fecha_registro
       }
     });
 
   } catch (error) {
+    console.error(`❌ Error en login: ${error.message}`);
     next(error);
   }
 };

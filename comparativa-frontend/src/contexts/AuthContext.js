@@ -1,12 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from '../services/api';
 import { toast } from 'react-toastify';
+import CryptoJS from 'crypto-js'; // Asegúrate de que esta dependencia esté instalada
 
 const AuthContext = createContext();
 
 // Clave para almacenar el token en localStorage
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'user_data';
+// Salt estático para pre-hash client-side - esto solo añade una capa de ofuscación
+// La verdadera seguridad sigue dependiendo del hash en el servidor
+const CLIENT_SALT = 'comparativa_vehicles_client_salt';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -28,10 +32,26 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  // Función de pre-hash para contraseñas (añade una capa de protección en tránsito)
+  const preHashPassword = (password) => {
+    // Este no es un hash de seguridad completo, solo una protección durante la transmisión
+    // El backend sigue siendo responsable del hash seguro definitivo
+    return CryptoJS.SHA256(password + CLIENT_SALT).toString();
+  };
+
   // Función para registrar un usuario
   const register = async (nombre, email, password) => {
     try {
-      await apiClient.post('/auth/register', { nombre, email, contraseña: password });
+      // Pre-hash de la contraseña antes de enviarla
+      const hashedPassword = preHashPassword(password);
+      
+      await apiClient.post('/auth/register', { 
+        nombre, 
+        email, 
+        contraseña: hashedPassword,
+        is_pre_hashed: true // Indicador para que el backend sepa que ya está pre-hasheada
+      });
+      
       toast.success('Registro completado con éxito. Ahora puedes iniciar sesión.');
       return true;
     } catch (error) {
@@ -44,7 +64,15 @@ export function AuthProvider({ children }) {
   // Función para iniciar sesión
   const login = async (email, password) => {
     try {
-      const response = await apiClient.post('/auth/login', { email, contraseña: password });
+      // Pre-hash de la contraseña antes de enviarla
+      const hashedPassword = preHashPassword(password);
+      
+      const response = await apiClient.post('/auth/login', { 
+        email, 
+        contraseña: hashedPassword,
+        is_pre_hashed: true // Indicador para que el backend sepa que ya está pre-hasheada
+      });
+      
       const { token, user: userData } = response.data;
       
       // Guardar token y datos de usuario
@@ -111,7 +139,16 @@ export function AuthProvider({ children }) {
   // Función para cambiar contraseña
   const changePassword = async (currentPassword, newPassword) => {
     try {
-      await apiClient.put('/users/password', { currentPassword, newPassword });
+      // Pre-hash de las contraseñas antes de enviarlas
+      const hashedCurrentPassword = preHashPassword(currentPassword);
+      const hashedNewPassword = preHashPassword(newPassword);
+      
+      await apiClient.put('/users/password', { 
+        currentPassword: hashedCurrentPassword, 
+        newPassword: hashedNewPassword,
+        is_pre_hashed: true // Indicador para el backend
+      });
+      
       toast.success('Contraseña actualizada correctamente.');
       return true;
     } catch (error) {
@@ -137,7 +174,15 @@ export function AuthProvider({ children }) {
   // Función para resetear contraseña
   const resetPassword = async (token, newPassword) => {
     try {
-      await apiClient.post('/auth/reset-password', { token, newPassword });
+      // Pre-hash de la nueva contraseña
+      const hashedNewPassword = preHashPassword(newPassword);
+      
+      await apiClient.post('/auth/reset-password', { 
+        token, 
+        newPassword: hashedNewPassword,
+        is_pre_hashed: true // Indicador para el backend
+      });
+      
       toast.success('Contraseña restablecida con éxito. Ya puedes iniciar sesión.');
       return true;
     } catch (error) {

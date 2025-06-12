@@ -26,7 +26,7 @@ check_prerequisites() {
     
     # Verificar que existen los certificados SSL
     if [ ! -f "/opt/comparativa/ssl/fullchain.pem" ]; then
-        echo "❌ Certificados SSL no encontrados. Ejecuta primero setup-ssl-nodejs.sh"
+        echo "❌ Certificados SSL no encontrados. Ejecuta primero setup-ssl.sh"
         exit 1
     fi
     

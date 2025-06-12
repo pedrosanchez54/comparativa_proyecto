@@ -3,38 +3,76 @@
 const argon2 = require('argon2');
 
 /**
- * Genera un hash seguro de una contraseña usando Argon2id.
- * @param {string} password - La contraseña en texto plano.
- * @returns {Promise<string>} El hash de la contraseña.
- * @throws {Error} Si ocurre un error durante el hashing.
+ * Configuración de Argon2 optimizada para seguridad.
+ * - type: Variante del algoritmo (argon2id: más resistente a ataques de GPU y side-channel)
+ * - memoryCost: Costo de memoria en KiB (valor recomendado: 15360 = 15MB)
+ * - timeCost: Iteraciones (valor recomendado: mínimo 2)
+ * - parallelism: Hilos paralelos (recomendado: 1 para servidores compartidos)
+ * - hashLength: Longitud del hash en bytes (recomendado: mínimo 32)
  */
-async function hashPassword(password) {
-  try {
-    // Usar opciones por defecto de argon2 suele ser seguro y recomendado
-    return await argon2.hash(password);
-  } catch (err) {
-    console.error("Error al hashear la contraseña:", err);
-    // En producción, podrías querer loguear esto de forma más estructurada
-    throw new Error('Error interno al proteger la contraseña.');
-  }
-}
+const ARGON2_OPTIONS = {
+  type: argon2.argon2id,
+  memoryCost: 15360, // 15MB
+  timeCost: 3,
+  parallelism: 1,
+  hashLength: 32
+};
 
 /**
- * Verifica si una contraseña en texto plano coincide con un hash almacenado.
- * @param {string} hashedPassword - El hash almacenado en la base de datos.
- * @param {string} plainPassword - La contraseña en texto plano introducida por el usuario.
- * @returns {Promise<boolean>} True si la contraseña coincide, false en caso contrario o si hay error.
+ * Hashea una contraseña utilizando Argon2id.
+ * @param {string} password - Contraseña en texto plano o pre-hasheada del cliente
+ * @param {boolean} isPreHashed - Indica si la contraseña ya viene pre-hasheada desde el cliente
+ * @returns {Promise<string>} - Hash seguro para almacenar en la BD
  */
-async function verifyPassword(hashedPassword, plainPassword) {
+const hashPassword = async (password, isPreHashed = false) => {
   try {
-    // Compara la contraseña plana con el hash almacenado
-    return await argon2.verify(hashedPassword, plainPassword);
-  } catch (err) {
-    // El error puede ser por contraseña incorrecta, hash inválido, parámetros incorrectos, etc.
-    // No loguear la contraseña plana aquí por seguridad.
-    console.error("Error al verificar la contraseña:", err.message); // Loguear solo el mensaje de error
-    return false; // Devolver false en caso de error o no coincidencia es más seguro
+    // Si la contraseña ya viene pre-hasheada desde el cliente, la manejamos diferente
+    // Esta es una capa adicional de seguridad para evitar transmitir contraseñas en texto plano
+    // La aplicación cliente debe aplicar el mismo enfoque para login y cambios de contraseña
+    if (isPreHashed) {
+      // El cliente ya aplicó un pre-hash, por lo que adaptamos el proceso
+      // Aún así aplicamos un hash completo con salt en el servidor
+      return await argon2.hash(password, {
+        ...ARGON2_OPTIONS,
+        // Usamos un salt específico para contraseñas pre-hasheadas
+        salt: Buffer.from(`prehashed_${password.substring(0, 8)}`, 'utf8')
+      });
+    }
+    
+    // Proceso normal para contraseñas en texto plano - argon2 genera un salt aleatorio
+    return await argon2.hash(password, ARGON2_OPTIONS);
+  } catch (error) {
+    console.error('Error al hashear la contraseña:', error);
+    throw new Error('Error de seguridad al procesar la contraseña.');
   }
-}
+};
 
-module.exports = { hashPassword, verifyPassword };
+/**
+ * Verifica si una contraseña coincide con un hash almacenado.
+ * @param {string} hash - Hash almacenado en la BD
+ * @param {string} password - Contraseña en texto plano o pre-hasheada del cliente
+ * @param {boolean} isPreHashed - Indica si la contraseña ya viene pre-hasheada desde el cliente
+ * @returns {Promise<boolean>} - true si la contraseña coincide con el hash
+ */
+const verifyPassword = async (hash, password, isPreHashed = false) => {
+  try {
+    // Si la contraseña es pre-hasheada, necesitamos verificarla de manera diferente
+    // Este enfoque mantiene la compatibilidad con hashes existentes
+    if (isPreHashed) {
+      // Para la verificación, argon2 usa el salt almacenado en el hash
+      // por lo que funciona correctamente independientemente del método de hash usado
+      return await argon2.verify(hash, password);
+    }
+    
+    // Verificación normal para contraseñas en texto plano
+    return await argon2.verify(hash, password);
+  } catch (error) {
+    console.error('Error al verificar la contraseña:', error);
+    return false; // Retornar false en caso de error (no lanzar excepción)
+  }
+};
+
+module.exports = {
+  hashPassword,
+  verifyPassword
+};

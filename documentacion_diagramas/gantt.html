@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Gantt - Plataforma de Comparativa de Vehículos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        header {
+            background: #222;
+            color: #fff;
+            padding: 1rem 2rem;
+            text-align: center;
+            width: 100%;
+        }
+        main {
+            max-width: 1900px;
+            min-height: 1000px;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+        }
+        .diagram-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+            background: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Diagrama de Gantt del Proyecto</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Volver a Diagramas</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Planificación Temporal del Proyecto</h2>
+            <div class="diagram-container" style="width:100%;max-width:1150px;margin:auto;">
+                <canvas id="ganttChart" width="1100" height="500"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('ganttChart').getContext('2d');
+        
+        // Datos del proyecto
+        const data = {
+            labels: [
+                'Análisis y Diseño',
+                'Desarrollo Backend',
+                'Desarrollo Frontend',
+                'Panel de Administración',
+                'Despliegue y Pruebas'
+            ],
+            datasets: [{
+                label: '', // Sin leyenda
+                data: [3, 4, 5, 2, 1],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.85)',
+                    'rgba(75, 192, 192, 0.85)',
+                    'rgba(153, 102, 255, 0.85)',
+                    'rgba(255, 159, 64, 0.85)',
+                    'rgba(255, 99, 132, 0.85)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 2,
+                borderRadius: 10,
+                barPercentage: 0.85,
+                categoryPercentage: 0.85
+            }]
+        };
+
+        // Configuración del gráfico
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                indexAxis: 'y',
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Planificación del Proyecto (Marzo - Junio 2025)',
+                        font: {
+                            size: 30,
+                            weight: 'bold'
+                        },
+                        color: '#222',
+                        padding: {top: 10, bottom: 20}
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 22
+                        },
+                        titleFont: {
+                            size: 24
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Semanas',
+                            font: {
+                                size: 22,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 20
+                            },
+                            color: '#222',
+                            padding: 5
+                        },
+                        grid: {
+                            color: '#e0e0e0',
+                            lineWidth: 1.5
+                        },
+                        max: 6
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Fases del Proyecto',
+                            font: {
+                                size: 24,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 26,
+                                weight: 'bold'
+                            },
+                            color: '#222',
+                            padding: 12
+                        },
+                        grid: {
+                            color: '#e0e0e0',
+                            lineWidth: 1.5
+                        }
+                    }
+                }
+            }
+        };
+
+        // Crear el gráfico
+        new Chart(ctx, config);
+    </script>
+</body>
+</html> 

@@ -27,6 +27,19 @@ router.get('/options', vehicleController.getFilterOptions);
 // Query param: ?ids=1,2,3,4
 router.get('/compare', vehicleController.getVehiclesForComparison);
 
+// Middleware para manejar parámetros de consulta específicos
+// Esto permite usar /api/vehicles?id_vehiculo=7 como alternativa a /api/vehicles/7
+router.get('/by-id', (req, res, next) => {
+    const { id_vehiculo, id_motorizacion } = req.query;
+    const id = id_vehiculo || id_motorizacion;
+    
+    if (id) {
+        req.params.id = id;
+        return vehicleController.getVehicleById(req, res, next);
+    }
+    next();
+});
+
 // GET /api/vehicles/:id - Obtener detalles de un vehículo específico por ID
 // Valida que el 'id' en la URL sea un entero
 router.get('/:id', vehicleIdParamValidation, vehicleController.getVehicleById);
