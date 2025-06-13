@@ -1,0 +1,377 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36" version="27.1.5">
+  <diagram name="Página-1" id="er-diagram">
+    <mxGraphModel dx="2219" dy="1119" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="marca" value="Marca" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="160" y="550" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="modelo" value="Modelo" style="whiteSpace=wrap;html=1;align=center;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="320" y="485" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="generacion" value="Generacion" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="582.5" y="425" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="motorizacion" value="Motorizacion" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="840" y="485" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculo" value="Vehiculo" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="840" y="717.5" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="imagenes" value="Imagenes" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="1270" y="718.75" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tiempos_circuito" value="Tiempos_Circuito" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="1140" y="815" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="usuarios" value="Usuarios" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="177.5" y="806.25" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="favoritos" value="Favoritos" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="540" y="808.75" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="listas" value="Listas" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="177.5" y="1033.75" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculos_listas" value="Vehiculos_Listas" style="whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#DAE8FC,#375071);gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="600" y="1033.75" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="marca_id" value="id_marca (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="107.5" y="630" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="marca_nombre" value="nombre" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="240" y="630" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="modelo_id" value="id_modelo (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;fillColor=light-dark(#B1DDF0,#21293E);strokeColor=#10739e;" parent="1" vertex="1">
+          <mxGeometry x="260" y="405" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="modelo_id_marca" value="id_marca (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="410" y="405" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="modelo_nombre" value="nombre" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="335" y="550" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="generacion_id" value="id_generacion (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="510" y="330" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="generacion_id_modelo" value="id_modelo (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="670" y="330" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="generacion_nombre" value="nombre" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="597.5" y="510" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="motorizacion_id" value="id_motorizacion (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="780" y="395" width="120" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="motorizacion_id_generacion" value="id_generacion (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="910" y="395" width="100" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="motorizacion_nombre" value="nombre" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1030" y="465" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculo_id" value="id_vehiculo (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="990" y="570" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculo_id_motorizacion" value="id_motorizacion (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1025" y="620" width="105" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculo_anio" value="anio" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1040" y="677.5" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="imagenes_id" value="id_imagen (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1220" y="645" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="imagenes_id_vehiculo" value="id_vehiculo (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1330" y="645" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tiempos_id" value="id_tiempo (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1100" y="885" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tiempos_id_vehiculo" value="id_vehiculo (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="1220" y="885" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="usuarios_id" value="id_usuario (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="137.5" y="716.25" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="usuarios_email" value="email" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="237.5" y="716.25" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="favoritos_id" value="id_favorito (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="500" y="736.25" width="97.5" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="favoritos_id_usuario" value="id_usuario (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="605" y="736.25" width="95" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="favoritos_id_vehiculo" value="id_vehiculo (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="552.5" y="861.25" width="95" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="listas_id" value="id_lista (PK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="90" y="976.25" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="listas_id_usuario" value="id_usuario (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="297.5" y="966.25" width="95" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculos_listas_id_lista" value="id_lista (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="560" y="956.25" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vehiculos_listas_id_vehiculo" value="id_vehiculo (FK)" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" parent="1" vertex="1">
+          <mxGeometry x="670" y="956.25" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-1" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="marca_id" target="marca" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-2" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="marca_nombre" target="marca" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-3" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="modelo_id" target="modelo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-4" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="modelo_id_marca" target="modelo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-5" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="modelo_nombre" target="modelo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-6" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="generacion_id" target="generacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-7" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="generacion_id_modelo" target="generacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-8" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="generacion_nombre" target="generacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-9" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="motorizacion_id" target="motorizacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-10" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="motorizacion_id_generacion" target="motorizacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-11" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="motorizacion_nombre" target="motorizacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-12" style="endArrow=none;html=1;" parent="1" source="vehiculo_id" target="vehiculo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-13" style="endArrow=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="vehiculo_id_motorizacion" target="vehiculo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-14" style="endArrow=none;html=1;" parent="1" source="vehiculo_anio" target="vehiculo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-15" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="imagenes_id" target="imagenes" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-16" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="imagenes_id_vehiculo" target="imagenes" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-17" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="tiempos_id" target="tiempos_circuito" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-18" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="tiempos_id_vehiculo" target="tiempos_circuito" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-19" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="usuarios_id" target="usuarios" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-20" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="usuarios_email" target="usuarios" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-21" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="favoritos_id" target="favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-22" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="favoritos_id_usuario" target="favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-23" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="favoritos_id_vehiculo" target="favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-24" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="listas_id" target="listas" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="135.5" y="1016.25" />
+              <mxPoint x="165.5" y="1016.25" />
+              <mxPoint x="165.5" y="1066.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-25" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="listas_id_usuario" target="listas" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="345" y="1021.25" />
+              <mxPoint x="285" y="1021.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-26" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="vehiculos_listas_id_lista" target="vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-27" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="vehiculos_listas_id_vehiculo" target="vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_modelo_generacion" value="De un" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="472.5" y="485" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_generacion_motorizacion" value="Tiene" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="700" y="480" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_motorizacion_vehiculo" value="Tiene" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="840" y="605" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_imagenes" value="Tiene" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="1115" y="707.5" width="120" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_tiempos" value="Puede tener" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="940" y="805" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usuarios_favoritos" value="Guardan" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="337.5" y="806.25" width="130" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_favoritos" value="Se añade a" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="710" y="798.75" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usuarios_listas" value="Crean" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="170" y="916.25" width="135" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_listas_vehiculos_listas" value="Añaden" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="392.5" y="1023.75" width="115" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_vehiculos_listas" value="Aparece en" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;strokeColor=#d79b00;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#FFE6CC,#957B28);" parent="1" vertex="1">
+          <mxGeometry x="820" y="935" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-28" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="marca" target="rel_marca_modelo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-29" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_marca_modelo" target="modelo" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="505" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-31" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="modelo" target="rel_modelo_generacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-32" style="endArrow=none;html=1;" parent="1" source="rel_modelo_generacion" target="generacion" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="440" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-33" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="507.5" y="465" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-34" style="endArrow=none;html=1;" parent="1" source="generacion" target="rel_generacion_motorizacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-35" style="endArrow=none;html=1;" parent="1" source="rel_generacion_motorizacion" target="motorizacion" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="800" y="510" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-36" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="730" y="460" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-37" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="motorizacion" target="rel_motorizacion_vehiculo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-38" style="endArrow=none;html=1;" parent="1" source="rel_motorizacion_vehiculo" target="vehiculo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-39" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="910" y="595" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-40" style="endArrow=none;html=1;" parent="1" source="vehiculo" target="rel_vehiculo_imagenes" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-41" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_vehiculo_imagenes" target="imagenes" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-42" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="1155" y="687.5" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-43" style="endArrow=none;html=1;" parent="1" source="vehiculo" target="rel_vehiculo_tiempos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-44" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_vehiculo_tiempos" target="tiempos_circuito" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-45" value="0:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="985" y="780" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-46" style="endArrow=none;html=1;" parent="1" source="usuarios" target="rel_usuarios_favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="337.5" y="826.25" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-47" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_usuarios_favoritos" target="favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-48" value="0:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="382.5" y="778.75" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-49" style="endArrow=none;html=1;" parent="1" source="vehiculo" target="rel_vehiculo_favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-50" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_vehiculo_favoritos" target="favoritos" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="730" y="828.75" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-51" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="760" y="771.25" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-52" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="usuarios" target="rel_usuarios_listas" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="237.5" y="916.25" />
+              <mxPoint x="237.5" y="916.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-53" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_usuarios_listas" target="listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-54" value="0:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="430" y="996.25" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-55" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="listas" target="rel_listas_vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="447.5" y="1036.25" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-56" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" parent="1" source="rel_listas_vehiculos_listas" target="vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-57" value="0:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="255" y="905" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-58" style="endArrow=none;html=1;" parent="1" source="vehiculo" target="rel_vehiculo_vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-59" style="endArrow=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="rel_vehiculo_vehiculos_listas" target="vehiculos_listas" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-60" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="840" y="930" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZjemfhRblgArhXDYh9cc-65" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="165" y="465" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_marca_modelo" value="De una" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;fillColor=light-dark(#FFE6CC,#957B28);strokeColor=#d79b00;" parent="ZjemfhRblgArhXDYh9cc-65" vertex="1">
+          <mxGeometry y="20" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Po8lPu-qlClKRG_DyMpo-30" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="ZjemfhRblgArhXDYh9cc-65" vertex="1">
+          <mxGeometry x="35" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZjemfhRblgArhXDYh9cc-66" value="ruta_local" style="ellipse;whiteSpace=wrap;html=1;align=center;strokeColor=#10739e;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=light-dark(#B1DDF0,#21293E);" vertex="1" parent="1">
+          <mxGeometry x="1280" y="771.25" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZjemfhRblgArhXDYh9cc-67" style="edgeStyle=orthogonalEdgeStyle;endArrow=none;html=1;" edge="1" parent="1" source="ZjemfhRblgArhXDYh9cc-66" target="imagenes">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1410" y="700" as="sourcePoint" />
+            <mxPoint x="1360" y="734" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

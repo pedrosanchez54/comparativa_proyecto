@@ -5,6 +5,8 @@ import apiClient from '../../services/api';
 import { toast } from 'react-toastify';
 import BackButton from '../../components/Common/BackButton';
 import './AuthForm.css';
+import sha256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
@@ -31,6 +33,10 @@ const ResetPasswordPage = () => {
     validateToken();
   }, [validateToken]);
 
+  function preHashPassword(password) {
+    return sha256(password).toString(Hex);
+  }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
     if (!password || !confirmPassword) {
@@ -48,7 +54,8 @@ const ResetPasswordPage = () => {
 
     try {
         setLoading(true);
-      await apiClient.post(`/auth/reset-password/${token}`, { nuevaContraseña: password });
+      const preHashed = preHashPassword(password);
+      await apiClient.post(`/auth/reset-password/${token}`, { nuevaContraseña: preHashed, is_pre_hashed: true });
       toast.success('Contraseña restablecida correctamente');
       navigate('/login');
     } catch (error) {

@@ -649,10 +649,103 @@ Este proyecto no habría sido posible sin el apoyo y la colaboración de todas e
 ### Anexo B: Documentación de API
 
 #### B.1. Endpoints Completos
-*[Documentación detallada de todos los endpoints]*
 
-#### B.2. Ejemplos de Requests/Responses
-*[Ejemplos de JSON de entrada y salida]*
+A continuación se detallan todos los endpoints implementados en la API RESTful del proyecto, organizados por área funcional. Cada tabla muestra el método, la ruta, una breve descripción y los requisitos de autenticación si aplica.
+
+---
+
+**Autenticación (`/api/auth/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| POST   | /register | Registra un nuevo usuario | Ninguna |
+| POST   | /login    | Inicia sesión             | Ninguna |
+| POST   | /logout   | Cierra la sesión          | Requiere login |
+| POST   | /request-password-reset | Solicita email para restablecer contraseña | Ninguna |
+| GET    | /validate-reset-token/:token | Valida el token de recuperación | Ninguna |
+| POST   | /reset-password/:token | Restablece la contraseña usando el token | Ninguna |
+| GET    | /session  | Verifica el estado de la sesión actual | Ninguna |
+
+---
+
+**Vehículos (`/api/vehicles/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| GET    | /           | Lista de vehículos (filtros, paginación, ordenación) | Ninguna |
+| GET    | /options    | Opciones para filtros (marcas, tipos, etc) | Ninguna |
+| GET    | /compare    | Obtiene varios vehículos para comparación | Ninguna |
+| GET    | /by-id      | Alternativa para obtener un vehículo por ID | Ninguna |
+| GET    | /:id        | Detalles de un vehículo específico | Ninguna |
+| POST   | /           | Crea un nuevo vehículo | Requiere login y rol admin |
+| PUT    | /:id        | Actualiza un vehículo | Requiere login y rol admin |
+| DELETE | /:id        | Elimina un vehículo | Requiere login y rol admin |
+
+---
+
+**Listas de usuario (`/api/lists/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| POST   | /                    | Crea una nueva lista | Requiere login |
+| GET    | /                    | Obtiene todas las listas del usuario | Requiere login |
+| GET    | /:idLista            | Detalles de una lista (incluye vehículos) | Requiere login |
+| PUT    | /:idLista            | Actualiza una lista | Requiere login |
+| DELETE | /:idLista            | Elimina una lista | Requiere login |
+| POST   | /:idLista/vehicles/:idVehiculo | Añade un vehículo a una lista | Requiere login |
+| DELETE | /:idLista/vehicles/:idVehiculo | Quita un vehículo de una lista | Requiere login |
+
+---
+
+**Favoritos (`/api/favorites/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| GET    | /                    | Obtiene todos los vehículos favoritos del usuario | Requiere login |
+| POST   | /:idVehiculo         | Añade un vehículo a favoritos | Requiere login |
+| DELETE | /:idVehiculo         | Quita un vehículo de favoritos | Requiere login |
+| GET    | /status/:idVehiculo  | Comprueba si un vehículo es favorito | Requiere login |
+
+---
+
+**Usuarios (`/api/users/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| PUT    | /profile             | Actualiza el perfil del usuario | Requiere login |
+| PUT    | /password            | Cambia la contraseña | Requiere login |
+| GET    | /favorites           | Obtiene todos los favoritos | Requiere login |
+| GET    | /favorites/:vehicleId| Verifica si un vehículo es favorito | Requiere login |
+| POST   | /favorites           | Añade un vehículo a favoritos | Requiere login |
+| DELETE | /favorites/:vehicleId| Quita un vehículo de favoritos | Requiere login |
+| GET    | /lists               | Obtiene todas las listas del usuario | Requiere login |
+| POST   | /lists               | Crea una nueva lista | Requiere login |
+| GET    | /lists/:listId       | Detalles de una lista | Requiere login |
+| PUT    | /lists/:listId       | Actualiza una lista | Requiere login |
+| DELETE | /lists/:listId       | Elimina una lista | Requiere login |
+| GET    | /lists/vehicle/:vehicleId | Verifica en qué listas está un vehículo | Requiere login |
+| POST   | /lists/:listId/vehicles/:vehicleId | Añade un vehículo a una lista | Requiere login |
+| DELETE | /lists/:listId/vehicles/:vehicleId | Quita un vehículo de una lista | Requiere login |
+
+---
+
+**Tiempos de circuito (`/api/times/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| GET    | /vehicle/:idVehiculo | Obtiene todos los tiempos de un vehículo | Ninguna |
+| POST   | /vehicle/:idVehiculo | Añade un tiempo de circuito a un vehículo | Requiere login y rol admin |
+| DELETE | /:idTiempo           | Elimina un tiempo de circuito | Requiere login y rol admin |
+
+---
+
+**Imágenes (`/api/images/`)**
+
+| Método | Ruta | Descripción | Autenticación/Requisitos |
+|--------|------|-------------|--------------------------|
+| GET    | /vehicle/:idVehiculo | Obtiene todas las imágenes de un vehículo | Ninguna |
+| POST   | /vehicle/:idVehiculo | Añade una imagen a un vehículo | Requiere login y rol admin |
+| DELETE | /:idImagen           | Elimina una imagen | Requiere login y rol admin |
 
 ### Anexo C: Capturas de Pantalla
 
@@ -668,7 +761,21 @@ Este proyecto no habría sido posible sin el apoyo y la colaboración de todas e
 *[Árbol de directorios completo]*
 
 #### D.2. Archivos de Configuración
-*[Contenido de archivos .env, package.json, etc.]*
+
+A continuación se describen los principales archivos de configuración del proyecto, su función y el tipo de información que contienen (sin exponer datos sensibles):
+
+| Archivo              | Descripción breve                                                                                 |
+|----------------------|--------------------------------------------------------------------------------------------------|
+| `.env`               | Variables de entorno sensibles: credenciales de base de datos, claves secretas, puertos, etc.    |
+| `package.json`       | Dependencias, scripts de npm, metadatos del proyecto frontend o backend.                         |
+| `package-lock.json`  | Versiones exactas de las dependencias instaladas (bloqueo de versiones para reproducibilidad).   |
+| `start-production-https.sh` | Script bash para automatizar el despliegue en modo producción con HTTPS.                |
+| `webpack.config.js`  | Configuración avanzada de Webpack para el build del frontend (si aplica).                       |
+| `config.js`/`config/*.js` | Archivos de configuración de la app (rutas, opciones de seguridad, etc.).                |
+| `.gitignore`         | Lista de archivos y carpetas que no se suben al control de versiones (por seguridad y limpieza). |
+| `README.md`          | Documentación básica del proyecto, instrucciones de uso e instalación.                          |
+
+Cada archivo cumple una función específica en la gestión, seguridad y despliegue del proyecto, y su contenido debe protegerse adecuadamente, especialmente los que contienen credenciales o claves privadas.
 
 ### Anexo E: Métricas y Estadísticas
 

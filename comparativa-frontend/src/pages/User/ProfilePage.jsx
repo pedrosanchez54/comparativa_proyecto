@@ -8,6 +8,8 @@ import ConfirmModal from '../../components/Common/ConfirmModal';
 import useConfirmModal from '../../hooks/useConfirmModal';
 import { toast } from 'react-toastify';
 import './ProfilePage.css';
+import sha256 from 'crypto-js/sha256';
+import Hex from 'crypto-js/enc-hex';
 
 const ProfilePage = () => {
   const { user, logout, setUserData } = useAuth();
@@ -196,6 +198,10 @@ const ProfilePage = () => {
     return true;
   };
 
+  function preHashPassword(password) {
+    return sha256(password).toString(Hex);
+  }
+
   const handleSaveChanges = async () => {
     if (!validateForm()) return;
 
@@ -204,10 +210,12 @@ const ProfilePage = () => {
 
       if (editMode === 'profile') {
         // Actualizar perfil
+        const preHashedCurrent = preHashPassword(editForm.currentPassword);
         const response = await apiClient.put('/users/profile', {
           nombre: editForm.nombre,
           email: editForm.email,
-          currentPassword: editForm.currentPassword
+          currentPassword: preHashedCurrent,
+          is_pre_hashed: true
         });
 
         // Actualizar el contexto con los nuevos datos
@@ -217,9 +225,12 @@ const ProfilePage = () => {
         toast.success('Perfil actualizado correctamente');
       } else {
         // Cambiar contraseña
+        const preHashedCurrent = preHashPassword(editForm.currentPassword);
+        const preHashedNew = preHashPassword(editForm.newPassword);
         await apiClient.put('/users/password', {
-          currentPassword: editForm.currentPassword,
-          newPassword: editForm.newPassword
+          currentPassword: preHashedCurrent,
+          newPassword: preHashedNew,
+          is_pre_hashed: true
         });
 
         toast.success('Contraseña cambiada correctamente');

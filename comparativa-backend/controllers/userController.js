@@ -1,5 +1,6 @@
 const { pool } = require('../config/db');
 const { validationResult } = require('express-validator');
+const { verifyPassword, hashPassword } = require('../utils/hashUtils');
 
 /**
  * Actualiza el perfil del usuario autenticado
@@ -30,7 +31,6 @@ const updateProfile = async (req, res, next) => {
         }
 
         // Verificar contraseña actual
-        const { verifyPassword } = require('../utils/hashUtils');
         const isValidPassword = await verifyPassword(userData[0].contraseña, currentPassword);
 
         if (!isValidPassword) {
@@ -80,7 +80,7 @@ const changePassword = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword, is_pre_hashed } = req.body;
     const userId = req.user.id;
 
     try {
@@ -95,15 +95,14 @@ const changePassword = async (req, res, next) => {
         }
 
         // Verificar contraseña actual
-        const { verifyPassword, hashPassword } = require('../utils/hashUtils');
-        const isValidPassword = await verifyPassword(user[0].contraseña, currentPassword);
+        const isValidPassword = await verifyPassword(user[0].contraseña, currentPassword, is_pre_hashed);
 
         if (!isValidPassword) {
             return res.status(401).json({ message: 'La contraseña actual es incorrecta.' });
         }
 
         // Hashear nueva contraseña
-        const hashedNewPassword = await hashPassword(newPassword);
+        const hashedNewPassword = await hashPassword(newPassword, is_pre_hashed);
 
         // Actualizar contraseña
         await pool.query(

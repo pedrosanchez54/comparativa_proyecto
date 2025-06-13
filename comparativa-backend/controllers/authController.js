@@ -37,7 +37,6 @@ exports.register = async (req, res, next) => {
     }
 
     // 3. Hashear la contraseña
-    // Si ya viene pre-hasheada desde el cliente, aplicamos un segundo hash
     const hashedPassword = await hashPassword(contraseña, is_pre_hashed);
 
     // 4. Insertar usuario en la BD (rol por defecto es 'user')
@@ -111,7 +110,7 @@ exports.login = async (req, res, next) => {
          return res.status(429).json({ message: `Cuenta bloqueada. Inténtalo de nuevo en ${remainingTime} minutos.` });
      }
 
-    // 6. Verificar la contraseña, considerando si viene pre-hasheada
+    // 6. Verificar la contraseña
     const isValidPassword = await verifyPassword(user.contraseña, contraseña, is_pre_hashed);
 
     if (!isValidPassword) {
@@ -253,7 +252,7 @@ exports.resetPassword = async (req, res, next) => {
          return res.status(400).json({ errors: errors.array() });
      }
     const { token } = req.params; // Token viene de la URL
-    const { nuevaContraseña } = req.body;
+    const { nuevaContraseña, is_pre_hashed } = req.body;
 
     try {
         // 2. Buscar usuario con token válido y no expirado
@@ -270,7 +269,7 @@ exports.resetPassword = async (req, res, next) => {
         const userId = users[0].id_usuario;
 
         // 4. Hashear la nueva contraseña
-        const hashedPassword = await hashPassword(nuevaContraseña);
+        const hashedPassword = await hashPassword(nuevaContraseña, is_pre_hashed);
 
         // 5. Actualizar contraseña en BD y limpiar token/expiración
         await pool.query(
