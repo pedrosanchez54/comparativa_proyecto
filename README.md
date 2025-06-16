@@ -166,20 +166,20 @@ comparativa-backend/
 
 ## 🔄 **Historial de Desarrollo**
 
-### **Versión 3.0 (Actual) - Enero 2025:**
+### **Versión 3.0 (Actual) - Junio 2025:**
 - ✅ **Migración HTTPS completa** con servidores nativos
 - ✅ **Corrección URLs de imágenes** hardcodeadas
 - ✅ **Paginación responsive** para móviles
 - ✅ **Sistema de comparativas** 100% funcional
 - ✅ **Documentación completa** y scripts automatizados
 
-### **Versión 2.0 - Diciembre 2024:**
+### **Versión 2.0 - Mayo 2025:**
 - ✅ **Páginas footer** (términos, privacidad, contacto)
 - ✅ **Sistema de autenticación** completo
 - ✅ **Panel de administración** avanzado
 - ✅ **Responsive design** optimizado
 
-### **Versión 1.0 - Noviembre 2024:**
+### **Versión 1.0 - Abril 2025:**
 - ✅ **Base de la aplicación** con funcionalidades core
 - ✅ **Catálogo de vehículos** con filtros
 - ✅ **Sistema de comparativas** básico
